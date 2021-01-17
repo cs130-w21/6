@@ -23,7 +23,7 @@ class ImageProcess:
     def predict(self, inputs):
         return self.model.predict(inputs)
     
-    def save_model(self,dire='./inception_server/'):
+    def save_model(self,dire='./inception_server/1/'):
         tf.keras.models.save_model(
             self.model,
             dire,
