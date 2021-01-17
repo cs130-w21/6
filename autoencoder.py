@@ -36,7 +36,7 @@ def train_step(autoencoder,batch_data,batch_label,optimizer,loss_object):
 def train_autoencoder(autoencoder):
     nepoch = 10
     batch_size = 128
-    num_batchs = int(100000 / 64)
+    num_batchs = int(100000 / batch_size)
     seqs      = np.load('./seqs.npy')
     img_links = np.load('./img_links.npy')
     num_examples = len(seqs)
