@@ -21,21 +21,21 @@ def loss_function(pred,batch_label,loss_object):
     loss  = loss_ * mask
     return tf.reduce_mean(loss)
 
+@tf.function
 def train_step(autoencoder,batch_data,batch_label,optimizer,loss_object):
     with tf.GradientTape() as tape:
-        predictions = np.array(autoencoder(batch_data))
-        predictions = np.transpose(predictions,(1,0,2))
-        print(predictions.shape, batch_label.shape)
+        predictions = autoencoder(batch_data)
         loss = loss_function(predictions,batch_label,loss_object)
-
+    
     trainable_variables = autoencoder.trainable_variables
     gradients           = tape.gradient(loss,trainable_variables)
     optimizer.apply_gradients(zip(gradients,trainable_variables))
+    
     return loss
 
 def train_autoencoder(autoencoder):
-    nepoch = 20
-    batch_size = 64
+    nepoch = 10
+    batch_size = 128
     num_batchs = int(100000 / 64)
     seqs      = np.load('./seqs.npy')
     img_links = np.load('./img_links.npy')

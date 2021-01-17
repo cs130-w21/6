@@ -69,6 +69,10 @@ class AutoEncoder(tf.keras.Model):
             # update the dec_input
             self.dec_input = predicted_id
             output.append(predictions)
+            
+        output = tf.stack(output)
+        output = tf.transpose(output,[1,0,2])
+        print(output.shape)
         return output
 
     def attention(self, features, hidden):
