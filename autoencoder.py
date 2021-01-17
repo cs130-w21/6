@@ -41,7 +41,8 @@ def train_autoencoder(autoencoder):
     img_links = np.load('./img_links.npy')
     num_examples = len(seqs)
     optimizer    = tf.keras.optimizers.Adam()
-    loss_object  = tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True)
+    loss_object  = tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True,
+                                                                reduction=None)
     for epoch in range(nepoch):
         for batch in range(num_batchs):
             batch_index = np.random.choice(num_examples,batch_size)
