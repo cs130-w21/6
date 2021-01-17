@@ -67,7 +67,7 @@ class AutoEncoder(tf.keras.Model):
             predicted_id = tf.random.categorical(predictions,1)
             
             # update the dec_input
-            self.dec_input = predicted_id
+            self.dec_input = tf.stop_gradient(predicted_id)
             output.append(predictions)
             
         output = tf.stack(output)
