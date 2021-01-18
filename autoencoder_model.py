@@ -40,6 +40,7 @@ class AutoEncoder(tf.keras.Model):
         # CNN encoding
         feature  = self.dense_layer(inputs)
         output = []
+        proba  = []
         # RNN decoding
         # initialize hidden state
         self.hidden = tf.zeros((1, self.units))
@@ -68,13 +69,17 @@ class AutoEncoder(tf.keras.Model):
             
             # update the dec_input
             self.dec_input = tf.stop_gradient(predicted_id)
-            output.append(predictions)
             
+            proba.append(predictions)
+            output.append(self.dec_input)
+            
+        proba = tf.stack(proba)
+        proba = tf.transpose(proba,[1,0,2])
         output = tf.stack(output)
         output = tf.transpose(output,[1,0,2])
-        print(output.shape)
-        return output
-
+        return proba,output
+    
+    @tf.function
     def attention(self, features, hidden):
         # features(CNN_encoder output) shape == (batch_size, 64, embedding_dim)
         # hidden shape == (batch_size, hidden_size)
