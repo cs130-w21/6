@@ -55,12 +55,19 @@ def main():
     #captions = np.load('./captions.npy')
     #print(captions[i*5])
     for r in range(num_quotes):
+        t1 = time.time()
         prediction = call_autoencoder_server(feature)
+        print(time.time() - t1)
         prediction = np.reshape(prediction,(-1))
         tokenizer = np.load('tokenizer.npy',allow_pickle='TRUE').item()
         pred = ''
-        for j in prediction:
-            pred += (str([key for key,value in tokenizer.items() if value==j][0]) + ' ')
+        for index,j in enumerate(prediction[1:]):
+            word = str([key for key,value in tokenizer.items() if value==j][0])
+            if word != '<end>':
+                pred += (word + ' ')
+            else:
+                break
+        pred = pred.capitalize()
         print(pred)
     print(f'Total Time: {time.time() - st_time}s')
     
