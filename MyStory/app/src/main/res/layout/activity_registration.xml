@@ -4,62 +4,62 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:rotation="1"
-    tools:context=".RegistrationActivity">
+    tools:context=".RegistrationActivity"
+    android:background="@drawable/mystory_background">
 
     <TextView
         android:id="@+id/title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginTop="50dp"
         android:layout_marginStart="35dp"
-        android:text="UserRegister"
-        android:textSize="35dp"
+        android:layout_marginTop="50dp"
         android:fontFamily="@font/courgette"
-        android:textColor="@color/black"/>
+        android:text="User Register"
+        android:textColor="@color/black"
+        android:textSize="35dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/n_username"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginTop="125dp"
         android:layout_marginStart="50dp"
-        android:text="Give yourself a username: "
-        android:textSize="18dp"
+        android:layout_marginTop="125dp"
         android:fontFamily="@font/courgette"
-        android:textColor="@color/black"/>
+        android:text="Give yourself a username: "
+        android:textColor="@android:color/darker_gray"
+        android:textSize="18dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/n_password"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginTop="225dp"
         android:layout_marginStart="50dp"
-        android:text="Please enter the password: "
-        android:textSize="18dp"
+        android:layout_marginTop="245dp"
         android:fontFamily="@font/courgette"
-        android:textColor="@color/black"/>
+        android:text="Please enter the password: "
+        android:textColor="@android:color/darker_gray"
+        android:textSize="18dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/n_password2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginTop="325dp"
         android:layout_marginStart="50dp"
-        android:text="Please confirm the password: "
-        android:textSize="18dp"
+        android:layout_marginTop="365dp"
         android:fontFamily="@font/courgette"
-        android:textColor="@color/black"/>
+        android:text="Please confirm the password: "
+        android:textColor="@android:color/darker_gray"
+        android:textSize="18dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
+    <!-- <TextView
         android:id="@+id/n_email"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -70,7 +70,7 @@
         android:text="Please enter the email address: "
         android:textSize="18dp"
         android:fontFamily="@font/courgette"
-        android:textColor="@color/black"/>
+        android:textColor="@color/black"/> -->
 
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="330dp"
@@ -78,7 +78,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="150dp"
+        android:layout_marginTop="140dp"
         android:backgroundTint="@android:color/transparent">
 
         <com.google.android.material.textfield.TextInputEditText
@@ -94,7 +94,7 @@
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="330dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="250dp"
+        android:layout_marginTop="260dp"
         android:backgroundTint="@android:color/transparent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -116,7 +116,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="350dp"
+        android:layout_marginTop="380dp"
         android:backgroundTint="@android:color/transparent">
 
         <com.google.android.material.textfield.TextInputEditText
@@ -129,7 +129,7 @@
             android:textColorHint="@color/black" />
     </com.google.android.material.textfield.TextInputLayout>
 
-    <com.google.android.material.textfield.TextInputLayout
+    <!-- <com.google.android.material.textfield.TextInputLayout
         android:layout_width="330dp"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"
@@ -146,7 +146,7 @@
             android:hint="email"
             android:fontFamily="@font/courgette"
             android:textColorHint="@color/black" />
-    </com.google.android.material.textfield.TextInputLayout>
+    </com.google.android.material.textfield.TextInputLayout> -->
 
     <Button
         android:id="@+id/create"
@@ -162,7 +162,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <Button
+    <!-- <Button
         android:id="@+id/login"
         android:layout_width="220dp"
         android:layout_height="wrap_content"
@@ -174,6 +174,6 @@
         android:textColor="@color/black"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent" /> -->
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -39,12 +39,12 @@ import java.time.LocalTime;
 import cz.msebera.android.httpclient.Header;
 
 public class MainActivity extends AppCompatActivity {
-    final int REQUEST_CODE = 119;
+    final int REQUEST_CODE_GPS = 119;
     final String URL = "https://api.openweathermap.org/data/2.5/weather";
     final String API_KEY = "369b1b73d7128a1c8e76e400dfd321ee";
-    float MIN_DIST = 1000;
-    long MIN_TIME = 100000;
-    String LOCATION_PROVIDER = LocationManager.GPS_PROVIDER;
+    final float MIN_DIST = 1000;
+    final long MIN_TIME = 100000;
+    final String LOCATION_PROVIDER = LocationManager.GPS_PROVIDER;
 
     LocationManager mLocationManager;
     LocationListener mLocationListener;
@@ -55,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
     String _mUserName;
     String _mUserPassword;
     Button mLogin;
-    Button mRegister;
+    TextView mRegister;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,9 +72,9 @@ public class MainActivity extends AppCompatActivity {
         mRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this,
+                Intent registerIntent = new Intent(MainActivity.this,
                         RegistrationActivity.class);
-                startActivity(intent);
+                startActivity(registerIntent);
             }
         });
 
@@ -82,7 +82,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 _mUserName = mUserName.getText().toString();
-                Log.d("MyStory", "username: " + _mUserName);
+                Log.d("MyStory", "username entered: " + _mUserName);
                 return true;
             }
         });
@@ -91,7 +91,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 _mUserPassword = mUserPassword.getText().toString();
-                Log.d("MyStory", "password: " + _mUserPassword);
+                Log.d("MyStory", "password entered: " + _mUserPassword);
                 return true;
             }
         });
@@ -99,12 +99,18 @@ public class MainActivity extends AppCompatActivity {
         mLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 // TODO: check username & password validity
-                // TODO: jump to story screen
+                // TODO: jump to <StoryActivity> screen
+
+                Intent storyIntent = new Intent(MainActivity.this,
+                        StoryActivity.class);
+                storyIntent.putExtra("username", "username");
+                startActivity(storyIntent);
             }
         });
 
-        String[] photoOption = {"from library", "use camera"};
+        String[] photoOption = {"from gallery", "use camera"};
         mCameraButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -114,8 +120,11 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         Log.d("MyStory", "user clicked option: " + photoOption[which]);
-                        // TODO: link camera (crop to square)
-                        // TODO: load image from phone library
+                        Intent photoIntent = new Intent(MainActivity.this,
+                                PhotoActivity.class);
+                        photoIntent.putExtra("option", which);
+                        photoIntent.putExtra("login", false);
+                        startActivity(photoIntent);
                     }
                 });
                 builder.show();
@@ -172,7 +181,7 @@ public class MainActivity extends AppCompatActivity {
                 Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this,
                     new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                    REQUEST_CODE);
+                    REQUEST_CODE_GPS);
             return;
         }
         mLocationManager.requestLocationUpdates(LOCATION_PROVIDER,
@@ -186,10 +195,9 @@ public class MainActivity extends AppCompatActivity {
                                            @NonNull String[] permissions,
                                            @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == REQUEST_CODE && grantResults.length > 0
+        if (requestCode == REQUEST_CODE_GPS && grantResults.length > 0
                 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             Log.d("MyStory", "GPS access permitted");
-            getWeather();
         }
     }
 
