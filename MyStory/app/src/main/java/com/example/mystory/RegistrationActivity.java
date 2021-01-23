@@ -17,10 +17,11 @@ public class RegistrationActivity extends AppCompatActivity {
     private TextInputEditText mNewUserName;
     private TextInputEditText mNewUserPassword;
     private TextInputEditText mNewUserPassword2;
-    private String _mNewUserName;
+    private String _mNewUserName = "new user";
     private String _mNewUserPassword;
     private String _mNewUserPassword2;
     private Button mCreateButton;
+    private Button mBackToHomeButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,6 +32,7 @@ public class RegistrationActivity extends AppCompatActivity {
         mNewUserPassword = findViewById(R.id.new_password);
         mNewUserPassword2 = findViewById(R.id.new_password2);
         mCreateButton = findViewById(R.id.create);
+        mBackToHomeButton = findViewById(R.id.back_to_homepage);
 
         mCreateButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -76,6 +78,13 @@ public class RegistrationActivity extends AppCompatActivity {
                 _mNewUserPassword2 = mNewUserPassword2.getText().toString();
                 Log.d("MyStory", "new confirmed password: " + _mNewUserPassword2);
                 return true;
+            }
+        });
+
+        mBackToHomeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
             }
         });
     }

@@ -39,4 +39,17 @@
         android:layout_marginTop="150dp"
         android:transcriptMode="alwaysScroll" />
 
+    <TextView
+        android:id="@+id/empty_story"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="300dp"
+        android:fontFamily="@font/courgette"
+        android:text="There are no stories yet 😌"
+        android:textColor="@android:color/darker_gray"
+        android:textSize="25dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

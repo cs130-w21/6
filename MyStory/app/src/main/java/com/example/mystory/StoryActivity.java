@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ImageButton;
 import android.widget.ListView;
 
@@ -28,38 +29,32 @@ public class StoryActivity extends AppCompatActivity {
         setContentView(R.layout.activity_story);
         Log.d("MyStory", "now at story screen");
         mStoryList = new ArrayList<>();
-        JSONObject temp = new JSONObject();
-        try {
-            temp.put("image",
-                    getResources().getIdentifier("camera_logo",
-                    "drawable",
-                            getPackageName()));
-            temp.put("text", "DEFAULT TEXT");
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        mStoryList.add(temp);
-        mStoryList.add(temp);
-        mStoryList.add(temp);
-        mStoryList.add(temp);
-        mStoryList.add(temp);
-        mStoryList.add(temp);
-        mStoryList.add(temp);
-        mStoryList.add(temp);
-        mStoryList.add(temp);
-        mStoryList.add(temp);
-
         Intent myIntent = getIntent();
         mUserName = myIntent.getStringExtra("username");
         Log.d("MyStory", "get ready to display <" + mUserName + ">'s stories");
 
-        // TODO: request this user's story history list from server
-
         mStoryListView = findViewById(R.id.story_list);
         mStoryListView.setAdapter(new StoryListAdapter(this, mStoryList));
 
-        // TODO: mStoryListView.setOnItemClickListener(),
-        //  so user can choose whether to delete this story
+        String[] option = {"OK"};
+        mStoryListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(StoryActivity.this);
+                builder.setTitle("delete this story ?");
+                builder.setItems(option, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Log.d("MyStory", "noe deleting this story");
+
+                        // TODO: request server to delete this story
+
+                    }
+                });
+                builder.show();
+                return true;
+            }
+        });
 
         mCameraButton = findViewById(R.id.camera_button_2);
         String[] photoOption = {"from gallery", "use camera"};
@@ -87,7 +82,10 @@ public class StoryActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
-        // TODO: update <mStoryList> from server
+        // TODO: load <mStoryList> from server
 
+        if (mStoryList.size() > 0) {
+            findViewById(R.id.empty_story).setVisibility(View.GONE);
+        }
     }
 }

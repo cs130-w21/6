@@ -2,6 +2,8 @@ package com.example.mystory;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.BitmapFactory;
+import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -59,21 +61,19 @@ public class StoryListAdapter extends BaseAdapter {
         JSONObject aStory = getItem(position);
         ViewHolder holder = (ViewHolder) convertView.getTag();
 
-        // TODO: <image> will be changed to String, so we can convert the string back to bitmap
-
-        int image = 0;
-        String text = "default text";
+        byte[] image;
+        String text = "DEFAULT TEXT";
         try {
-            image = aStory.getInt("image");
-            text = aStory.getString("text");
+            image = Base64.decode(aStory.getString("image"), Base64.DEFAULT);
+            text = aStory.getString("quote");
+            holder.storyImage.setImageBitmap(BitmapFactory.decodeByteArray(image,
+                    0,
+                    image.length));
+            holder.storyText.setText(text);
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
-        // TODO: instead of setImageResource, use setImageBitmap (convert Base64 string to bitmap)
-
-        holder.storyImage.setImageResource(image);
-        holder.storyText.setText(text);
         return convertView;
     }
 }
