@@ -1,0 +1,9 @@
+- JSON string received from server should be in the format of
+    {
+        "bytes": Integer
+        "data": String
+    }
+    where bytes < 0 means the operation fails
+          bytes = 0 means operation success, and no return {data: String}
+          bytes > 0 means operation success, and the actual length of the returned {data: String}
+

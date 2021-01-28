@@ -23,12 +23,13 @@
         android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="110dp"
-        android:text="click camera above to start a new story"
-        android:fontFamily="@font/courgette" />
+        android:fontFamily="@font/courgette"
+        android:text="camera => new story"
+        android:textColor="@android:color/darker_gray"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ListView
         android:id="@+id/story_list"
@@ -43,13 +44,23 @@
         android:id="@+id/empty_story"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="300dp"
+        android:layout_marginTop="350dp"
         android:fontFamily="@font/courgette"
-        android:text="There are no stories yet 😌"
+        android:text="There are no stories yet "
         android:textColor="@android:color/darker_gray"
         android:textSize="25dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/empty_box"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="280dp"
+        android:src="@drawable/empty_box" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

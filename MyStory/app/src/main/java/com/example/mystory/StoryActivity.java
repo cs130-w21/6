@@ -23,9 +23,10 @@ public class StoryActivity extends AppCompatActivity {
     private final int MAX_FILE_SIZE = 650000 * 20;
 
     private ListView mStoryListView;
+    private ArrayList<JSONObject> mStoryList;
+    private StoryListAdapter mAdapter;
     private String mUserName;
     private ImageButton mCameraButton;
-    private ArrayList<JSONObject> mStoryList;
     private char[] jsonString = new char[MAX_FILE_SIZE];
 
     @Override
@@ -38,33 +39,36 @@ public class StoryActivity extends AppCompatActivity {
         mUserName = myIntent.getStringExtra("username");
         mStoryListView = findViewById(R.id.story_list);
         mCameraButton = findViewById(R.id.camera_button_2);
-        mStoryListView.setAdapter(new StoryListAdapter(this, mStoryList));
+        mAdapter = new StoryListAdapter(this, mStoryList);
+        mStoryListView.setAdapter(mAdapter);
         Log.d("MyStory", "get ready to display <" + mUserName + ">'s stories");
 
         mStoryListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                String[] option = {"OK"};
+                String[] option = {"OK", "Cancel"};
                 AlertDialog.Builder builder = new AlertDialog.Builder(StoryActivity.this);
                 builder.setTitle("delete this story ?");
                 builder.setItems(option, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        JSONObject request = new JSONObject();
-                        Log.d("MyStory", "now deleting this story");
+                        if (which == 0) {
+                            JSONObject request = new JSONObject();
+                            Log.d("MyStory", "now deleting this story");
 
-                        // TODO: request server to delete this story
+                            // TODO: request server to delete this story
 
-                        try {
-                            request.put("op", "delete");
-                            request.put("data", mStoryList.get(position).getInt("label"));
-                        } catch (JSONException e) {
-                            e.printStackTrace();
+                            try {
+                                request.put("op", "delete");
+                                request.put("data", mStoryList.get(position).getInt("label"));
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+
+                            SocketHandler frontEndBackEndChannel = new SocketHandler(request, 3);
+                            frontEndBackEndChannel.handler(jsonString);
+                            updateStoryList();
                         }
-
-                        SocketHandler frontEndBackEndChannel = new SocketHandler(request, 3);
-                        frontEndBackEndChannel.handler(jsonString);
-                        updateStoryList();
                     }
                 });
                 builder.show();
@@ -98,10 +102,6 @@ public class StoryActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         updateStoryList();
-
-        if (mStoryList.size() > 0) {
-            findViewById(R.id.empty_story).setVisibility(View.GONE);
-        }
     }
 
     private void updateStoryList() {
@@ -129,5 +129,13 @@ public class StoryActivity extends AppCompatActivity {
         }
 
         Log.d("MyStory", "finished loading story list");
+        mAdapter.notifyDataSetChanged();
+        if (mStoryList.size() > 0) {
+            findViewById(R.id.empty_story).setVisibility(View.GONE);
+            findViewById(R.id.empty_box).setVisibility(View.GONE);
+        } else {
+            findViewById(R.id.empty_story).setVisibility(View.VISIBLE);
+            findViewById(R.id.empty_box).setVisibility(View.VISIBLE);
+        }
     }
 }
