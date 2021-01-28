@@ -10,7 +10,7 @@
         "data": {
             "username": String
             "quote": String
-            "image": String of encoded image
+            "image": String of encoded Base64 image
         }
 
         (for get quote)
@@ -32,7 +32,7 @@
         "data": JSONArray
     }
     where "status" = true means the operation succeeded;
-    "data" is a nested JSONArray:
+    "data" is a JSONArray:
 
     (for upload)
     "data": null
@@ -52,7 +52,11 @@
     (for load history)
     "data": {
         [
-            {"image": String of encoded image, "quote": String of quote},
+            {
+                "image": String of encoded Base64 image,
+                "quote": String of quote,
+                "label": Integer of story label in Database
+            },
             {...}
             {...}
             ...
