@@ -20,14 +20,15 @@ import java.net.Socket;
 import java.util.ArrayList;
 
 public class StoryActivity extends AppCompatActivity {
-    private final int MAX_FILE_SIZE = 650000 * 20;
+    private final int SMALL_FILE_SIZE = 300;
+    private final int LARGE_FILE_SIZE = 650000 * 20;
 
     private ListView mStoryListView;
     private ArrayList<JSONObject> mStoryList;
     private StoryListAdapter mAdapter;
     private String mUserName;
     private ImageButton mCameraButton;
-    private char[] jsonString = new char[MAX_FILE_SIZE];
+    private char[] mJsonString;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,8 +66,9 @@ public class StoryActivity extends AppCompatActivity {
                                 e.printStackTrace();
                             }
 
-                            SocketHandler frontEndBackEndChannel = new SocketHandler(request, 3);
-                            frontEndBackEndChannel.handler(jsonString);
+                            SocketHandler frontEndBackEndChannel = new SocketHandler(request);
+                            mJsonString = new char[SMALL_FILE_SIZE];
+                            frontEndBackEndChannel.handler(mJsonString);
                             updateStoryList();
                         }
                     }
@@ -114,11 +116,12 @@ public class StoryActivity extends AppCompatActivity {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        SocketHandler frontEndBackEndChannel = new SocketHandler(request, 4);
-        frontEndBackEndChannel.handler(jsonString);
+        SocketHandler frontEndBackEndChannel = new SocketHandler(request);
+        mJsonString = new char[LARGE_FILE_SIZE];
+        frontEndBackEndChannel.handler(mJsonString);
 
         try {
-            JSONObject jsonObject = new JSONObject(new String(jsonString));
+            JSONObject jsonObject = new JSONObject(new String(mJsonString));
             JSONArray jsonArray = jsonObject.getJSONArray("data");
             int length = jsonArray.length();
             for (int i = 0; i < length; i++) {
@@ -130,6 +133,7 @@ public class StoryActivity extends AppCompatActivity {
 
         Log.d("MyStory", "finished loading story list");
         mAdapter.notifyDataSetChanged();
+
         if (mStoryList.size() > 0) {
             findViewById(R.id.empty_story).setVisibility(View.GONE);
             findViewById(R.id.empty_box).setVisibility(View.GONE);

@@ -1,9 +1,60 @@
-- JSON string received from server should be in the format of
+- JSON string sent to server is of the form of
     {
-        "bytes": Integer
-        "data": String
+        "op": String
+        "data": String / Integer / JSONObject
     }
-    where bytes < 0 means the operation fails
-          bytes = 0 means operation success, and no return {data: String}
-          bytes > 0 means operation success, and the actual length of the returned {data: String}
+    where "op" is the name of the desired operation, i.e., "upload", "get_quote", etc;
+    "data" corresponds to a either a nested JSONObject or a String or an Integer:
 
+        (for upload)
+        "data": {
+            "username": String
+            "quote": String
+            "image": String of encoded image
+        }
+
+        (for get quote)
+        "data": String of encoded image
+
+        (for delete)
+        "data": Integer of story label in Database
+
+        (for load history)
+        "data": String of username
+
+
+
+
+
+- JSON string received from server is expected to be in the form of
+    {
+        "status": boolean
+        "data": JSONArray
+    }
+    where "status" = true means the operation succeeded;
+    "data" is a nested JSONArray:
+
+    (for upload)
+    "data": null
+
+    (for get quote)
+    "data": {
+        [
+            {"quote": String of quote1},
+            {"quote": String of quote2},
+            {"quote": String of quote3}
+        ]
+    }
+
+    (for delete)
+    "data": null
+
+    (for load history)
+    "data": {
+        [
+            {"image": String of encoded image, "quote": String of quote},
+            {...}
+            {...}
+            ...
+        ]
+    }

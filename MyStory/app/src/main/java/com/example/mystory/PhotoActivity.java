@@ -40,7 +40,8 @@ public class PhotoActivity extends AppCompatActivity {
     private final int REQUEST_CODE_CAMERA = 120;
     private final int FROM_CAMERA = 121;
     private final int FROM_GALLERY = 122;
-    private final int FILE_SIZE = 650000;
+    private final int SMALL_FILE_SIZE = 300;
+    private final int REGULAR_FILE_SIZE = 5000;
 
     private ImageView mPhoto;
     private TextInputEditText mQuote;
@@ -58,7 +59,6 @@ public class PhotoActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_photo);
 
-        mJsonString = new char[FILE_SIZE];
         mPhoto = findViewById(R.id.photo);
         mQuote = findViewById(R.id.quote);
         mGetQuoteButton = findViewById(R.id.get_quote);
@@ -93,7 +93,8 @@ public class PhotoActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
 
-                SocketHandler frontEndBackEndChannel = new SocketHandler(request, 2);
+                SocketHandler frontEndBackEndChannel = new SocketHandler(request);
+                mJsonString = new char[REGULAR_FILE_SIZE];
                 frontEndBackEndChannel.handler(mJsonString);
                 Log.d("MyStory", "hear back from server with quotes");
 
@@ -152,7 +153,8 @@ public class PhotoActivity extends AppCompatActivity {
                         e.printStackTrace();
                     }
 
-                    SocketHandler frontEndBackEndChannel = new SocketHandler(request, 1);
+                    SocketHandler frontEndBackEndChannel = new SocketHandler(request);
+                    mJsonString = new char[SMALL_FILE_SIZE];
                     frontEndBackEndChannel.handler(mJsonString);
                     finish();
                 } else {

@@ -15,21 +15,15 @@ import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 
 public class SocketHandler {
-    private final int UPLOAD = 1;
-    private final int GET_QUOTE = 2;
-    private final int DELETE = 3;
-    private final int LOAD = 4;
-    private final String SERVER_IP = "";
-    private final int SERVER_PORT = -1;
+    private final String SERVER_IP = "2.tcp.ngrok.io";
+    private final int SERVER_PORT = 14817;
     private final int SEGMENT_SIZE = 650000;
 
     private JSONObject mRequest;
-    private int mOpCode;
     private Socket mSocket;
 
-    SocketHandler(JSONObject request, int opCode) {
+    SocketHandler(JSONObject request) {
         mRequest = request;
-        mOpCode = opCode;
         try {
             InetAddress serverAddress = InetAddress.getByName(SERVER_IP);
             mSocket = new Socket(serverAddress, SERVER_PORT);
@@ -39,12 +33,8 @@ public class SocketHandler {
     }
 
     public void handler(char[] jsonString) {
-        if (mOpCode == UPLOAD || mOpCode == DELETE) {
-            serverWrite(mRequest.toString().toCharArray());
-        } else {
-            serverWrite(mRequest.toString().toCharArray());
-            serverRead(jsonString);
-        }
+        serverWrite(mRequest.toString().toCharArray());
+        serverRead(jsonString);
     }
 
     private void serverWrite(char[] jsonString) {
