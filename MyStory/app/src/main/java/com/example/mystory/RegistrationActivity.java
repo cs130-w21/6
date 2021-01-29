@@ -13,6 +13,9 @@ import android.widget.Toast;
 
 import com.google.android.material.textfield.TextInputEditText;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 public class RegistrationActivity extends AppCompatActivity {
     private TextInputEditText mNewUserName;
     private TextInputEditText mNewUserPassword;
@@ -22,7 +25,8 @@ public class RegistrationActivity extends AppCompatActivity {
     private String _mNewUserPassword2;
     private Button mCreateButton;
     private Button mBackToHomeButton;
-
+    private JSONObject mCreateJson;
+    private char[] arr;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,6 +45,18 @@ public class RegistrationActivity extends AppCompatActivity {
                         && _mNewUserPassword.equals(_mNewUserPassword2)) {
 
                     // TODO: check validity of <_mNewUserName>
+
+                    mCreateJson = new JSONObject();
+                    try {
+                        mCreateJson.put("UserName", _mNewUserName);
+                        mCreateJson.put("UserPassword", _mNewUserPassword);
+                        SocketHandler sh = new SocketHandler(mCreateJson);
+                        arr = new char[65000];
+                        sh.handler(arr);
+                    } catch ( JSONException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    }
 
                     Intent storyIntent = new Intent(RegistrationActivity.this,
                             StoryActivity.class);

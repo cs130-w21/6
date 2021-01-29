@@ -56,7 +56,8 @@ public class MainActivity extends AppCompatActivity {
     private String _mUserPassword;
     private Button mLoginButton;
     private TextView mRegisterButton;
-
+    private JSONObject mLoginJson;
+    private char[] arr;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -102,6 +103,17 @@ public class MainActivity extends AppCompatActivity {
 
                 // TODO: check username & password validity
                 // TODO: jump to <StoryActivity> screen
+                mLoginJson = new JSONObject();
+                try {
+                    mLoginJson.put("UserName", _mUserName);
+                    mLoginJson.put("UserPassword", _mUserPassword);
+                    SocketHandler sh = new SocketHandler(mLoginJson);
+                    arr = new char[65000];
+                    sh.handler(arr);
+                } catch ( JSONException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
 
                 Intent storyIntent = new Intent(MainActivity.this,
                         StoryActivity.class);
