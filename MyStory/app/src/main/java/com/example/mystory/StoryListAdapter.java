@@ -51,7 +51,9 @@ public class StoryListAdapter extends BaseAdapter {
         if (convertView == null) {
             LayoutInflater inflator =
                     (LayoutInflater) mActivity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            convertView = inflator.inflate(R.layout.activity_single_story, parent, false);
+            convertView = inflator.inflate(R.layout.activity_single_story,
+                    parent,
+                    false);
             final ViewHolder holder = new ViewHolder();
             holder.storyImage = (ImageView) convertView.findViewById(R.id.story_image);
             holder.storyText = (TextView) convertView.findViewById(R.id.story_text);

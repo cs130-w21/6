@@ -259,7 +259,7 @@ public class MainActivity extends AppCompatActivity {
         } else if (condition % 100 == 8) {
             icon = "☁️";
         } else {
-            icon = "weather = 🤷‍♂️";
+            icon = "  weather unknown";
         }
 
         return Integer.toString(temperature) + "℃ " + icon;

@@ -40,10 +40,10 @@ import java.io.InputStream;
 public class PhotoActivity extends AppCompatActivity {
     private final int REQUEST_CODE_CAMERA = 120;
     private final int REQUEST_CODE_INTERNET = 121;
-    private final int GET_QUOTE = 121;
-    private final int UPLOAD_STORY = 122;
-    private final int FROM_CAMERA = 123;
-    private final int FROM_GALLERY = 124;
+    private final int GET_QUOTE = 122;
+    private final int UPLOAD_STORY = 123;
+    private final int FROM_CAMERA = 124;
+    private final int FROM_GALLERY = 125;
     private final int SMALL_FILE_SIZE = 300;
     private final int REGULAR_FILE_SIZE = 5000;
 
@@ -81,9 +81,9 @@ public class PhotoActivity extends AppCompatActivity {
         }
 
         if (mOption == 1) {
-            setupCamera();
+            workOnCamera();
         } else {
-            setupGallery();
+            workOnGallery();
         }
 
         mGetQuoteButton.setOnClickListener(new View.OnClickListener() {
@@ -92,10 +92,7 @@ public class PhotoActivity extends AppCompatActivity {
                 String[] quotes = new String[3];
                 Log.d("MyStory", "user chooses auto quote generation");
 
-                if (!setupSocket(GET_QUOTE)) {
-                    Toast.makeText(PhotoActivity.this,
-                            "please try again later",
-                            Toast.LENGTH_SHORT).show();
+                if (!workOnNetwork(GET_QUOTE)) {
                     return;
                 }
 
@@ -134,16 +131,13 @@ public class PhotoActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (mLogin) {
-                    if (!setupSocket(UPLOAD_STORY)) {
-                        Toast.makeText(PhotoActivity.this,
-                                "please try again later",
-                                Toast.LENGTH_SHORT).show();
-                        return;
+                    if (workOnNetwork(UPLOAD_STORY)) {
+                        finish();
                     }
-                    finish();
                 } else {
                     String[] option = {"return to homepage"};
-                    AlertDialog.Builder builder = new AlertDialog.Builder(PhotoActivity.this);
+                    AlertDialog.Builder builder =
+                            new AlertDialog.Builder(PhotoActivity.this);
                     builder.setTitle("Please login first to upload your story 😉");
                     builder.setItems(option, new DialogInterface.OnClickListener() {
                         @Override
@@ -158,14 +152,14 @@ public class PhotoActivity extends AppCompatActivity {
         });
     }
 
-    private void setupGallery() {
+    private void workOnGallery() {
         Intent pickPicture = new Intent(Intent.ACTION_PICK);
         pickPicture.setType("image/*");
         Log.d("MyStory", "pick photo from gallery");
         startActivityForResult(pickPicture, FROM_GALLERY);
     }
 
-    private void setupCamera() {
+    private void workOnCamera() {
         if (ActivityCompat.checkSelfPermission(this,
                 Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this,
@@ -178,13 +172,20 @@ public class PhotoActivity extends AppCompatActivity {
         startActivityForResult(takePicture, FROM_CAMERA);
     }
 
-    private boolean setupSocket(int requestCode) {
+    private boolean workOnNetwork(int requestCode) {
         JSONObject request = new JSONObject();
         JSONObject temp = new JSONObject();
         int length;
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        mImage.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
 
+        if (mImage == null) {
+            Toast.makeText(this,
+                    "empty image, please navigate back to previous screen to pick an image",
+                    Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+        mImage.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
         if (requestCode == GET_QUOTE) {
             try {
                 request.put("op", "get_quote");
@@ -206,26 +207,29 @@ public class PhotoActivity extends AppCompatActivity {
             }
         }
 
-        Log.d("MyStory", "prepare to send JSONOBject:");
-        Log.d("MyStory",
-                "this JSONObject is of size: " + String.valueOf(request.toString().length()));
-
+        Log.d("MyStory", "prepare to send JSONOBject of size:");
+        Log.d("MyStory", String.valueOf(request.toString().length()) + " bytes");
         SocketHandler frontEndBackEndChannel = new SocketHandler(request.toString());
-        mJsonString =
-                requestCode == GET_QUOTE ? new char[REGULAR_FILE_SIZE] : new char[SMALL_FILE_SIZE];
-        length = frontEndBackEndChannel.handler(mJsonString);
+        mJsonString = new char[requestCode == GET_QUOTE ? REGULAR_FILE_SIZE : SMALL_FILE_SIZE];
+        frontEndBackEndChannel.handler(mJsonString);
+        Log.d("MyStory", "get back from socket handler");
+        length = frontEndBackEndChannel.getLength();
+        Log.d("MyStory", "response length = " + String.valueOf(length));
 
         try {
-            mResponse =
-                    new JSONObject(new String(mJsonString, 0, length));
+            mResponse = new JSONObject(new String(mJsonString, 0, length));
             if (!mResponse.getBoolean("status")) {
+                Toast.makeText(this,
+                        "please try again later",
+                        Toast.LENGTH_SHORT).show();
                 return false;
+            } else {
+                return true;
             }
         } catch (JSONException e) {
             e.printStackTrace();
+            return false;
         }
-
-        return true;
     }
 
     @Override
@@ -236,7 +240,7 @@ public class PhotoActivity extends AppCompatActivity {
         if (requestCode == REQUEST_CODE_CAMERA && grantResults.length > 0
                 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             Log.d("MyStory", "camera access granted");
-            setupCamera();
+            workOnCamera();
         } else if (requestCode == REQUEST_CODE_INTERNET && grantResults.length > 0
                 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             Log.d("MyStory", "internet access granted");
@@ -251,14 +255,17 @@ public class PhotoActivity extends AppCompatActivity {
             Log.d("MyStory", "display image");
             if (requestCode == FROM_CAMERA) {
                 mImage = (Bitmap) data.getExtras().get("data");
-                mImage = Bitmap.createScaledBitmap(mImage, 300, 300, false);
+                mImage = Bitmap.createScaledBitmap(mImage, 500, 500, false);
                 mPhoto.setImageBitmap(mImage);
             } else {
                 Uri selectedImage = data.getData();
                 try {
                     InputStream imageStream = getContentResolver().openInputStream(selectedImage);
                     mImage = BitmapFactory.decodeStream(imageStream);
-                    mImage = Bitmap.createScaledBitmap(mImage, 300, 300, false);
+                    mImage = Bitmap.createScaledBitmap(mImage,
+                            500,
+                            500,
+                            false);
                     mPhoto.setImageBitmap(mImage);
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();

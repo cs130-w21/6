@@ -23,6 +23,8 @@ import java.util.ArrayList;
 public class StoryActivity extends AppCompatActivity {
     private final int SMALL_FILE_SIZE = 300;
     private final int LARGE_FILE_SIZE = 650000 * 20;
+    private final int DELETE = 0;
+    private final int LOAD = 1;
 
     private ListView mStoryListView;
     private ArrayList<JSONObject> mStoryList;
@@ -30,6 +32,7 @@ public class StoryActivity extends AppCompatActivity {
     private String mUserName;
     private ImageButton mCameraButton;
     private char[] mJsonString;
+    private JSONObject mResponse;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,35 +58,17 @@ public class StoryActivity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         if (which == 0) {
-                            JSONObject request = new JSONObject();
-                            int length;
+                            int label = -1;
                             Log.d("MyStory", "now deleting this story");
-
                             try {
-                                request.put("op", "delete");
-                                request.put("data", mStoryList.get(position).getInt("label"));
+                                label = mStoryList.get(position).getInt("label");
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
 
-                            SocketHandler frontEndBackEndChannel = new SocketHandler(request.toString());
-                            mJsonString = new char[SMALL_FILE_SIZE];
-                            length = frontEndBackEndChannel.handler(mJsonString);
-
-                            try {
-                                JSONObject jsonObject =
-                                        new JSONObject(new String(mJsonString, 0, length));
-                                if (!jsonObject.getBoolean("status")) {
-                                    Toast.makeText(StoryActivity.this,
-                                            "please try again later",
-                                            Toast.LENGTH_SHORT).show();
-                                    return;
-                                }
-                            } catch (JSONException e) {
-                                e.printStackTrace();
+                            if (workOnNetwork(DELETE, label)) {
+                                updateStoryList();
                             }
-
-                            updateStoryList();
                         }
                     }
                 });
@@ -120,32 +105,53 @@ public class StoryActivity extends AppCompatActivity {
         updateStoryList();
     }
 
-    private void updateStoryList() {
-        mStoryList = new ArrayList<>();
+    private boolean workOnNetwork(int requestCode, int label) {
         JSONObject request = new JSONObject();
         int length;
 
         try {
-            request.put("op", "load");
-            request.put("data", mUserName);
+            if (requestCode == DELETE) {
+                request.put("op", "delete");
+                request.put("data", label);
+            } else if (requestCode == LOAD) {
+                request.put("op", "load");
+                request.put("data", mUserName);
+            }
         } catch (JSONException e) {
             e.printStackTrace();
         }
+
         SocketHandler frontEndBackEndChannel = new SocketHandler(request.toString());
-        mJsonString = new char[LARGE_FILE_SIZE];
-        length = frontEndBackEndChannel.handler(mJsonString);
+        mJsonString = new char[requestCode == DELETE ? SMALL_FILE_SIZE : LARGE_FILE_SIZE];
+        frontEndBackEndChannel.handler(mJsonString);
+        length = frontEndBackEndChannel.getLength();
 
         try {
-            JSONObject jsonObject = new JSONObject(new String(mJsonString, 0, length));
-            if (!jsonObject.getBoolean("status")) {
-                Log.d("MyStory", "--------- on Resume(), CANNOT get history stories -----------");
-                mAdapter.notifyDataSetChanged();
-                findViewById(R.id.empty_story).setVisibility(View.VISIBLE);
-                findViewById(R.id.empty_box).setVisibility(View.VISIBLE);
-                return;
+            mResponse = new JSONObject(new String(mJsonString, 0, length));
+            if (!mResponse.getBoolean("status")) {
+                Toast.makeText(this,
+                        "please try again later",
+                        Toast.LENGTH_SHORT).show();
+                return false;
+            } else {
+                return true;
             }
-            JSONArray jsonArray = jsonObject.getJSONArray("data");
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    private void updateStoryList() {
+        mStoryList = new ArrayList<>();
+        if (!workOnNetwork(LOAD, -1)) {
+            return;
+        }
+
+        try {
+            JSONArray jsonArray = mResponse.getJSONArray("data");
             int len = jsonArray.length();
+
             for (int i = 0; i < len; i++) {
                 mStoryList.add(jsonArray.getJSONObject(i));
             }
@@ -153,7 +159,7 @@ public class StoryActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        Log.d("MyStory", "finished loading story list");
+        Log.d("MyStory", "finished loading history");
         mAdapter.notifyDataSetChanged();
 
         if (mStoryList.size() > 0) {
