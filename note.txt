@@ -1,0 +1,64 @@
+upload  -- implemented
+
+error:
+ {
+    'op' : 'fail'
+ }
+
+register
+{
+  'op' : 'register'
+  'uid' : username
+  'password' : password
+}
+
+{
+  'op' : 'register'
+  'success' : success (1: success, 0: fail)
+}
+
+login
+{
+  'op' : 'login'
+  'uid' : username
+  'password' : password
+}
+
+{
+  'op' : 'login'
+  'success' : success
+}
+
+load
+{
+  'op' : 'load'
+  'uid' : username
+}
+
+{
+  'op' : 'load'
+  'data' : stories  - json([[row_id,encoded_image,caption]...])
+}
+
+confirm
+{
+  'op' : 'confirm'
+  'uid' : username
+  'image' : encode_image
+  'quote' : confirmed_quote
+}
+
+{
+  'op' : 'confirm'
+  'row_id' : row_id
+}
+
+delete
+{
+  'op' : 'delete'
+  'row_id' : [row_id1, row_id2, ....]
+}
+
+{
+  'op' : 'delete'
+}
