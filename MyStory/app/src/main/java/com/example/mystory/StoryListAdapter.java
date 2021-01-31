@@ -72,7 +72,7 @@ public class StoryListAdapter extends BaseAdapter {
                     0,
                     image.length));
             holder.storyText.setText(text);
-        } catch (JSONException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 

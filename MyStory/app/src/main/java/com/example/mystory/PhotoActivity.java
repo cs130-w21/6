@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 import androidx.core.app.ActivityCompat;
 
 import android.Manifest;
@@ -15,14 +16,17 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Base64;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -32,10 +36,16 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.net.InetAddress;
+import java.net.Socket;
 
 public class PhotoActivity extends AppCompatActivity {
     private final int REQUEST_CODE_CAMERA = 120;
@@ -44,20 +54,21 @@ public class PhotoActivity extends AppCompatActivity {
     private final int UPLOAD_STORY = 123;
     private final int FROM_CAMERA = 124;
     private final int FROM_GALLERY = 125;
-    private final int SMALL_FILE_SIZE = 300;
-    private final int REGULAR_FILE_SIZE = 5000;
+    private final int SMALL_FILE_SIZE = 100;
+    private final int REGULAR_FILE_SIZE = 1000;
 
     private ImageView mPhoto;
     private TextInputEditText mQuote;
     private String _mQuote = "DEFAULT QUOTE";
     private Button mGetQuoteButton;
     private Button mUploadButton;
-    private int mOption;
+    private ProgressBar mProgressBar;
+    private CardView mProgressBarBackground;
+    private int mPhotoOption;
     private Bitmap mImage;
     private Boolean mLogin;
     private String mUserName;
-    private char[] mJsonString;
-    private JSONObject mResponse;
+    private int mUserAction;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,10 +79,14 @@ public class PhotoActivity extends AppCompatActivity {
         mQuote = findViewById(R.id.quote);
         mGetQuoteButton = findViewById(R.id.get_quote);
         mUploadButton = findViewById(R.id.upload_story);
+        mProgressBar = findViewById(R.id.progress_bar_photo_activity);
+        mProgressBarBackground = findViewById(R.id.progress_bar_background);
         Intent myIntent = getIntent();
-        mOption = myIntent.getIntExtra("option", 0);
+        mPhotoOption = myIntent.getIntExtra("option", 0);
         mLogin = myIntent.getBooleanExtra("login", false);
         mUserName = myIntent.getStringExtra("username");
+        mProgressBar.setVisibility(View.GONE);
+        mProgressBarBackground.setVisibility(View.GONE);
 
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.INTERNET)
                 != PackageManager.PERMISSION_GRANTED) {
@@ -80,7 +95,7 @@ public class PhotoActivity extends AppCompatActivity {
                     REQUEST_CODE_INTERNET);
         }
 
-        if (mOption == 1) {
+        if (mPhotoOption == 1) {
             workOnCamera();
         } else {
             workOnGallery();
@@ -89,32 +104,9 @@ public class PhotoActivity extends AppCompatActivity {
         mGetQuoteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String[] quotes = new String[3];
                 Log.d("MyStory", "user chooses auto quote generation");
-
-                if (!workOnNetwork(GET_QUOTE)) {
-                    return;
-                }
-
-                try {
-                    JSONArray jsonArray = mResponse.getJSONArray("data");
-                    quotes[0] = jsonArray.getJSONObject(0).getString("quote");
-                    quotes[1] = jsonArray.getJSONObject(1).getString("quote");
-                    quotes[2] = jsonArray.getJSONObject(2).getString("quote");
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-
-                AlertDialog.Builder builder = new AlertDialog.Builder(PhotoActivity.this);
-                builder.setTitle("Pick a quote");
-                builder.setItems(quotes, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        _mQuote = quotes[which];
-                        mQuote.setText(_mQuote);
-                    }
-                });
-                builder.show();
+                mUserAction = GET_QUOTE;
+                new MyTask().execute();
             }
         });
 
@@ -131,9 +123,8 @@ public class PhotoActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (mLogin) {
-                    if (workOnNetwork(UPLOAD_STORY)) {
-                        finish();
-                    }
+                    mUserAction = UPLOAD_STORY;
+                    new MyTask().execute();
                 } else {
                     String[] option = {"return to homepage"};
                     AlertDialog.Builder builder =
@@ -172,66 +163,6 @@ public class PhotoActivity extends AppCompatActivity {
         startActivityForResult(takePicture, FROM_CAMERA);
     }
 
-    private boolean workOnNetwork(int requestCode) {
-        JSONObject request = new JSONObject();
-        JSONObject temp = new JSONObject();
-        int length;
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-
-        if (mImage == null) {
-            Toast.makeText(this,
-                    "empty image, please navigate back to previous screen to pick an image",
-                    Toast.LENGTH_SHORT).show();
-            return false;
-        }
-
-        mImage.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
-        if (requestCode == GET_QUOTE) {
-            try {
-                request.put("op", "get_quote");
-                request.put("data",
-                        Base64.encodeToString(outputStream.toByteArray(), Base64.DEFAULT));
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        } else if (requestCode == UPLOAD_STORY) {
-            try {
-                temp.put("username", mUserName);
-                temp.put("quote", _mQuote);
-                temp.put("image",
-                        Base64.encodeToString(outputStream.toByteArray(), Base64.DEFAULT));
-                request.put("op", "upload");
-                request.put("data", temp);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
-
-        Log.d("MyStory", "prepare to send JSONOBject of size:");
-        Log.d("MyStory", String.valueOf(request.toString().length()) + " bytes");
-        SocketHandler frontEndBackEndChannel = new SocketHandler(request.toString());
-        mJsonString = new char[requestCode == GET_QUOTE ? REGULAR_FILE_SIZE : SMALL_FILE_SIZE];
-        frontEndBackEndChannel.handler(mJsonString);
-        Log.d("MyStory", "get back from socket handler");
-        length = frontEndBackEndChannel.getLength();
-        Log.d("MyStory", "response length = " + String.valueOf(length));
-
-        try {
-            mResponse = new JSONObject(new String(mJsonString, 0, length));
-            if (!mResponse.getBoolean("status")) {
-                Toast.makeText(this,
-                        "please try again later",
-                        Toast.LENGTH_SHORT).show();
-                return false;
-            } else {
-                return true;
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
-
     @Override
     public void onRequestPermissionsResult(int requestCode,
                                            @NonNull String[] permissions,
@@ -267,10 +198,130 @@ public class PhotoActivity extends AppCompatActivity {
                             500,
                             false);
                     mPhoto.setImageBitmap(mImage);
-                } catch (FileNotFoundException e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
+        }
+    }
+
+    private class MyTask extends AsyncTask<Void, Void, Integer> {
+        private final String SERVER = "0.tcp.ngrok.io";
+        private final int SERVER_PORT = 15972;
+
+        private Socket mSocket;
+        private char[] mRequestJsonString;
+        private char[] mResponseJsonString;
+        private JSONObject mResponse;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            mProgressBar.setVisibility(View.VISIBLE);
+            mProgressBarBackground.setVisibility(View.VISIBLE);
+            getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+                    WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+        }
+
+        private void createRequest() {
+            JSONObject request = new JSONObject();
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+
+            mImage.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
+            if (mUserAction == GET_QUOTE) {
+                try {
+                    request.put("op", "upload");
+                    request.put("data",
+                            Base64.encodeToString(outputStream.toByteArray(), Base64.DEFAULT));
+                    mRequestJsonString = request.toString().toCharArray();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            } else if (mUserAction == UPLOAD_STORY) {
+                try {
+                    request.put("op", "confirm");
+                    request.put("uid", mUserName);
+                    request.put("image",
+                            Base64.encodeToString(outputStream.toByteArray(), Base64.DEFAULT));
+                    request.put("quote", _mQuote);
+                    mRequestJsonString = request.toString().toCharArray();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        private void handleResponse(int responseLength) {
+            String[] quotes = new String[3];
+            JSONArray jsonArray;
+
+            try {
+                mResponse =
+                        new JSONObject(new String(mResponseJsonString, 0, responseLength));
+                if (mResponse.getString("op").equals("fail")) {
+                    Toast.makeText(PhotoActivity.this,
+                            "sorry, there was a problem on our side, please try again later",
+                            Toast.LENGTH_SHORT).show();
+                    return;
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            if (mUserAction == GET_QUOTE) {
+                try {
+                    jsonArray = mResponse.getJSONArray("data");
+                    quotes[0] = jsonArray.getString(0);
+                    quotes[1] = jsonArray.getString(1);
+                    quotes[2] = jsonArray.getString(2);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(PhotoActivity.this);
+                builder.setTitle("Pick a quote");
+                builder.setItems(quotes, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        _mQuote = quotes[which];
+                        mQuote.setText(_mQuote);
+                    }
+                });
+                builder.show();
+            } else if (mUserAction == UPLOAD_STORY) {
+                finish();
+            }
+        }
+
+        @Override
+        protected Integer doInBackground(Void... voids) {
+            Log.d("MyStory", "setup socket");
+            try {
+                InetAddress serverAddress = InetAddress.getByName(SERVER);
+                Log.d("MyStory", "server address: " + serverAddress.toString());
+                mSocket = new Socket(serverAddress, SERVER_PORT);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            Log.d("MyStory", "socket ready, start sending");
+
+            createRequest();
+            SocketHandler.writeToSocket(mRequestJsonString, mSocket);
+
+            Log.d("MyStory", "finished writing, start reading");
+
+            mResponseJsonString =
+                    new char[mUserAction == GET_QUOTE ? REGULAR_FILE_SIZE : SMALL_FILE_SIZE];
+            return SocketHandler.readFromSocket(mResponseJsonString, mSocket);
+        }
+
+        @Override
+        protected void onPostExecute(Integer responseLength) {
+            super.onPostExecute(responseLength);
+            mProgressBar.setVisibility(View.GONE);
+            mProgressBarBackground.setVisibility(View.GONE);
+            handleResponse(responseLength);
+            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
         }
     }
 }
