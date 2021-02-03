@@ -40,9 +40,9 @@ def get_collection(db,tb_name):
         exit(1)
         
 # return all created dbs
-def __print_all_db(client):
+def print_all_db(client):
     return client.list_database_names()
 # return all created collections
-def __print_all_collection(db):
+def print_all_collection(db):
     return db.list_collection_names()
     

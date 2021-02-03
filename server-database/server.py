@@ -16,7 +16,7 @@ from delete import run_delete
 
 
 class Socket:
-    def __init__(self, host='127.0.0.1', port=5000, max_connect=5):
+    def __init__(self, host='localhost', port=6000, max_connect=5):
         self.s = socket.socket()
         self.hostname = host
         self.port = port
@@ -28,6 +28,7 @@ class Socket:
         # initialize database
         # create a client
         self.client = create_client()
+        print(print_all_db(self.client))
         # get a database called mystory
         self.db      = get_database(self.client,'mystory')
         # create a collection called user
@@ -107,11 +108,11 @@ class Socket:
                     caption    = story[2]
                     enc_img    = self.encode_img(image_path)
                     nstories.append([row_id,enc_img,caption])
-                    # need to check here if the format is fine for json
-                    data = {
-                        'op'   : 'load',
-                        'data' : nstories
-                    }
+                # need to check here if the format is fine for json
+                data = {
+                    'op'   : 'load',
+                    'data' : json.dumps(nstories,sort_keys=False,indent=2)
+                }
             else:
                 data = {
                     'op' : 'fail'
@@ -165,8 +166,8 @@ class Socket:
         
     def decode_img(self,img):
         img_base64   = img.encode('utf-8')
-        img_bytes    = base64.decodebytes(img)
-        image        = Image.open(io.BytesIO(image))
+        img_bytes    = base64.decodebytes(img_base64)
+        image        = Image.open(io.BytesIO(img_bytes))
         #img_arr      = np.array(image)
         return image
         

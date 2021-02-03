@@ -4,14 +4,22 @@ import cv2
 import base64
 
 HOST = '127.0.0.1'  # The server's hostname or IP address
-PORT = 5000         # The port used by the server
+PORT = 6000         # The port used by the server
 
 def json_message(imgdata):
     #print(imgdata)
     local_ip = socket.gethostbyname(socket.gethostname())
     data = {
-        'op': 'upload',
-        'data': base64.encodebytes(imgdata).decode('utf-8')}
+        'op': 'load',
+        'uid' : 'ronny'}
+    """
+    data = {
+        'op': 'confirm',
+        'uid': 'ronny',
+        'image': base64.encodebytes(imgdata).decode('utf-8'),
+        'quote': 'im happy'
+    }
+    """
     json_data = json.dumps(data, sort_keys=False, indent=2)
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     send_message(json_data,s)
