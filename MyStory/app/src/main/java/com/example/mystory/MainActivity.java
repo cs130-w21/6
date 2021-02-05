@@ -3,6 +3,7 @@ package com.example.mystory;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 import androidx.core.app.ActivityCompat;
 
 import android.Manifest;
@@ -14,12 +15,15 @@ import android.icu.util.Calendar;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.AsyncTask;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -34,6 +38,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.net.InetAddress;
+import java.net.Socket;
 import java.time.LocalTime;
 
 import cz.msebera.android.httpclient.Header;
@@ -56,6 +62,11 @@ public class MainActivity extends AppCompatActivity {
     private String _mUserPassword;
     private Button mLoginButton;
     private TextView mRegisterButton;
+
+
+    private ProgressBar mProgressBar;
+    private CardView mProgressBarBackground;
+    private JSONObject mResponse;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,6 +113,8 @@ public class MainActivity extends AppCompatActivity {
 
                 // TODO: check username & password validity
                 // TODO: jump to <StoryActivity> screen
+
+                new MainActivity.MyTaskLog().execute();
 
                 Intent storyIntent = new Intent(MainActivity.this,
                         StoryActivity.class);
@@ -264,4 +277,89 @@ public class MainActivity extends AppCompatActivity {
 
         return Integer.toString(temperature) + "℃ " + icon;
     }
+
+
+
+    private class MyTaskLog extends AsyncTask<Void, Void, Integer> {
+        private final String SERVER = "0.tcp.ngrok.io";
+        private final int SERVER_PORT = 15972;
+
+        private Socket mSocket;
+        private char[] mRequestJsonString;
+        private char[] mResponseJsonString;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            mProgressBar.setVisibility(View.VISIBLE);
+            mProgressBarBackground.setVisibility(View.VISIBLE);
+            getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+                    WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+        }
+
+        private void createRequest() {
+            JSONObject mLoginJson = new JSONObject();
+            try {
+                mLoginJson.put("op", "login");
+                mLoginJson.put("UserName", _mUserName);
+                mLoginJson.put("UserPassword", _mUserPassword);
+                mRequestJsonString = mLoginJson.toString().toCharArray();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        private void handleResponse(int responseLength) {
+            try {
+                mResponse =
+                        new JSONObject(new String(mResponseJsonString, 0, responseLength));
+                if (mResponse.getString("op").equals("fail")) {
+                    Toast.makeText(MainActivity.this,
+                            "sorry, there was a problem on our side, please try again later",
+                            Toast.LENGTH_SHORT).show();
+                    return;
+                }else if(!mResponse.getString("success").equals("success")) {
+                    Toast.makeText(MainActivity.this,
+                            "Wrong username or password, please change it",
+                            Toast.LENGTH_SHORT).show();
+                    return;
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            //updateStoryList();
+        }
+
+        @Override
+        protected Integer doInBackground(Void... voids) {
+            //Log.d("MyStory", "setup socket");
+            try {
+                InetAddress serverAddress = InetAddress.getByName(SERVER);
+                //Log.d("MyStory", "server address: " + serverAddress.toString());
+                mSocket = new Socket(serverAddress, SERVER_PORT);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            //Log.d("MyStory", "socket ready, start sending");
+
+            createRequest();
+            SocketHandler.writeToSocket(mRequestJsonString, mSocket);
+
+            //Log.d("MyStory", "finished writing, start reading");
+
+            //mResponseJsonString = new char[mUserAction == LOAD ? LARGE_FILE_SIZE : SMALL_FILE_SIZE];
+            return SocketHandler.readFromSocket(mResponseJsonString, mSocket);
+        }
+
+        @Override
+        protected void onPostExecute(Integer responseLength) {
+            super.onPostExecute(responseLength);
+            mProgressBar.setVisibility(View.GONE);
+            mProgressBarBackground.setVisibility(View.VISIBLE);
+            handleResponse(responseLength);
+            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+        }
+    }
+
 }
