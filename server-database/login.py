@@ -12,4 +12,14 @@ OUTPUTS:
 """
 
 def run_login(username,password,tb,valid):
-    pass
+   query = {'user_id' : username, 'password' : password} 
+   try:
+      result = tb.find(query)
+      if result:
+         return 1
+      else:
+         return 0
+   except Exception as e:
+      valid = False
+      print(str(e))
+      return None

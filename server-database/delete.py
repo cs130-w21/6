@@ -16,4 +16,13 @@ entry keys in tb:
 # NOTE we only turn valid field in the corresponding entries
 # into 0, instead of really removing the entries
 def run_delete(row_id,tb,valid):
-    pass
+   for r in row_id:
+      query = {'row_id' : r, 'valid' : 1}
+      update = {"$set": {"valid": 0}}
+      try:
+         tb.update_one(query, update)
+      except Exception as e:
+         valid = False
+         print(str(e))
+         return None
+   return None
