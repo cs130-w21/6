@@ -47,6 +47,7 @@ public class SocketHandler {
             e.printStackTrace();
         }
 
+        // Log.d("MyStory", new String(jsonString, 0, requestLength));
         Log.d("MyStory", "finished sending");
     }
 
@@ -72,6 +73,7 @@ public class SocketHandler {
         }
 
         Log.d("MyStory", "finished reading");
+        // Log.d("MyStory", new String(jsonString, 0, offset));
         return offset - 1;
     }
 }

@@ -111,34 +111,9 @@ public class StoryActivity extends AppCompatActivity {
         new MyTask().execute();
     }
 
-    private void updateStoryList() {
-        mStoryList = new ArrayList<>();
-
-        try {
-            JSONArray jsonArray = mResponse.getJSONArray("data");
-            int len = jsonArray.length();
-
-            for (int i = 0; i < len; i++) {
-                mStoryList.add(jsonArray.getJSONObject(i));
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        mAdapter.notifyDataSetChanged();
-
-        if (mStoryList.size() > 0) {
-            findViewById(R.id.empty_story).setVisibility(View.GONE);
-            findViewById(R.id.empty_box).setVisibility(View.GONE);
-        } else {
-            findViewById(R.id.empty_story).setVisibility(View.VISIBLE);
-            findViewById(R.id.empty_box).setVisibility(View.VISIBLE);
-        }
-    }
-
     private class MyTask extends AsyncTask<Void, Void, Integer> {
-        private final String SERVER = "0.tcp.ngrok.io";
-        private final int SERVER_PORT = 15972;
+        private final String SERVER = "2.tcp.ngrok.io";
+        private final int SERVER_PORT = 10864;
 
         private Socket mSocket;
         private char[] mRequestJsonString;
@@ -160,7 +135,7 @@ public class StoryActivity extends AppCompatActivity {
                 try {
                     request.put("op", "delete");
                     request.put("row_id",
-                            new int[]{mStoryList.get(mPosition).getInt("label")});
+                            new int[]{mStoryList.get(mPosition).getInt("row_id")});
                     mRequestJsonString = request.toString().toCharArray();
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -168,11 +143,36 @@ public class StoryActivity extends AppCompatActivity {
             } else if (mUserAction == LOAD) {
                 try {
                     request.put("op", "load");
-                    request.put("data", mUserName);
+                    request.put("uid", mUserName);
                     mRequestJsonString = request.toString().toCharArray();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+            }
+        }
+
+        private void updateStoryList() {
+            mStoryList.clear();
+
+            try {
+                JSONArray jsonArray = mResponse.getJSONArray("data");
+                int len = jsonArray.length();
+
+                for (int i = 0; i < len; i++) {
+                    mStoryList.add(jsonArray.getJSONObject(i));
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            mAdapter.notifyDataSetChanged();
+
+            if (mStoryList.size() > 0) {
+                findViewById(R.id.empty_story).setVisibility(View.GONE);
+                findViewById(R.id.empty_box).setVisibility(View.GONE);
+            } else {
+                findViewById(R.id.empty_story).setVisibility(View.VISIBLE);
+                findViewById(R.id.empty_box).setVisibility(View.VISIBLE);
             }
         }
 
@@ -218,7 +218,7 @@ public class StoryActivity extends AppCompatActivity {
         protected void onPostExecute(Integer responseLength) {
             super.onPostExecute(responseLength);
             mProgressBar.setVisibility(View.GONE);
-            mProgressBarBackground.setVisibility(View.VISIBLE);
+            mProgressBarBackground.setVisibility(View.GONE);
             handleResponse(responseLength);
             getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
         }

@@ -105,8 +105,14 @@ public class PhotoActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Log.d("MyStory", "user chooses auto quote generation");
-                mUserAction = GET_QUOTE;
-                new MyTask().execute();
+                if (mImage == null) {
+                    Toast.makeText(PhotoActivity.this, "" +
+                            "need a photo here, please navigate back to previous screen",
+                            Toast.LENGTH_SHORT).show();
+                } else {
+                    mUserAction = GET_QUOTE;
+                    new MyTask().execute();
+                }
             }
         });
 
@@ -123,8 +129,14 @@ public class PhotoActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (mLogin) {
-                    mUserAction = UPLOAD_STORY;
-                    new MyTask().execute();
+                    if (mImage == null) {
+                        Toast.makeText(PhotoActivity.this,
+                                "need a photo here, please navigate back to previous screen",
+                                Toast.LENGTH_SHORT).show();
+                    } else {
+                        mUserAction = UPLOAD_STORY;
+                        new MyTask().execute();
+                    }
                 } else {
                     String[] option = {"return to homepage"};
                     AlertDialog.Builder builder =
@@ -206,8 +218,8 @@ public class PhotoActivity extends AppCompatActivity {
     }
 
     private class MyTask extends AsyncTask<Void, Void, Integer> {
-        private final String SERVER = "0.tcp.ngrok.io";
-        private final int SERVER_PORT = 15972;
+        private final String SERVER = "2.tcp.ngrok.io";
+        private final int SERVER_PORT = 10864;
 
         private Socket mSocket;
         private char[] mRequestJsonString;
@@ -231,7 +243,7 @@ public class PhotoActivity extends AppCompatActivity {
             if (mUserAction == GET_QUOTE) {
                 try {
                     request.put("op", "upload");
-                    request.put("data",
+                    request.put("image",
                             Base64.encodeToString(outputStream.toByteArray(), Base64.DEFAULT));
                     mRequestJsonString = request.toString().toCharArray();
                 } catch (Exception e) {
@@ -270,7 +282,7 @@ public class PhotoActivity extends AppCompatActivity {
 
             if (mUserAction == GET_QUOTE) {
                 try {
-                    jsonArray = mResponse.getJSONArray("data");
+                    jsonArray = mResponse.getJSONArray("quote");
                     quotes[0] = jsonArray.getString(0);
                     quotes[1] = jsonArray.getString(1);
                     quotes[2] = jsonArray.getString(2);
