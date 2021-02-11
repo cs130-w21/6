@@ -3,7 +3,7 @@
 ```java:
 uploadRequest = {
     "op" : "upload"
-    "data" : <String> image
+    "image" : <String> image
 }
 uploadResponse = {
     "op" : "upload"
