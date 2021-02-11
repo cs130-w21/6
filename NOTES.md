@@ -26,6 +26,7 @@ registerRequest = {
 registerResponse = {
     "op" : "register"
     "success" : <Integer> success (1: success, 0: fail)
+    "uid": <String> username
 }
 ```
 
@@ -38,6 +39,7 @@ loginRequest = {
 loginResponse = {
     "op" : "login"
     "success" : <Integer> 0/1
+    "uid": <String> username
 }
 ```
 
@@ -61,7 +63,6 @@ confirmRequest = {
 }
 confirmResponse = {
     "op" : "confirm"
-    "row_id" : <Integer> row_id
 }
 ```
 
@@ -69,9 +70,11 @@ confirmResponse = {
 deleteRequest = {
     "op" : "delete"
     "row_id" : <Integer>[] = [row_id1, row_id2, ....]
+    "uid": <String> username
 }
 deleteResponse = {
     "op" : "delete"
+    "data" : <JSONArray> = [<JSONObject> story1, <JSONObject> story2, ...]
 }
 ```
 
