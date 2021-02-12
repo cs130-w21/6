@@ -1,5 +1,14 @@
 package com.example.mystory;
 
+import android.app.Activity;
+import android.content.Context;
+import android.os.AsyncTask;
+import android.util.Log;
+import android.view.View;
+import android.widget.ProgressBar;
+
+import com.loopj.android.http.AsyncHttpClient;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -12,65 +21,59 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.InetAddress;
 import java.net.Socket;
+import java.nio.Buffer;
 import java.nio.charset.StandardCharsets;
 
 public class SocketHandler {
-    private final String SERVER_IP = "2.tcp.ngrok.io";
-    private final int SERVER_PORT = 14817;
-    private final int SEGMENT_SIZE = 650000;
+    private static final int SEGMENT_SIZE = 65000;
 
-    private JSONObject mRequest;
-    private Socket mSocket;
+    public static void writeToSocket(char[] jsonString, Socket socket) {
+        int requestLength = jsonString.length;
+        int offset = 0;
+        int bytesWrite;
 
-    SocketHandler(JSONObject request) {
-        mRequest = request;
         try {
-            InetAddress serverAddress = InetAddress.getByName(SERVER_IP);
-            mSocket = new Socket(serverAddress, SERVER_PORT);
-        } catch (IOException e) {
+            BufferedWriter out = new BufferedWriter(
+                    new OutputStreamWriter(socket.getOutputStream()), SEGMENT_SIZE);
+            while (offset < requestLength) {
+                bytesWrite = Math.min(requestLength - offset, SEGMENT_SIZE);
+                out.write(jsonString, offset, bytesWrite);
+                offset += bytesWrite;
+            }
+            out.flush();
+            out.write(";", 0, 1);
+            out.flush();
+        } catch (Exception e) {
             e.printStackTrace();
         }
+
+        Log.d("MyStory", new String(jsonString, 0, requestLength));
+        Log.d("MyStory", "finished sending");
     }
 
-    public void handler(char[] jsonString) {
-        serverWrite(mRequest.toString().toCharArray());
-        serverRead(jsonString);
-    }
-
-    private void serverWrite(char[] jsonString) {
-        BufferedWriter out;
-        int length = jsonString.length;
-        int offset = 0;
-
-         try {
-             out = new BufferedWriter(new OutputStreamWriter(mSocket.getOutputStream()),
-                     SEGMENT_SIZE);
-             while (offset < length) {
-                 int bytesWrite = Math.min(length - offset, SEGMENT_SIZE);
-                 out.write(jsonString, offset, bytesWrite);
-                 offset += bytesWrite;
-             }
-             out.close();
-         } catch (IOException e) {
-             e.printStackTrace();
-         }
-    }
-
-    private void serverRead(char[] jsonString) {
-        BufferedReader in;
+    public static int readFromSocket(char[] jsonString, Socket socket) {
         int offset = 0;
         int bytesRead;
+        int bufferSize = jsonString.length;
 
         try {
-            in = new BufferedReader(new InputStreamReader(mSocket.getInputStream()));
-            bytesRead = in.read(jsonString, offset, SEGMENT_SIZE);
+            BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            bytesRead = in.read(jsonString, offset, bufferSize);
             while (bytesRead > 0) {
                 offset += bytesRead;
-                bytesRead = in.read(jsonString, offset, SEGMENT_SIZE);
+                bufferSize -= bytesRead;
+                if (jsonString[offset - 1] == ';') {
+                    break;
+                }
+                bytesRead = in.read(jsonString, offset, bufferSize);
             }
             in.close();
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
+
+        Log.d("MyStory", "finished reading");
+        Log.d("MyStory", new String(jsonString, 0, offset));
+        return offset - 1;
     }
 }

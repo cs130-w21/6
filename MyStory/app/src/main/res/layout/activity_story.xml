@@ -25,7 +25,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="110dp"
         android:fontFamily="@font/courgette"
-        android:text="camera => new story"
+        android:text="create a new story"
         android:textColor="@android:color/darker_gray"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -62,5 +62,23 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="280dp"
         android:src="@drawable/empty_box" />
+
+    <ProgressBar
+        android:id="@+id/progress_bar_story_activity"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:elevation="3dp"
+        android:indeterminateTint="@android:color/holo_orange_dark"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/progress_bar_background_2"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        app:cardBackgroundColor="#90FFFFFF" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

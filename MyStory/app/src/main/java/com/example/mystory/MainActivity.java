@@ -14,9 +14,11 @@ import android.icu.util.Calendar;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.AsyncTask;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -34,6 +36,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.net.InetAddress;
+import java.net.Socket;
 import java.time.LocalTime;
 
 import cz.msebera.android.httpclient.Header;
@@ -56,8 +60,7 @@ public class MainActivity extends AppCompatActivity {
     private String _mUserPassword;
     private Button mLoginButton;
     private TextView mRegisterButton;
-    private JSONObject mLoginJson;
-    private char[] arr;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -100,25 +103,7 @@ public class MainActivity extends AppCompatActivity {
         mLoginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                // TODO: check username & password validity
-                // TODO: jump to <StoryActivity> screen
-                mLoginJson = new JSONObject();
-                try {
-                    mLoginJson.put("UserName", _mUserName);
-                    mLoginJson.put("UserPassword", _mUserPassword);
-                    SocketHandler sh = new SocketHandler(mLoginJson);
-                    arr = new char[65000];
-                    sh.handler(arr);
-                } catch ( JSONException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
-
-                Intent storyIntent = new Intent(MainActivity.this,
-                        StoryActivity.class);
-                storyIntent.putExtra("username", _mUserName);
-                startActivity(storyIntent);
+                new MyTask().execute();
             }
         });
 
@@ -246,7 +231,8 @@ public class MainActivity extends AppCompatActivity {
 
         try {
             temperature = (int) weatherData.getJSONObject("main").getDouble("temp");
-            condition = weatherData.getJSONArray("weather").getJSONObject(0).getInt("id");
+            condition = weatherData.getJSONArray("weather")
+                    .getJSONObject(0).getInt("id");
         } catch (JSONException e) {
             e.printStackTrace();
             return null;
@@ -271,9 +257,78 @@ public class MainActivity extends AppCompatActivity {
         } else if (condition % 100 == 8) {
             icon = "☁️";
         } else {
-            icon = "weather = 🤷‍♂️";
+            icon = "  weather 🤷‍♂️";
         }
 
         return Integer.toString(temperature) + "℃ " + icon;
+    }
+
+    private class MyTask extends AsyncTask<Void, Void, Integer> {
+        private final String SERVER = "2.tcp.ngrok.io";
+        private final int SERVER_PORT = 18376;
+
+        private Socket mSocket;
+        private char[] mRequestJsonString;
+        private char[] mResponseJsonString = new char[100];
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+                    WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+        }
+
+        @Override
+        protected Integer doInBackground(Void... voids) {
+            JSONObject request = new JSONObject();
+
+            try {
+                InetAddress serverAddress = InetAddress.getByName(SERVER);
+                mSocket = new Socket(serverAddress, SERVER_PORT);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            try {
+                request.put("op", "login");
+                request.put("uid", _mUserName);
+                request.put("password", _mUserPassword);
+                mRequestJsonString = request.toString().toCharArray();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            SocketHandler.writeToSocket(mRequestJsonString, mSocket);
+            return SocketHandler.readFromSocket(mResponseJsonString, mSocket);
+        }
+
+        @Override
+        protected void onPostExecute(Integer responseLength) {
+            super.onPostExecute(responseLength);
+            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+            JSONObject response;
+
+            try {
+                response = new JSONObject(new String(mResponseJsonString, 0, responseLength));
+                if (response.getString("op").equals("fail")) {
+                    Toast.makeText(MainActivity.this, "" +
+                            "something went wrong on our side, please try again later",
+                            Toast.LENGTH_SHORT).show();
+                } else {
+                    if (response.getInt("success") == 1) {
+                        Intent storyIntent = new Intent(MainActivity.this,
+                                StoryActivity.class);
+                        storyIntent.putExtra("username", _mUserName);
+                        startActivity(storyIntent);
+                    } else {
+                        Toast.makeText(MainActivity.this, "" +
+                                "please make sure your username and password are correct",
+                                Toast.LENGTH_SHORT).show();
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 }
