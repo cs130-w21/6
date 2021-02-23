@@ -14,13 +14,13 @@
         android:layout_marginStart="35dp"
         android:layout_marginTop="50dp"
         android:fontFamily="@font/courgette"
-        android:text="User Register"
-        android:textColor="@color/black"
+        android:text="Register"
+        android:textColor="@color/white"
         android:textSize="35dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
+    <!-- <TextView
         android:id="@+id/n_username"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -31,9 +31,9 @@
         android:textColor="@android:color/darker_gray"
         android:textSize="18dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent" /> -->
 
-    <TextView
+    <!-- <TextView
         android:id="@+id/n_password"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -41,12 +41,12 @@
         android:layout_marginTop="245dp"
         android:fontFamily="@font/courgette"
         android:text="Please enter the password: "
-        android:textColor="@android:color/darker_gray"
+        android:textColor="@android:color/white"
         android:textSize="18dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent" /> -->
 
-    <TextView
+    <!-- <TextView
         android:id="@+id/n_password2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -57,7 +57,7 @@
         android:textColor="@android:color/darker_gray"
         android:textSize="18dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent" /> -->
 
     <!-- <TextView
         android:id="@+id/n_email"
@@ -78,23 +78,25 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="140dp"
+        android:layout_marginTop="130dp"
         android:backgroundTint="@android:color/transparent">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/new_username"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:backgroundTint="@android:color/transparent"
+            android:backgroundTint="#70FFFFFF"
             android:hint="username"
             android:fontFamily="@font/courgette"
-            android:textColorHint="@color/black" />
+            android:textColorHint="@color/black"
+            android:imeOptions="actionDone"
+            android:inputType="text"/>
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="330dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="260dp"
+        android:layout_marginTop="200dp"
         android:backgroundTint="@android:color/transparent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -104,10 +106,12 @@
             android:id="@+id/new_password"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:backgroundTint="@android:color/transparent"
+            android:backgroundTint="#70FFFFFF"
             android:fontFamily="@font/courgette"
             android:hint="password"
-            android:textColorHint="@color/black" />
+            android:textColorHint="@color/black"
+            android:imeOptions="actionDone"
+            android:inputType="text"/>
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
@@ -116,17 +120,19 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="380dp"
+        android:layout_marginTop="270dp"
         android:backgroundTint="@android:color/transparent">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/new_password2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:backgroundTint="@android:color/transparent"
-            android:hint="exact same password as above"
+            android:backgroundTint="#70FFFFFF"
+            android:hint="confirm password"
             android:fontFamily="@font/courgette"
-            android:textColorHint="@color/black" />
+            android:textColorHint="@color/black"
+            android:imeOptions="actionDone"
+            android:inputType="text"/>
     </com.google.android.material.textfield.TextInputLayout>
 
     <!-- <com.google.android.material.textfield.TextInputLayout
@@ -152,8 +158,8 @@
         android:id="@+id/create"
         android:layout_width="220dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="480dp"
-        android:backgroundTint="@color/button_color_3"
+        android:layout_marginTop="390dp"
+        android:backgroundTint="#50FFFFFF"
         android:elevation="2dp"
         android:fontFamily="@font/courgette"
         android:text="CREATE"
@@ -166,11 +172,11 @@
         android:id="@+id/back_to_homepage"
         android:layout_width="220dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="540dp"
-        android:backgroundTint="@color/button_color_3"
+        android:layout_marginTop="440dp"
+        android:backgroundTint="#50FFFFFF"
         android:elevation="2dp"
         android:fontFamily="@font/courgette"
-        android:text="ALREADY HAVE AN ACCOUNT ?"
+        android:text="HAVE AN ACCOUNT ?"
         android:textColor="@color/black"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

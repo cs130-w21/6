@@ -3,44 +3,37 @@ package com.example.mystory;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
-
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.os.AsyncTask;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.speech.tts.TextToSpeech;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.ProgressBar;
-import android.widget.Toast;
-
-import org.json.JSONArray;
-import org.json.JSONException;
+import android.widget.TextView;
+import com.bumptech.glide.Glide;
 import org.json.JSONObject;
 
-import java.net.InetAddress;
-import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Locale;
 
 public class StoryActivity extends AppCompatActivity {
-    private final int SMALL_FILE_SIZE = 100;
-    private final int LARGE_FILE_SIZE = 65000 * 20;
-    private final int DELETE = 0;
-    private final int LOAD = 1;
-
     private ListView mStoryListView;
     private ArrayList<JSONObject> mStoryList;
     private StoryListAdapter mAdapter;
     private String mUserName;
     private ImageButton mCameraButton;
-    private ProgressBar mProgressBar;
     private CardView mProgressBarBackground;
-    private int mUserAction;
-    private int mPosition;
-    private JSONObject mResponse;
+    private ImageView mBird;
+    private CardView mCard;
+    private ImageView mCardImage;
+    private TextView mCardText;
+    private TextToSpeech mSpeech;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,33 +45,87 @@ public class StoryActivity extends AppCompatActivity {
         mUserName = myIntent.getStringExtra("username");
         mStoryListView = findViewById(R.id.story_list);
         mCameraButton = findViewById(R.id.camera_button_2);
-        mProgressBar = findViewById(R.id.progress_bar_story_activity);
+        mBird = findViewById(R.id.bird3);
+        Glide.with(this).load(R.drawable.bird).into(mBird);
         mProgressBarBackground = findViewById(R.id.progress_bar_background_2);
+        mCard = findViewById(R.id.story_card);
+        mCardImage = findViewById(R.id.story_card_image);
+        mCardText = findViewById(R.id.story_card_text);
         mAdapter = new StoryListAdapter(this, mStoryList);
         mStoryListView.setAdapter(mAdapter);
+        mSpeech = new TextToSpeech(this, new TextToSpeech.OnInitListener() {
+            @Override
+            public void onInit(int status) {
+                if (status != TextToSpeech.ERROR) {
+                    mSpeech.setLanguage(Locale.ENGLISH);
+                }
+            }
+        });
         Log.d("MyStory", "get ready to display <" + mUserName + ">'s stories");
-        mProgressBar.setVisibility(View.GONE);
+        mBird.setVisibility(View.GONE);
         mProgressBarBackground.setVisibility(View.GONE);
+        findViewById(R.id.empty_story).setVisibility(View.GONE);
+        findViewById(R.id.empty_box).setVisibility(View.GONE);
+        findViewById(R.id.empty_background_2).setVisibility(View.GONE);
+        mCard.setVisibility(View.GONE);
 
         mStoryListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                String[] option = {"OK", "Cancel"};
+                String[] option = {"delete this story", "view this story"};
                 AlertDialog.Builder builder = new AlertDialog.Builder(StoryActivity.this);
-                builder.setTitle("delete this story ?");
                 builder.setItems(option, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         if (which == 0) {
                             Log.d("MyStory", "now deleting this story");
-                            mUserAction = DELETE;
-                            mPosition = position;
-                            new MyTask().execute();
+                            int idx = 0;
+                            try {
+                                idx = mStoryList.get(position).getInt("row_id");
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+
+                            CommandSet.addCommand("delete",
+                                    new DeleteCommand(StoryActivity.this,
+                                            mAdapter,
+                                            mStoryList,
+                                            new CreateDeleteRequest(),
+                                            new HandleLoadResponse(mStoryList),
+                                            idx,
+                                            mUserName));
+                            CommandSet.trigger("delete");
+                        } else {
+                            try {
+                                byte[] image = Base64.decode(mStoryList.get(position)
+                                        .getString("image"), Base64.DEFAULT);
+                                String text = mStoryList.get(position).getString("quote");
+                                mCard.setVisibility(View.VISIBLE);
+                                mCardImage.setImageBitmap(BitmapFactory.decodeByteArray(image,
+                                        0,
+                                        image.length));
+                                mCardText.setText(text);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
                         }
                     }
                 });
                 builder.show();
                 return true;
+            }
+        });
+
+        mStoryListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                try {
+                    mSpeech.speak(mStoryList.get(position).getString("quote"),
+                            TextToSpeech.QUEUE_FLUSH,
+                            null);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         });
 
@@ -102,125 +149,25 @@ public class StoryActivity extends AppCompatActivity {
                 builder.show();
             }
         });
+
+        mCard.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mCard.setVisibility(View.GONE);
+            }
+        });
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        mUserAction = LOAD;
-        new MyTask().execute();
-    }
-
-    private class MyTask extends AsyncTask<Void, Void, Integer> {
-        private final String SERVER = "2.tcp.ngrok.io";
-        private final int SERVER_PORT = 18376;
-
-        private Socket mSocket;
-        private char[] mRequestJsonString;
-        private char[] mResponseJsonString;
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            mProgressBar.setVisibility(View.VISIBLE);
-            mProgressBarBackground.setVisibility(View.VISIBLE);
-            getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
-                    WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-        }
-
-        private void createRequest() {
-            JSONObject request = new JSONObject();
-
-            if (mUserAction == DELETE) {
-                try {
-                    request.put("op", "delete");
-                    request.put("row_id",
-                            new int[]{mStoryList.get(mPosition).getInt("row_id")});
-                    mRequestJsonString = request.toString().toCharArray();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            } else if (mUserAction == LOAD) {
-                try {
-                    request.put("op", "load");
-                    request.put("uid", mUserName);
-                    mRequestJsonString = request.toString().toCharArray();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-
-        private void updateStoryList() {
-            mStoryList.clear();
-
-            try {
-                JSONArray jsonArray = mResponse.getJSONArray("data");
-                int len = jsonArray.length();
-
-                for (int i = 0; i < len; i++) {
-                    mStoryList.add(jsonArray.getJSONObject(i));
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-            mAdapter.notifyDataSetChanged();
-
-            if (mStoryList.size() > 0) {
-                findViewById(R.id.empty_story).setVisibility(View.GONE);
-                findViewById(R.id.empty_box).setVisibility(View.GONE);
-            } else {
-                findViewById(R.id.empty_story).setVisibility(View.VISIBLE);
-                findViewById(R.id.empty_box).setVisibility(View.VISIBLE);
-            }
-        }
-
-        private void handleResponse(int responseLength) {
-            try {
-                mResponse =
-                        new JSONObject(new String(mResponseJsonString, 0, responseLength));
-                if (mResponse.getString("op").equals("fail")) {
-                    Toast.makeText(StoryActivity.this,
-                            "sorry, there was a problem on our side, please try again later",
-                            Toast.LENGTH_SHORT).show();
-                    return;
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-            updateStoryList();
-        }
-
-        @Override
-        protected Integer doInBackground(Void... voids) {
-            Log.d("MyStory", "setup socket");
-            try {
-                InetAddress serverAddress = InetAddress.getByName(SERVER);
-                Log.d("MyStory", "server address: " + serverAddress.toString());
-                mSocket = new Socket(serverAddress, SERVER_PORT);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            Log.d("MyStory", "socket ready, start sending");
-
-            createRequest();
-            SocketHandler.writeToSocket(mRequestJsonString, mSocket);
-
-            Log.d("MyStory", "finished writing, start reading");
-
-            mResponseJsonString = new char[mUserAction == LOAD ? LARGE_FILE_SIZE : SMALL_FILE_SIZE];
-            return SocketHandler.readFromSocket(mResponseJsonString, mSocket);
-        }
-
-        @Override
-        protected void onPostExecute(Integer responseLength) {
-            super.onPostExecute(responseLength);
-            mProgressBar.setVisibility(View.GONE);
-            mProgressBarBackground.setVisibility(View.GONE);
-            handleResponse(responseLength);
-            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-        }
+        CommandSet.addCommand("load",
+                new LoadCommand(this,
+                        mAdapter,
+                        mStoryList,
+                        new CreateLoadRequest(),
+                        new HandleLoadResponse(mStoryList),
+                        mUserName));
+        CommandSet.trigger("load");
     }
 }
