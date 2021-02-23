@@ -5,7 +5,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity"
-    android:background="@drawable/mystory_background">
+    android:background="@drawable/mystory_background"
+    android:fitsSystemWindows="true">
+
+    <item android:name="android:windowTranslucentStatus">true</item>
+    <item android:name="android:windowTranslucentNavigation">true</item>
 
     <ImageView
         android:id="@+id/bird"
