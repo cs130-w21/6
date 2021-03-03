@@ -14,7 +14,7 @@ OUTPUTS:
 def run_login(username,password,tb,valid):
    query = {'user_id' : username, 'password' : password} 
    try:
-      result = tb.find(query)
+      result = list(tb.find(query))
       if result:
          return 1
       else:

@@ -18,7 +18,7 @@ def run_load(username,tb,valid):
     query = {'user_id' : username, 'valid' : 1}
     # from latest to earlest
     try:
-        cols = tb.find(query)
+        cols = tb.find(query).sort('datetime', pymongo.DESCENDING)
         # stories
         stories = []
         for c in cols:

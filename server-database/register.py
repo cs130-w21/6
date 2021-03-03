@@ -13,7 +13,7 @@ OUTPUTS:
 def run_register(username,password,tb,valid):    
         query = {'user_id' : username, 'valid' : 1}
         try:
-                result = tb.find(query)
+                result = list(tb.find(query))
                 if result:
                         return 0
 

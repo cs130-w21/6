@@ -13,17 +13,18 @@ from login import run_login
 from load import run_load
 from confirm import run_confirm
 from delete import run_delete
+from pprint import pprint
 
 
 class Socket:
-    def __init__(self, host='localhost', port=6000, max_connect=5):
+    def __init__(self, host='localhost', port=9999, max_connect=10):
         self.s = socket.socket()
         self.hostname = host
         self.port = port
         self.s.bind((host, port))
         self.s.listen(max_connect)
         self.tokenizer = np.load('tokenizer.npy',allow_pickle='TRUE').item()
-        self.BUFFERSIZE = 1000000000
+        self.BUFFERSIZE = 1000000
 
         # initialize database
         # create a client
@@ -35,7 +36,8 @@ class Socket:
         self.tb_user  = get_collection(self.db, 'user')
         # create a collection called story
         self.tb_story = get_collection(self.db, 'story')
-        
+        #stories  = run_load('xintayang',self.tb_story,valid=1)
+        #print(stories)
     def actions(self, clientsocket, address):
         msg = ''
         while True:
@@ -69,7 +71,8 @@ class Socket:
             if valid:
                 data = {
                     'op'      : 'register',
-                    'success' : success
+                    'success' : success,
+                    'uid': username
                 }
             else:
                 data = {
@@ -86,7 +89,8 @@ class Socket:
             if valid:
                 data = {
                     'op'      : 'login',
-                    'success' : success
+                    'success' : success,
+                    'uid': username
                 }
             else:
                 data = {
@@ -107,11 +111,12 @@ class Socket:
                     image_path = story[1]
                     caption    = story[2]
                     enc_img    = self.encode_img(image_path)
-                    nstories.append([row_id,enc_img,caption])
+                    nstories.append({'row_id':row_id,'image':enc_img,'quote':caption})
                 # need to check here if the format is fine for json
                 data = {
                     'op'   : 'load',
-                    'data' : json.dumps(nstories,sort_keys=False,indent=2)
+                    'data' : nstories
+                    #json.dumps(nstories,sort_keys=False,indent=2)
                 }
             else:
                 data = {
@@ -140,11 +145,30 @@ class Socket:
         elif msg['op'] == 'delete':
             # {'row_id'}
             row_id  = msg['row_id']
+            username = msg['uid']
+            print(row_id)
             run_delete(row_id,self.tb_story,valid)
             if valid:
-                data = {
-                    'op'     : 'delete'
-                }
+                stories  = run_load(username,self.tb_story,valid)
+                if valid:
+                    # process stories
+                    nstories = []
+                    for story in stories:
+                      row_id     = story[0]
+                      image_path = story[1]
+                      caption    = story[2]
+                      enc_img    = self.encode_img(image_path)
+                      nstories.append({'row_id':row_id,'image':enc_img,'quote':caption})
+                # need to check here if the format is fine for json
+                    data = {
+                        'op'   : 'delete',
+                        'data' : nstories
+                        #json.dumps(nstories,sort_keys=False,indent=2)
+                    }
+                else:
+                    data = {
+                        'op' : 'fail'
+                    }
             else:
                 data = {
                     'op'     : 'fail'
