@@ -1,6 +1,5 @@
 import socket
 import json
-import cv2
 import base64
 import PIL.Image as Image
 import io
