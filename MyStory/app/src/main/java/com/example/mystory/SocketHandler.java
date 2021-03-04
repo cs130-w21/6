@@ -11,7 +11,7 @@ import java.net.Socket;
 public class SocketHandler {
     private final int SEGMENT_SIZE = 65000;
     private final String SERVER = "2.tcp.ngrok.io";
-    private final int SERVER_PORT = 18920;
+    private final int SERVER_PORT = 12082;
 
     private Socket mSocket;
 

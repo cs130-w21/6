@@ -71,17 +71,17 @@ public class GetWeather {
         } else if (condition % 100 == 5) {
             icon = "☔";
         } else if (condition % 100 == 6) {
-            icon = "☃️";
+            icon = "☃";
         } else if (condition % 100 == 7) {
             icon = "🌫";
         } else if (condition == 800) {
             if (now.getHour() > 7 && now.getHour() < 17) {
-                icon = "☀️";
+                icon = "☀";
             } else {
                 icon = "🌙";
             }
         } else if (condition % 100 == 8) {
-            icon = "☁️";
+            icon = "☁";
         } else {
             icon = "";
         }

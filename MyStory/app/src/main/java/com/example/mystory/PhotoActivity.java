@@ -29,7 +29,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.google.android.material.textfield.TextInputEditText;
+
+import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
+
+import com.theartofdev.edmodo.cropper.CropImage;
+import com.theartofdev.edmodo.cropper.CropImageActivity;
+import com.theartofdev.edmodo.cropper.CropImageView;
 
 public class PhotoActivity extends AppCompatActivity {
     private final int REQUEST_CODE_CAMERA = 120;
@@ -167,6 +173,13 @@ public class PhotoActivity extends AppCompatActivity {
         }
     }
 
+    public Uri getImageUri(Context inContext, Bitmap inImage) {
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+        String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "Title", null);
+        return Uri.parse(path);
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         Log.d("MyStory", "now prepare to display image");
@@ -174,22 +187,48 @@ public class PhotoActivity extends AppCompatActivity {
         if (resultCode == RESULT_OK && data != null) {
             Log.d("MyStory", "display image");
             if (requestCode == FROM_CAMERA) {
+//                Uri selectedImage = (Uri) data.getExtras().get("data");
                 mImage = (Bitmap) data.getExtras().get("data");
-                mImage = Bitmap.createScaledBitmap(mImage, 500, 500, false);
-                mPhoto.setImageBitmap(mImage);
-            } else {
+//                mImage = Bitmap.createScaledBitmap(mImage, 500, 500, false);
+//                mPhoto.setImageBitmap(mImage);
+//                Uri selectedImage = data.getData();
+                CropImage.activity(getImageUri(this, mImage))
+                        .setGuidelines(CropImageView.Guidelines.ON)
+                        .setCropShape(CropImageView.CropShape.RECTANGLE)
+                        .setAspectRatio(1, 1)
+                        .setMultiTouchEnabled(true)
+//                        .setFixAspectRatio(true)
+                        .start(this);
+            } else if (requestCode == FROM_GALLERY) {
                 Uri selectedImage = data.getData();
                 try {
-                    InputStream imageStream = getContentResolver().openInputStream(selectedImage);
-                    mImage = BitmapFactory.decodeStream(imageStream);
-                    mImage = Bitmap.createScaledBitmap(mImage,
-                            500,
-                            500,
-                            false);
-                    mPhoto.setImageBitmap(mImage);
+//                    InputStream imageStream = getContentResolver().openInputStream(selectedImage);
+//                    mImage = BitmapFactory.decodeStream(imageStream);
+                    CropImage.activity(selectedImage) //getImageUri(this, mImage))
+                            .setGuidelines(CropImageView.Guidelines.ON)
+                            .setCropShape(CropImageView.CropShape.RECTANGLE)
+//                            .setFixAspectRatio(true)
+                            .setAspectRatio(1, 1)
+                            .setMultiTouchEnabled(true)
+//                            .setCropMenuCropButtonTitle("Done")
+                            .start(this);
+//                    mImage = Bitmap.createScaledBitmap(mImage,
+//                            500,
+//                            500,
+//                            false);
+//                    mPhoto.setImageBitmap(mImage);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+            }
+        }
+
+        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
+            CropImage.ActivityResult result = CropImage.getActivityResult(data);
+            if (resultCode == RESULT_OK) {
+                mPhoto.setImageURI(result.getUri());
+            } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
+                Exception error = result.getError();
             }
         }
     }

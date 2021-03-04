@@ -26,6 +26,9 @@ import com.bumptech.glide.Glide;
 import com.google.android.material.textfield.TextInputEditText;
 import com.loopj.android.http.RequestParams;
 
+/**
+ *
+ */
 public class MainActivity extends AppCompatActivity {
     private final int REQUEST_CODE_GPS = 119;
     private final String API_KEY = "369b1b73d7128a1c8e76e400dfd321ee";
@@ -45,6 +48,10 @@ public class MainActivity extends AppCompatActivity {
     private ImageView mBird;
     private int GPSFlag = 0;
 
+    /**
+     *
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -127,6 +134,9 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     *
+     */
     @Override
     protected void onResume() {
         super.onResume();
@@ -135,6 +145,9 @@ public class MainActivity extends AppCompatActivity {
         getWeather();
     }
 
+    /**
+     *
+     */
     @Override
     protected void onPause() {
         super.onPause();
@@ -143,6 +156,9 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     *
+     */
     private void getWeather() {
         mLocationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         mLocationListener = new LocationListener() {
@@ -191,6 +207,12 @@ public class MainActivity extends AppCompatActivity {
                 mLocationListener);
     }
 
+    /**
+     *
+     * @param requestCode
+     * @param permissions
+     * @param grantResults
+     */
     @Override
     public void onRequestPermissionsResult(int requestCode,
                                            @NonNull String[] permissions,

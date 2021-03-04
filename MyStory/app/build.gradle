@@ -8,7 +8,7 @@ android {
 
     defaultConfig {
         applicationId "com.example.mystory"
-        minSdkVersion 29
+        minSdkVersion 23
         targetSdkVersion 30
         versionCode 1
         versionName "1.0"
@@ -38,4 +38,6 @@ dependencies {
     implementation 'com.loopj.android:android-async-http:1.4.9'
     implementation 'com.github.bumptech.glide:glide:4.8.0'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.8.0'
+    implementation 'androidx.activity:activity-ktx:1.2.0-alpha06'
+    api 'com.theartofdev.edmodo:android-image-cropper:2.8.0'
 }
