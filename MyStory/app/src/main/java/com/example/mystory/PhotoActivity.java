@@ -54,6 +54,10 @@ public class PhotoActivity extends AppCompatActivity {
     private String mUserName;
     private ImageView mBird;
 
+    /**
+     *
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -82,6 +86,10 @@ public class PhotoActivity extends AppCompatActivity {
         }
 
         mGetQuoteButton.setOnClickListener(new View.OnClickListener() {
+            /**
+             *
+             * @param v
+             */
             @Override
             public void onClick(View v) {
                 CommandSet.addCommand("get_quote",
@@ -94,6 +102,13 @@ public class PhotoActivity extends AppCompatActivity {
         });
 
         mQuote.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            /**
+             *
+             * @param v
+             * @param actionId
+             * @param event
+             * @return
+             */
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 InputMethodManager inputMethodManager =
@@ -106,6 +121,10 @@ public class PhotoActivity extends AppCompatActivity {
         });
 
         mUploadButton.setOnClickListener(new View.OnClickListener() {
+            /**
+             *
+             * @param v
+             */
             @Override
             public void onClick(View v) {
                 if (mLogin) {
@@ -141,6 +160,9 @@ public class PhotoActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     *
+     */
     private void workOnGallery() {
         Intent pickPicture = new Intent(Intent.ACTION_PICK);
         pickPicture.setType("image/*");
@@ -148,6 +170,9 @@ public class PhotoActivity extends AppCompatActivity {
         startActivityForResult(pickPicture, FROM_GALLERY);
     }
 
+    /**
+     *
+     */
     private void workOnCamera() {
         if (ActivityCompat.checkSelfPermission(this,
                 Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
@@ -161,6 +186,12 @@ public class PhotoActivity extends AppCompatActivity {
         startActivityForResult(takePicture, FROM_CAMERA);
     }
 
+    /**
+     *
+     * @param requestCode
+     * @param permissions
+     * @param grantResults
+     */
     @Override
     public void onRequestPermissionsResult(int requestCode,
                                            @NonNull String[] permissions,
@@ -173,6 +204,12 @@ public class PhotoActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     *
+     * @param inContext
+     * @param inImage
+     * @return
+     */
     public Uri getImageUri(Context inContext, Bitmap inImage) {
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
@@ -180,6 +217,12 @@ public class PhotoActivity extends AppCompatActivity {
         return Uri.parse(path);
     }
 
+    /**
+     *
+     * @param requestCode
+     * @param resultCode
+     * @param data
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         Log.d("MyStory", "now prepare to display image");
@@ -187,36 +230,24 @@ public class PhotoActivity extends AppCompatActivity {
         if (resultCode == RESULT_OK && data != null) {
             Log.d("MyStory", "display image");
             if (requestCode == FROM_CAMERA) {
-//                Uri selectedImage = (Uri) data.getExtras().get("data");
                 mImage = (Bitmap) data.getExtras().get("data");
-//                mImage = Bitmap.createScaledBitmap(mImage, 500, 500, false);
-//                mPhoto.setImageBitmap(mImage);
-//                Uri selectedImage = data.getData();
                 CropImage.activity(getImageUri(this, mImage))
                         .setGuidelines(CropImageView.Guidelines.ON)
                         .setCropShape(CropImageView.CropShape.RECTANGLE)
                         .setAspectRatio(1, 1)
                         .setMultiTouchEnabled(true)
-//                        .setFixAspectRatio(true)
                         .start(this);
             } else if (requestCode == FROM_GALLERY) {
                 Uri selectedImage = data.getData();
                 try {
-//                    InputStream imageStream = getContentResolver().openInputStream(selectedImage);
-//                    mImage = BitmapFactory.decodeStream(imageStream);
-                    CropImage.activity(selectedImage) //getImageUri(this, mImage))
+                    InputStream imageStream = getContentResolver().openInputStream(selectedImage);
+                    mImage = BitmapFactory.decodeStream(imageStream);
+                    CropImage.activity(getImageUri(this, mImage))
                             .setGuidelines(CropImageView.Guidelines.ON)
                             .setCropShape(CropImageView.CropShape.RECTANGLE)
-//                            .setFixAspectRatio(true)
                             .setAspectRatio(1, 1)
                             .setMultiTouchEnabled(true)
-//                            .setCropMenuCropButtonTitle("Done")
                             .start(this);
-//                    mImage = Bitmap.createScaledBitmap(mImage,
-//                            500,
-//                            500,
-//                            false);
-//                    mPhoto.setImageBitmap(mImage);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
