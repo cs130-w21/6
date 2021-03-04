@@ -1,0 +1,14 @@
+language: python
+python:
+  - "3.8"
+
+install:
+  - python --version
+  - pip install -U pip
+  - pip install -U pytest
+  - pip install tensorflow
+  - pip install pymongo
+  - pip install opencv-python
+  - pip install Pillow
+  - pip install requests
+script: pytest
