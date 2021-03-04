@@ -5,7 +5,7 @@ import base64
 import PIL.Image as Image
 import io
 class Client:
-    def __init__(self,host='localhost',port=6000):
+    def __init__(self,host='2.tcp.ngrok.io',port=12082):
         self.host = host  # The server's hostname or IP address
         self.port = port  # The port used by the server
 
