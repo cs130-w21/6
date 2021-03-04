@@ -13,11 +13,13 @@ from login import run_login
 from load import run_load
 from confirm import run_confirm
 from delete import run_delete
+from delete_user import run_delete_user
 from pprint import pprint
-
+import logging
+import time
 
 class Socket:
-    def __init__(self, host='localhost', port=9999, max_connect=10):
+    def __init__(self, host='localhost', port=6000, max_connect=10):
         self.s = socket.socket()
         self.hostname = host
         self.port = port
@@ -25,11 +27,17 @@ class Socket:
         self.s.listen(max_connect)
         self.tokenizer = np.load('tokenizer.npy',allow_pickle='TRUE').item()
         self.BUFFERSIZE = 1000000
+        # set up logging
+        logging.basicConfig(
+            filename='./server.log',
+            format='%(asctime)s %(levelname)-8s %(message)s',
+            level=logging.INFO,
+            datefmt='%Y-%m-%d %H:%M:%S')
 
         # initialize database
         # create a client
         self.client = create_client()
-        print(print_all_db(self.client))
+        logging.info(print_all_db(self.client))
         # get a database called mystory
         self.db      = get_database(self.client,'mystory')
         # create a collection called user
@@ -39,6 +47,7 @@ class Socket:
         #stories  = run_load('xintayang',self.tb_story,valid=1)
         #print(stories)
     def actions(self, clientsocket, address):
+        localtime = time.asctime(time.localtime(time.time()))
         msg = ''
         while True:
             packet = clientsocket.recv(self.BUFFERSIZE).decode()
@@ -46,7 +55,7 @@ class Socket:
             if(packet[-1] == ';'):
                 break
         msg = json.loads(msg[0:-1])
-
+        
         valid = True # check if the operation succeed
         # UPLOAD an image
         if msg['op'] == 'upload':
@@ -59,6 +68,8 @@ class Socket:
                 'op': 'upload',
                 'quote': retcaptions
             }
+            # log to info
+            logging.info('upload success')
             
         # REGISTER a new user            
         elif msg['op'] == 'register':
@@ -74,10 +85,12 @@ class Socket:
                     'success' : success,
                     'uid': username
                 }
+                logging.info('register success')
             else:
                 data = {
                     'op'      : 'fail'
                 }
+                logging.info('register failed')
         # LOGIN a user
         elif msg['op'] == 'login':
             # {'uid', 'password'}
@@ -92,11 +105,29 @@ class Socket:
                     'success' : success,
                     'uid': username
                 }
+                logging.info('login success')
             else:
                 data = {
                     'op' : 'fail'
                 }
-        # LOAD images for a user
+                logging.info('login failed')
+        # DELETE a user
+        elif msg['op'] == 'delete_user':
+            username = msg['uid']
+            run_delete_user(username,self.tb_user,valid)
+            if valid:
+                data = {
+                    'op' : 'delete_user',
+                    'uid': username
+                }
+                logging.info('delete user success')
+            else:
+                data = {
+                    'op' : 'fail'
+                }
+                logging.info('delete user failed')
+    
+    # LOAD images for a user
         elif msg['op'] == 'load':
             # {'uid'}
             username = msg['uid']
@@ -118,10 +149,12 @@ class Socket:
                     'data' : nstories
                     #json.dumps(nstories,sort_keys=False,indent=2)
                 }
+                logging.info('load success')
             else:
                 data = {
                     'op' : 'fail'
                 }
+                logging.info('load failed')
 
         # CONFIRM a new story
         elif msg['op'] == 'confirm':
@@ -137,16 +170,18 @@ class Socket:
                     'op'     : 'confirm',
                     'row_id' :  row_id
                 }
+                logging.info('confirm success')
             else:
                 data = {
                     'op' : 'fail'
                 }
+                logging.info('confirm failed')
         # DELETE stories
         elif msg['op'] == 'delete':
             # {'row_id'}
             row_id  = msg['row_id']
             username = msg['uid']
-            print(row_id)
+            #print(row_id)
             run_delete(row_id,self.tb_story,valid)
             if valid:
                 stories  = run_load(username,self.tb_story,valid)
@@ -165,17 +200,21 @@ class Socket:
                         'data' : nstories
                         #json.dumps(nstories,sort_keys=False,indent=2)
                     }
+                    logging.info('delete success')
                 else:
                     data = {
                         'op' : 'fail'
                     }
+                    logging.info('delete failed')
             else:
                 data = {
                     'op'     : 'fail'
                 }
+                logging.info('delete failed')
         # invalid operation
         else:
-            print("Invalid Operation!")
+            #print("Invalid Operation!")
+            logging.info('invalid operation')
 
         # dump data as json and send back
         json_data = json.dumps(data, sort_keys=False, indent=2)
