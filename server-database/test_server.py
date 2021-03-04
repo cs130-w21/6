@@ -10,7 +10,7 @@ def client():
     pytest.client = Client()
         
 def test_tensorflow(client):
-    image = pytest.client.encode_img('./images/0.jpg')
+    image = pytest.client.encode_img('./server-database/images/0.jpg')
     data = {
         'op' : 'upload',
         'image' : image
@@ -113,7 +113,7 @@ def test_confirm_delete(client):
     msg = pytest.client.send_message(data)
 
     # add first random image quotes to the user database
-    image1 = pytest.client.encode_img('./images/0.jpg')
+    image1 = pytest.client.encode_img('./server-database/images/0.jpg')
     data1 = {
         'op' : 'confirm',
         'uid' : 'unique_user_test3',
@@ -128,7 +128,7 @@ def test_confirm_delete(client):
     row_id1 = msg['row_id']
 
     # add second random image-quote to the user database
-    image2 = pytest.client.encode_img('./images/1.jpg')
+    image2 = pytest.client.encode_img('./server-database/images/1.jpg')
     data2 = {
         'op' : 'confirm',
         'uid' : 'unique_user_test3',
@@ -197,7 +197,7 @@ def test_load(client):
     # upload two random samples
 
     # add first random image quotes to the user database
-    image1 = pytest.client.encode_img('./images/0.jpg')
+    image1 = pytest.client.encode_img('./server-database/images/0.jpg')
     data1 = {
         'op' : 'confirm',
         'uid' : 'unique_user_test4',
@@ -209,7 +209,7 @@ def test_load(client):
     row_id1 = msg['row_id']
 
     # add second random image-quote to the user database
-    image2 = pytest.client.encode_img('./images/1.jpg')
+    image2 = pytest.client.encode_img('./server-database/images/1.jpg')
     data2 = {
         'op' : 'confirm',
         'uid' : 'unique_user_test4',
