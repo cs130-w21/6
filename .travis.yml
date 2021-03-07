@@ -11,9 +11,9 @@ script: pytest
 deploy:
   provider: releases
   file: "$TRAVIS_BUILD_DIR/MyStory.apk"
-  api_key:
-    secure: bbf43e5ed5ad61d0b7243d06225dcdfc97a703d9
   skip_cleanup: true
+  api_key:
+    secure: fzmypGejVltabRUatrKfKHz6N2/TlGSXoEYd4Y4ItSluqb0BFRWQ2rmBOjBm5LRmS6r6ea2LjrrZHXfY7NC+idZAc8qp3VaTNvetTlM0yituTCNxYM4AJ3sDTVqrwSe/Mal1/gH4L5czjpkUiqCG3xKT7Kh8vdmoQ/dhIodG/LLBGFcqNGanxe8USUcQcyQrCutWVD8Bwd0AEWG/7md2BQ3MWiN0Py1v6ZQorj0S2uXkn//WZMEeTpP6jP6Bk72pv/6NABRLKiy4NTTuolndxbeIjiwzIollBLN3nMdS0oARLyqbqfr7Br0qpLVltR5g8wvrKyDpjQreMZLRlhX57vcogxmqpKfv5pWRGmTRfQnbFNfa93blxiKSVeeUhdlHpLYS3FtS2k6BkanqWOXsy1SfZoSgWu57FunrJMwXkE7d3t3T3IP+JLQWOg6O8Zr+6zngi6+z0tQRbweyrD9DcA6CI9vHke+6EJMeafe7lfmsTCkktOWg/CH2MDTVzQiTE8kQjKwQWtfcI93WWT01REBrKU4GbmcRwXF+GS2P/Cq0Z1fNx0bfkx3tKoRR6nJcUvl8R50LVfm67XcecCnAD4CDFP3Snfbov9qo+D4KHCWHHv8OTVJcv9wztO7OoLNu8N5L8rRcd2vV+hlYjViZ3JBfCUE6NHNPYf4eklBUA3s=
   name: dev-build-$TRAVIS_TAG
   body: Automatic build of $TRAVIS_BRANCH ($TRAVIS_COMMIT) built by Travis CI on $(date
     +'%F %T %Z').
