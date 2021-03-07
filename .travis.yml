@@ -9,10 +9,9 @@ install:
 - pip install requests
 script: pytest
 deploy:
-  provider: releases
+  provider: pages
   skip-cleanup: true
-  api_key: $GITHUB_TOKEN
-  file: "$TRAVIS_BUILD_DIR/MyStory.apk"
-  overwrite: true
+  github_token: $GITHUB_TOKEN
+  keep_history: true
   on:
-    tags: true
+    branch: master
