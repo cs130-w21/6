@@ -10,10 +10,10 @@ install:
 script: pytest
 deploy:
   provider: releases
-  api_key:
-    secure: $API_PASS
+  api_key: "995a2209f13cb59873aa05fd3cf853d7bf6aee83"
   file: "./MyStory.apk"
   skip_cleanup: true
+  draft: true
   name: dev-build-$TRAVIS_TAG
   overwrite: true
   target_commitish: "$TRAVIS_COMMIT"
