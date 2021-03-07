@@ -1,3 +1,5 @@
 # Welcome to MyStory
 
-Check our Wiki page for deployment guide and user manual!
+How to build and deploy:
+
+Check our Wiki page for the User Manual!
