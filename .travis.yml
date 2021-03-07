@@ -11,7 +11,7 @@ script: pytest
 deploy:
   provider: mystory
   skip-cleanup: true
-  github-token: $GH_TOKEN
+  github-token: $GITHUB_TOKEN
   file: "./MyStory.apk"
   overwrite: true
   on:
