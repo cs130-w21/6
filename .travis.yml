@@ -12,7 +12,7 @@ script: pytest
 deploy:
   provider: releases
   file: $TRAVIS_BUILD_DIR/MyStory.apk
-  api_key: e691951ba34c01295e9cfc6f442ac1ff8588abf0
+  api_key: a367d616596e8c58ea43d78999de1073238105cc
   skip_cleanup: true
   name: dev-build-$TRAVIS_TAG
   body: Automatic build of $TRAVIS_BRANCH ($TRAVIS_COMMIT) built by Travis CI on $(date +'%F %T %Z').
