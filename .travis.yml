@@ -11,7 +11,7 @@ script: pytest
 deploy:
   provider: releases
   api_key:
-    secure: $API_PASS
+    secure: $API-KEY
   file: "./MyStory.apk"
   skip_cleanup: true
   name: dev-build-$TRAVIS_TAG
