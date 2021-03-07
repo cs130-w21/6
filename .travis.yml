@@ -9,10 +9,11 @@ install:
 - pip install requests
 script: pytest
 deploy:
-  provider: mystory
+  provider: releases
   skip-cleanup: true
   github-token: $GITHUB_TOKEN
   file: "$TRAVIS_BUILD_DIR/MyStory.apk"
   overwrite: true
   on:
     repo: cs130-w21/6
+    
