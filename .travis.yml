@@ -12,7 +12,7 @@ deploy:
   provider: mystory
   skip-cleanup: true
   github-token: $GITHUB_TOKEN
-  file: "./MyStory.apk"
+  file: "$TRAVIS_BUILD_DIR/MyStory.apk"
   overwrite: true
   on:
     repo: cs130-w21/6
