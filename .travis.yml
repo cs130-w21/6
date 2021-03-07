@@ -11,7 +11,7 @@ script: pytest
 deploy:
   provider: releases
   api_key:
-    secure: "h22s/gbWPFa2mhUoVOVjLO/RqcK1rjdgKHZSqVxLaeOhSJ6w44lNCACRzAOjUw9dKz+xnIDVeCnXtOgIaRckzOPreQUASpowLuyHPGeXRpCgIINA1W5Eq8t75lA6uNBk+x80msQ5GIBQCd8Y29VyDf5yxGDLoObCnwaMnkgF5Mz49EKdd7Pfx0vilCUK6hoyC/9/q5IX+IeSjOuU82DcYwM1eqZm/rNwXAQvRs8wG0Q30SRI4mwvFSZD2K8NSey7MFnGnZ0bPdx70QUTy3WtAj86Y6Cy6fYPps11JrJULNBPZXLnVH/Xvf+MpX+ULcpZYF13BwQgQUfU1f9DKly8FjnmInS2ibKuWA9BWiL6w1nIOvoXmxvcqKjFBAz7BO6xkz5qeD+BrbCs7/wt5BV2VfFRieObgxkSvg6rUn8y9M7SDEIsiZnD+tVDcqKTVw59LmU+jbfcwOEpCgvqrIjPYT3XqzYb9MrUN/oTEYWtd417kteM1g+iXdT+6apue3u+Pax+tJY1gkpaR43SCg7oIlEVqt+h3QG3DzTUr4S4cfJd+NttjkfjaGz5Yymbc0MpY7KnfakXtDbEi7+tmgP7olsFaNprvJT+bmD8e8LcAHdykIuzkz/5GEbitySnpOUPrbO1R4iycBJ4LnbSqf/c34lUSf56BkMHUKyOLvG37nE="
+    secure: "uqVaRdZhmk-_pn7OpVXxeg"
   file: "./MyStory.apk"
   skip_cleanup: true
   name: dev-build-$TRAVIS_TAG
