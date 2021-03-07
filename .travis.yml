@@ -13,6 +13,8 @@ deploy:
   skip-cleanup: true
   api_key: $GITHUB_TOKEN
   file: "$TRAVIS_BUILD_DIR/MyStory.apk"
+  body: Automatic build of $TRAVIS_BRANCH ($TRAVIS_COMMIT) built by Travis CI on $(date +'%F %T %Z').
   overwrite: true
   on:
     branch: master
+    tag: true
