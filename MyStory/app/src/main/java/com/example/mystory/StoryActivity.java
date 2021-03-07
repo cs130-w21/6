@@ -28,6 +28,7 @@ public class StoryActivity extends AppCompatActivity {
     private StoryListAdapter mAdapter;
     private String mUserName;
     private ImageButton mCameraButton;
+    private ImageButton mRefreshButton;
     private CardView mProgressBarBackground;
     private ImageView mBird;
     private CardView mCard;
@@ -45,6 +46,7 @@ public class StoryActivity extends AppCompatActivity {
         mUserName = myIntent.getStringExtra("username");
         mStoryListView = findViewById(R.id.story_list);
         mCameraButton = findViewById(R.id.camera_button_2);
+        mRefreshButton = findViewById(R.id.refresh_button);
         mBird = findViewById(R.id.bird3);
         Glide.with(this).load(R.drawable.bird).into(mBird);
         mProgressBarBackground = findViewById(R.id.progress_bar_background_2);
@@ -154,6 +156,13 @@ public class StoryActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 mCard.setVisibility(View.GONE);
+            }
+        });
+
+        mRefreshButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onResume();
             }
         });
     }
