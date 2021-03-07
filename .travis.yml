@@ -9,9 +9,9 @@ install:
 - pip install requests
 script: pytest
 deploy:
-  provider: pages
+  provider: releases
+  api_key: $GITHUB_TOKEN
+  file: "./MyStory.apk"
   skip-cleanup: true
-  github_token: $GITHUB_TOKEN
-  keep_history: true
   on:
-    branch: master
+    tags: true
