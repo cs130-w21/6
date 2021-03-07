@@ -1,0 +1,43 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><title>Python: module autoencoder</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+</head><body bgcolor="#f0f0f8">
+
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
+<tr bgcolor="#7799ee">
+<td valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong>autoencoder</strong></big></big></font></td
+><td align=right valign=bottom
+><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="file:c%3A%5Cusers%5Crobert%5Cdesktop%5C130%5C6%5Ctensorflow_server%5Cautoencoder.py">c:\users\robert\desktop\130\6\tensorflow_server\autoencoder.py</a></font></td></tr></table>
+    <p></p>
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#aa55cc">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Modules</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#aa55cc"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><table width="100%" summary="list"><tr><td width="25%" valign=top><a href="collections.html">collections</a><br>
+<a href="cv2.cv2.html">cv2.cv2</a><br>
+</td><td width="25%" valign=top><a href="json.html">json</a><br>
+<a href="numpy.html">numpy</a><br>
+</td><td width="25%" valign=top><a href="os.html">os</a><br>
+<a href="random.html">random</a><br>
+</td><td width="25%" valign=top><a href="requests.html">requests</a><br>
+<a href="tensorflow.html">tensorflow</a><br>
+</td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#eeaa77">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Functions</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#eeaa77"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl><dt><a name="-autoencoder"><strong>autoencoder</strong></a>()</dt></dl>
+ <dl><dt><a name="-call_autoencoder_server"><strong>call_autoencoder_server</strong></a>(feature)</dt><dd><tt>#&nbsp;nohup&nbsp;tensorflow_model_server&nbsp;--rest_api_port=8502&nbsp;--model_name=autoencoder_model&nbsp;--model_base_path="/home/ronny/MyStory/tensorflow/autoencoder_server/"&nbsp;&gt;autoencoder_server.log&nbsp;2&gt;&amp;1<br>
+#saved_model_cli&nbsp;show&nbsp;--dir&nbsp;./autoencoder_server/1/&nbsp;--tag_set&nbsp;serve&nbsp;--signature_def&nbsp;serving_default</tt></dd></dl>
+ <dl><dt><a name="-loss_function"><strong>loss_function</strong></a>(pred, batch_label, loss_object)</dt></dl>
+ <dl><dt><a name="-save_autoencoder"><strong>save_autoencoder</strong></a>(autoencoder)</dt></dl>
+ <dl><dt><a name="-train_autoencoder"><strong>train_autoencoder</strong></a>(autoencoder)</dt></dl>
+ <dl><dt><a name="-train_step"><strong>train_step</strong></a>(autoencoder, batch_data, batch_label, optimizer, loss_object)</dt></dl>
+</td></tr></table>
+</body></html>

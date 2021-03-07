@@ -1,0 +1,26 @@
+# This file only test the cases when client call tensorflow in server
+import pytest
+import subprocess
+from client import Client
+
+@pytest.fixture
+def client():
+    pytest.client = Client(host='4.tcp.ngrok.io',port=19856)
+        
+def test_tensorflow(client):
+    image = pytest.client.encode_img('./p3.jpg')
+    data = {
+        'op' : 'upload',
+        'image' : image
+    }
+    msg = pytest.client.send_message(data)
+    # make sure the returned dictionary contains only two fileds
+    assert set(msg.keys()) == set(['op','quote'])
+    # make sure the returned operation name is upload
+    assert msg['op'] == 'upload'
+    # make sure returns five quotes
+    assert len(msg['quote']) == 5
+    # make sure 
+    print(msg)
+        
+        
