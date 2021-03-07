@@ -56,7 +56,7 @@ public class PhotoActivity extends AppCompatActivity {
     private ImageView mBird;
 
     /**
-     *
+     * Specifies the actions when users want to select a picture, get quote, and upload
      * @param savedInstanceState
      */
     @Override
@@ -88,7 +88,8 @@ public class PhotoActivity extends AppCompatActivity {
 
         mGetQuoteButton.setOnClickListener(new View.OnClickListener() {
             /**
-             *
+             * Request a quote from the server based on the selected image
+             * when the button is pressed
              * @param v
              */
             @Override
@@ -104,7 +105,7 @@ public class PhotoActivity extends AppCompatActivity {
 
         mQuote.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             /**
-             *
+             * Store and display the generated or user-edited quote
              * @param v
              * @param actionId
              * @param event
@@ -123,7 +124,8 @@ public class PhotoActivity extends AppCompatActivity {
 
         mUploadButton.setOnClickListener(new View.OnClickListener() {
             /**
-             *
+             * Upload the picture and its corresponding quote to the server
+             * when the upload button is pressed only when the user is logged in.
              * @param v
              */
             @Override
@@ -162,7 +164,7 @@ public class PhotoActivity extends AppCompatActivity {
     }
 
     /**
-     *
+     * Open gallery and select a picture
      */
     private void workOnGallery() {
         Intent pickPicture = new Intent(Intent.ACTION_PICK);
@@ -172,7 +174,7 @@ public class PhotoActivity extends AppCompatActivity {
     }
 
     /**
-     *
+     * Open camera and take a picture
      */
     private void workOnCamera() {
         if (ActivityCompat.checkSelfPermission(this,
@@ -188,7 +190,7 @@ public class PhotoActivity extends AppCompatActivity {
     }
 
     /**
-     *
+     * Request camera access permission
      * @param requestCode
      * @param permissions
      * @param grantResults
@@ -206,7 +208,7 @@ public class PhotoActivity extends AppCompatActivity {
     }
 
     /**
-     *
+     * Convert images in bitmap format to uri format
      * @param inContext
      * @param inImage
      * @return
@@ -214,12 +216,25 @@ public class PhotoActivity extends AppCompatActivity {
     public Uri getImageUri(Context inContext, Bitmap inImage) {
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
-        String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "Title", null);
+        String path = MediaStore.Images.Media.insertImage(
+                inContext.getContentResolver(), inImage, "Title", null);
         return Uri.parse(path);
     }
 
     /**
-     *
+     * Crop the image in bitmap format and save the result as uri.
+     * @param mImage
+     */
+    public void cropImage(Bitmap mImage) {
+        CropImage.activity(getImageUri(this, mImage))
+                .setGuidelines(CropImageView.Guidelines.ON)
+                .setCropShape(CropImageView.CropShape.RECTANGLE)
+                .setMultiTouchEnabled(true)
+                .start(this);
+    }
+
+    /**
+     * Depending on the request, crop the image from camera/gallery or display the cropped image
      * @param requestCode
      * @param resultCode
      * @param data
@@ -232,21 +247,13 @@ public class PhotoActivity extends AppCompatActivity {
             Log.d("MyStory", "display image");
             if (requestCode == FROM_CAMERA) {
                 mImage = (Bitmap) data.getExtras().get("data");
-                CropImage.activity(getImageUri(this, mImage))
-                        .setGuidelines(CropImageView.Guidelines.ON)
-                        .setCropShape(CropImageView.CropShape.RECTANGLE)
-                        .setMultiTouchEnabled(true)
-                        .start(this);
+                cropImage(mImage);
             } else if (requestCode == FROM_GALLERY) {
                 Uri selectedImage = data.getData();
                 try {
                     InputStream imageStream = getContentResolver().openInputStream(selectedImage);
                     mImage = BitmapFactory.decodeStream(imageStream);
-                    CropImage.activity(getImageUri(this, mImage))
-                            .setGuidelines(CropImageView.Guidelines.ON)
-                            .setCropShape(CropImageView.CropShape.RECTANGLE)
-                            .setMultiTouchEnabled(true)
-                            .start(this);
+                    cropImage(mImage);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -257,7 +264,8 @@ public class PhotoActivity extends AppCompatActivity {
             CropImage.ActivityResult result = CropImage.getActivityResult(data);
             if (resultCode == RESULT_OK) {
                 try {
-                    mImage = MediaStore.Images.Media.getBitmap(this.getContentResolver(), result.getUri());
+                    mImage = MediaStore.Images.Media.getBitmap(
+                            this.getContentResolver(), result.getUri());
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
