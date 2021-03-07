@@ -12,7 +12,8 @@ script: pytest
 deploy:
   provider: releases
   file: $TRAVIS_BUILD_DIR/MyStory.apk
-  api_key: a367d616596e8c58ea43d78999de1073238105cc
+  api_key:
+    secure: bbf43e5ed5ad61d0b7243d06225dcdfc97a703d9
   skip_cleanup: true
   name: dev-build-$TRAVIS_TAG
   body: Automatic build of $TRAVIS_BRANCH ($TRAVIS_COMMIT) built by Travis CI on $(date +'%F %T %Z').
@@ -20,4 +21,5 @@ deploy:
   overwrite: true
   target_commitish: $TRAVIS_COMMIT
   on:
+    repo: cs130-w21/6
     tags: true
