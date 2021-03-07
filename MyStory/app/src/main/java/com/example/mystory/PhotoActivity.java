@@ -31,6 +31,7 @@ import com.bumptech.glide.Glide;
 import com.google.android.material.textfield.TextInputEditText;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 
 import com.theartofdev.edmodo.cropper.CropImage;
@@ -234,7 +235,6 @@ public class PhotoActivity extends AppCompatActivity {
                 CropImage.activity(getImageUri(this, mImage))
                         .setGuidelines(CropImageView.Guidelines.ON)
                         .setCropShape(CropImageView.CropShape.RECTANGLE)
-                        .setAspectRatio(1, 1)
                         .setMultiTouchEnabled(true)
                         .start(this);
             } else if (requestCode == FROM_GALLERY) {
@@ -245,7 +245,6 @@ public class PhotoActivity extends AppCompatActivity {
                     CropImage.activity(getImageUri(this, mImage))
                             .setGuidelines(CropImageView.Guidelines.ON)
                             .setCropShape(CropImageView.CropShape.RECTANGLE)
-                            .setAspectRatio(1, 1)
                             .setMultiTouchEnabled(true)
                             .start(this);
                 } catch (Exception e) {
@@ -257,7 +256,12 @@ public class PhotoActivity extends AppCompatActivity {
         if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
             CropImage.ActivityResult result = CropImage.getActivityResult(data);
             if (resultCode == RESULT_OK) {
-                mPhoto.setImageURI(result.getUri());
+                try {
+                    mImage = MediaStore.Images.Media.getBitmap(this.getContentResolver(), result.getUri());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                mPhoto.setImageBitmap(mImage);
             } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
                 Exception error = result.getError();
             }
