@@ -16,4 +16,4 @@ deploy:
   overwrite: true
   on:
     branch: master
-    tag: true
+    tags: true
