@@ -4,47 +4,33 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
-
 import android.Manifest;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.icu.util.Calendar;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.os.AsyncTask;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
-import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.EditText;
 import android.widget.Toast;
 import android.os.Bundle;
-
+import com.bumptech.glide.Glide;
 import com.google.android.material.textfield.TextInputEditText;
-import com.loopj.android.http.AsyncHttpClient;
-import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.net.InetAddress;
-import java.net.Socket;
-import java.time.LocalTime;
-
-import cz.msebera.android.httpclient.Header;
-
+/**
+ *
+ */
 public class MainActivity extends AppCompatActivity {
     private final int REQUEST_CODE_GPS = 119;
-    private final String URL = "https://api.openweathermap.org/data/2.5/weather";
     private final String API_KEY = "369b1b73d7128a1c8e76e400dfd321ee";
     private final float MIN_DIST = 1000;
     private final long MIN_TIME = 100000;
@@ -52,7 +38,6 @@ public class MainActivity extends AppCompatActivity {
 
     private LocationManager mLocationManager;
     private LocationListener mLocationListener;
-    private TextView mWeatherText;
     private ImageButton mCameraButton;
     private TextInputEditText mUserName;
     private TextInputEditText mUserPassword;
@@ -60,18 +45,25 @@ public class MainActivity extends AppCompatActivity {
     private String _mUserPassword;
     private Button mLoginButton;
     private TextView mRegisterButton;
+    private ImageView mBird;
+    private int GPSFlag = 0;
 
+    /**
+     *
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mWeatherText = findViewById(R.id.weather_text);
         mCameraButton = findViewById(R.id.camera_button);
         mUserName = findViewById(R.id.login_username);
         mUserPassword = findViewById(R.id.login_password);
         mLoginButton = findViewById(R.id.login);
         mRegisterButton = findViewById(R.id.register);
+        mBird = findViewById(R.id.bird);
+        Glide.with(this).load(R.drawable.bird).into(mBird);
 
         mRegisterButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -85,6 +77,9 @@ public class MainActivity extends AppCompatActivity {
         mUserName.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                InputMethodManager inputMethodManager =
+                        (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                inputMethodManager.hideSoftInputFromWindow(v.getWindowToken(), 0);
                 _mUserName = mUserName.getText().toString();
                 Log.d("MyStory", "username entered: " + _mUserName);
                 return true;
@@ -94,6 +89,9 @@ public class MainActivity extends AppCompatActivity {
         mUserPassword.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                InputMethodManager inputMethodManager =
+                        (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                inputMethodManager.hideSoftInputFromWindow(v.getWindowToken(), 0);
                 _mUserPassword = mUserPassword.getText().toString();
                 Log.d("MyStory", "password entered: " + _mUserPassword);
                 return true;
@@ -103,7 +101,13 @@ public class MainActivity extends AppCompatActivity {
         mLoginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new MyTask().execute();
+                CommandSet.addCommand("login",
+                        new RegisterCommand(MainActivity.this,
+                                new CreateLoginRequest(),
+                                new HandleLoginResponse(),
+                                _mUserName,
+                                _mUserPassword));
+                CommandSet.trigger("login");
             }
         });
 
@@ -130,6 +134,9 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     *
+     */
     @Override
     protected void onResume() {
         super.onResume();
@@ -138,6 +145,9 @@ public class MainActivity extends AppCompatActivity {
         getWeather();
     }
 
+    /**
+     *
+     */
     @Override
     protected void onPause() {
         super.onPause();
@@ -146,6 +156,9 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     *
+     */
     private void getWeather() {
         mLocationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         mLocationListener = new LocationListener() {
@@ -161,7 +174,8 @@ public class MainActivity extends AppCompatActivity {
                 params.put("lon", longitude);
                 params.put("appid", API_KEY);
                 params.put("units", "metric");
-                updateWeatherText(params);
+                GetWeather getWeather = new GetWeather(MainActivity.this, params);
+                getWeather.updateWeatherText();
             }
 
             @Override
@@ -177,6 +191,11 @@ public class MainActivity extends AppCompatActivity {
 
         if (ActivityCompat.checkSelfPermission(this,
                 Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            if (GPSFlag == 1) {
+                findViewById(R.id.empty_background).setVisibility(View.GONE);
+                mBird.setVisibility(View.GONE);
+                return;
+            }
             ActivityCompat.requestPermissions(this,
                     new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                     REQUEST_CODE_GPS);
@@ -188,6 +207,12 @@ public class MainActivity extends AppCompatActivity {
                 mLocationListener);
     }
 
+    /**
+     *
+     * @param requestCode
+     * @param permissions
+     * @param grantResults
+     */
     @Override
     public void onRequestPermissionsResult(int requestCode,
                                            @NonNull String[] permissions,
@@ -196,139 +221,11 @@ public class MainActivity extends AppCompatActivity {
         if (requestCode == REQUEST_CODE_GPS && grantResults.length > 0
                 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             Log.d("MyStory", "GPS access permitted");
-        }
-    }
-
-    private void updateWeatherText(RequestParams params) {
-        AsyncHttpClient client = new AsyncHttpClient();
-        client.get(URL, params, new JsonHttpResponseHandler() {
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                Log.d("MyStory", "fetching weather data successfully");
-                mWeatherText.setText(getWeatherText(response));
-                findViewById(R.id.empty_background).setVisibility(View.GONE);
-                findViewById(R.id.spinner).setVisibility(View.GONE);
-            }
-
-            @Override
-            public void onFailure(int statusCode,
-                                  Header[] headers,
-                                  String responseString,
-                                  Throwable throwable) {
-                Log.d("MyAtory", "fecthing weather data failed: " + throwable.toString());
-                Toast.makeText(MainActivity.this,
-                        "unable to retrieve your location, please refresh app 😣",
-                        Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
-
-    private String getWeatherText(JSONObject weatherData) {
-        int temperature;
-        int condition;
-        String icon;
-        LocalTime now = LocalTime.now();
-
-        try {
-            temperature = (int) weatherData.getJSONObject("main").getDouble("temp");
-            condition = weatherData.getJSONArray("weather")
-                    .getJSONObject(0).getInt("id");
-        } catch (JSONException e) {
-            e.printStackTrace();
-            return null;
-        }
-
-        if (condition % 100 == 2) {
-            icon = "🌩";
-        } else if (condition % 100 == 3) {
-            icon = "🌧";
-        } else if (condition % 100 == 5) {
-            icon = "☔";
-        } else if (condition % 100 == 6) {
-            icon = "☃️";
-        } else if (condition % 100 == 7) {
-            icon = "🌫";
-        } else if (condition == 800) {
-            if (now.getHour() > 7 && now.getHour() < 17) {
-                icon = "☀️";
-            } else {
-                icon = "🌙";
-            }
-        } else if (condition % 100 == 8) {
-            icon = "☁️";
         } else {
-            icon = "  weather 🤷‍♂️";
-        }
-
-        return Integer.toString(temperature) + "℃ " + icon;
-    }
-
-    private class MyTask extends AsyncTask<Void, Void, Integer> {
-        private final String SERVER = "2.tcp.ngrok.io";
-        private final int SERVER_PORT = 18376;
-
-        private Socket mSocket;
-        private char[] mRequestJsonString;
-        private char[] mResponseJsonString = new char[100];
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
-                    WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-        }
-
-        @Override
-        protected Integer doInBackground(Void... voids) {
-            JSONObject request = new JSONObject();
-
-            try {
-                InetAddress serverAddress = InetAddress.getByName(SERVER);
-                mSocket = new Socket(serverAddress, SERVER_PORT);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-            try {
-                request.put("op", "login");
-                request.put("uid", _mUserName);
-                request.put("password", _mUserPassword);
-                mRequestJsonString = request.toString().toCharArray();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-            SocketHandler.writeToSocket(mRequestJsonString, mSocket);
-            return SocketHandler.readFromSocket(mResponseJsonString, mSocket);
-        }
-
-        @Override
-        protected void onPostExecute(Integer responseLength) {
-            super.onPostExecute(responseLength);
-            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-            JSONObject response;
-
-            try {
-                response = new JSONObject(new String(mResponseJsonString, 0, responseLength));
-                if (response.getString("op").equals("fail")) {
-                    Toast.makeText(MainActivity.this, "" +
-                            "something went wrong on our side, please try again later",
-                            Toast.LENGTH_SHORT).show();
-                } else {
-                    if (response.getInt("success") == 1) {
-                        Intent storyIntent = new Intent(MainActivity.this,
-                                StoryActivity.class);
-                        storyIntent.putExtra("username", _mUserName);
-                        startActivity(storyIntent);
-                    } else {
-                        Toast.makeText(MainActivity.this, "" +
-                                "please make sure your username and password are correct",
-                                Toast.LENGTH_SHORT).show();
-                    }
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            Toast.makeText(this,
+                    "you may permit GPS later",
+                    Toast.LENGTH_SHORT).show();
+            GPSFlag = 1;
         }
     }
 }
