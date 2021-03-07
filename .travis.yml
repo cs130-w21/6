@@ -9,17 +9,9 @@ install:
 - pip install requests
 script: pytest
 deploy:
-  provider: releases
-  api_key: "995a2209f13cb59873aa05fd3cf853d7bf6aee83"
+  provider: mystory
+  github-token: $GH_TOKEN
   file: "./MyStory.apk"
-  skip_cleanup: true
-  draft: true
-  name: dev-build-$TRAVIS_TAG
   overwrite: true
-  target_commitish: "$TRAVIS_COMMIT"
   on:
     repo: cs130-w21/6
-    tag: true
-env:
-  global:
-    secure: 995a2209f13cb59873aa05fd3cf853d7bf6aee83
