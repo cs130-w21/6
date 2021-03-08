@@ -1,0 +1,1932 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><title>Python: module autoencoder_model</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+</head><body bgcolor="#f0f0f8">
+
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
+<tr bgcolor="#7799ee">
+<td valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong>autoencoder_model</strong></big></big></font></td
+><td align=right valign=bottom
+><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="file:c%3A%5Cusers%5Crobert%5Cdesktop%5C130%5C6%5Ctensorflow_server%5Cautoencoder_model.py">c:\users\robert\desktop\130\6\tensorflow_server\autoencoder_model.py</a></font></td></tr></table>
+    <p></p>
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#aa55cc">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Modules</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#aa55cc"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><table width="100%" summary="list"><tr><td width="25%" valign=top><a href="json.html">json</a><br>
+</td><td width="25%" valign=top><a href="numpy.html">numpy</a><br>
+</td><td width="25%" valign=top><a href="random.html">random</a><br>
+</td><td width="25%" valign=top><a href="tensorflow.html">tensorflow</a><br>
+</td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ee77aa">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Classes</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#ee77aa"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl>
+<dt><font face="helvetica, arial"><a href="tensorflow.python.keras.engine.training.html#Model">tensorflow.python.keras.engine.training.Model</a>(<a href="tensorflow.python.keras.engine.base_layer.html#Layer">tensorflow.python.keras.engine.base_layer.Layer</a>, <a href="tensorflow.python.keras.utils.version_utils.html#ModelVersionSelector">tensorflow.python.keras.utils.version_utils.ModelVersionSelector</a>)
+</font></dt><dd>
+<dl>
+<dt><font face="helvetica, arial"><a href="autoencoder_model.html#AutoEncoder">AutoEncoder</a>
+</font></dt></dl>
+</dd>
+</dl>
+ <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="AutoEncoder">class <strong>AutoEncoder</strong></a>(<a href="tensorflow.python.keras.engine.training.html#Model">tensorflow.python.keras.engine.training.Model</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt><a href="#AutoEncoder">AutoEncoder</a>(*args,&nbsp;**kwargs)<br>
+&nbsp;<br>
+`<a href="tensorflow.python.keras.engine.training.html#Model">Model</a>`&nbsp;groups&nbsp;layers&nbsp;into&nbsp;an&nbsp;object&nbsp;with&nbsp;training&nbsp;and&nbsp;inference&nbsp;features.<br>
+&nbsp;<br>
+Arguments:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;inputs:&nbsp;The&nbsp;<a href="#AutoEncoder-input">input</a>(s)&nbsp;of&nbsp;the&nbsp;model:&nbsp;a&nbsp;`keras.Input`&nbsp;object&nbsp;or&nbsp;list&nbsp;of<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`keras.Input`&nbsp;objects.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;outputs:&nbsp;The&nbsp;<a href="#AutoEncoder-output">output</a>(s)&nbsp;of&nbsp;the&nbsp;model.&nbsp;See&nbsp;Functional&nbsp;API&nbsp;example&nbsp;below.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;name:&nbsp;String,&nbsp;the&nbsp;name&nbsp;of&nbsp;the&nbsp;model.<br>
+&nbsp;<br>
+There&nbsp;are&nbsp;two&nbsp;ways&nbsp;to&nbsp;instantiate&nbsp;a&nbsp;`<a href="tensorflow.python.keras.engine.training.html#Model">Model</a>`:<br>
+&nbsp;<br>
+1&nbsp;-&nbsp;With&nbsp;the&nbsp;"Functional&nbsp;API",&nbsp;where&nbsp;you&nbsp;start&nbsp;from&nbsp;`Input`,<br>
+you&nbsp;chain&nbsp;layer&nbsp;calls&nbsp;to&nbsp;specify&nbsp;the&nbsp;model's&nbsp;forward&nbsp;pass,<br>
+and&nbsp;finally&nbsp;you&nbsp;create&nbsp;your&nbsp;model&nbsp;from&nbsp;inputs&nbsp;and&nbsp;outputs:<br>
+&nbsp;<br>
+```python<br>
+import&nbsp;tensorflow&nbsp;as&nbsp;tf<br>
+&nbsp;<br>
+inputs&nbsp;=&nbsp;tf.keras.Input(shape=(3,))<br>
+x&nbsp;=&nbsp;tf.keras.layers.Dense(4,&nbsp;activation=tf.nn.relu)(inputs)<br>
+outputs&nbsp;=&nbsp;tf.keras.layers.Dense(5,&nbsp;activation=tf.nn.softmax)(x)<br>
+model&nbsp;=&nbsp;tf.keras.<a href="tensorflow.python.keras.engine.training.html#Model">Model</a>(inputs=inputs,&nbsp;outputs=outputs)<br>
+```<br>
+&nbsp;<br>
+2&nbsp;-&nbsp;By&nbsp;subclassing&nbsp;the&nbsp;`<a href="tensorflow.python.keras.engine.training.html#Model">Model</a>`&nbsp;class:&nbsp;in&nbsp;that&nbsp;case,&nbsp;you&nbsp;should&nbsp;define&nbsp;your<br>
+layers&nbsp;in&nbsp;`__init__`&nbsp;and&nbsp;you&nbsp;should&nbsp;implement&nbsp;the&nbsp;model's&nbsp;forward&nbsp;pass<br>
+in&nbsp;`call`.<br>
+&nbsp;<br>
+```python<br>
+import&nbsp;tensorflow&nbsp;as&nbsp;tf<br>
+&nbsp;<br>
+class&nbsp;MyModel(tf.keras.<a href="tensorflow.python.keras.engine.training.html#Model">Model</a>):<br>
+&nbsp;<br>
+&nbsp;&nbsp;def&nbsp;<a href="#AutoEncoder-__init__">__init__</a>(self):<br>
+&nbsp;&nbsp;&nbsp;&nbsp;super(MyModel,&nbsp;self).<a href="#AutoEncoder-__init__">__init__</a>()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;self.<strong>dense1</strong>&nbsp;=&nbsp;tf.keras.layers.Dense(4,&nbsp;activation=tf.nn.relu)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;self.<strong>dense2</strong>&nbsp;=&nbsp;tf.keras.layers.Dense(5,&nbsp;activation=tf.nn.softmax)<br>
+&nbsp;<br>
+&nbsp;&nbsp;def&nbsp;<a href="#AutoEncoder-call">call</a>(self,&nbsp;inputs):<br>
+&nbsp;&nbsp;&nbsp;&nbsp;x&nbsp;=&nbsp;self.dense1(inputs)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;self.dense2(x)<br>
+&nbsp;<br>
+model&nbsp;=&nbsp;MyModel()<br>
+```<br>
+&nbsp;<br>
+If&nbsp;you&nbsp;subclass&nbsp;`<a href="tensorflow.python.keras.engine.training.html#Model">Model</a>`,&nbsp;you&nbsp;can&nbsp;optionally&nbsp;have<br>
+a&nbsp;`training`&nbsp;argument&nbsp;(boolean)&nbsp;in&nbsp;`call`,&nbsp;which&nbsp;you&nbsp;can&nbsp;use&nbsp;to&nbsp;specify<br>
+a&nbsp;different&nbsp;behavior&nbsp;in&nbsp;training&nbsp;and&nbsp;inference:<br>
+&nbsp;<br>
+```python<br>
+import&nbsp;tensorflow&nbsp;as&nbsp;tf<br>
+&nbsp;<br>
+class&nbsp;MyModel(tf.keras.<a href="tensorflow.python.keras.engine.training.html#Model">Model</a>):<br>
+&nbsp;<br>
+&nbsp;&nbsp;def&nbsp;<a href="#AutoEncoder-__init__">__init__</a>(self):<br>
+&nbsp;&nbsp;&nbsp;&nbsp;super(MyModel,&nbsp;self).<a href="#AutoEncoder-__init__">__init__</a>()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;self.<strong>dense1</strong>&nbsp;=&nbsp;tf.keras.layers.Dense(4,&nbsp;activation=tf.nn.relu)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;self.<strong>dense2</strong>&nbsp;=&nbsp;tf.keras.layers.Dense(5,&nbsp;activation=tf.nn.softmax)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;self.<strong>dropout</strong>&nbsp;=&nbsp;tf.keras.layers.Dropout(0.5)<br>
+&nbsp;<br>
+&nbsp;&nbsp;def&nbsp;<a href="#AutoEncoder-call">call</a>(self,&nbsp;inputs,&nbsp;training=False):<br>
+&nbsp;&nbsp;&nbsp;&nbsp;x&nbsp;=&nbsp;self.dense1(inputs)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;training:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;x&nbsp;=&nbsp;self.dropout(x,&nbsp;training=training)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;self.dense2(x)<br>
+&nbsp;<br>
+model&nbsp;=&nbsp;MyModel()<br>
+```<br>
+&nbsp;<br>
+Once&nbsp;the&nbsp;model&nbsp;is&nbsp;created,&nbsp;you&nbsp;can&nbsp;config&nbsp;the&nbsp;model&nbsp;with&nbsp;losses&nbsp;and&nbsp;metrics<br>
+with&nbsp;`model.<a href="#AutoEncoder-compile">compile</a>()`,&nbsp;train&nbsp;the&nbsp;model&nbsp;with&nbsp;`model.<a href="#AutoEncoder-fit">fit</a>()`,&nbsp;or&nbsp;use&nbsp;the&nbsp;model<br>
+to&nbsp;do&nbsp;prediction&nbsp;with&nbsp;`model.<a href="#AutoEncoder-predict">predict</a>()`.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%"><dl><dt>Method resolution order:</dt>
+<dd><a href="autoencoder_model.html#AutoEncoder">AutoEncoder</a></dd>
+<dd><a href="tensorflow.python.keras.engine.training.html#Model">tensorflow.python.keras.engine.training.Model</a></dd>
+<dd><a href="tensorflow.python.keras.engine.base_layer.html#Layer">tensorflow.python.keras.engine.base_layer.Layer</a></dd>
+<dd><a href="tensorflow.python.module.module.html#Module">tensorflow.python.module.module.Module</a></dd>
+<dd><a href="tensorflow.python.training.tracking.tracking.html#AutoTrackable">tensorflow.python.training.tracking.tracking.AutoTrackable</a></dd>
+<dd><a href="tensorflow.python.training.tracking.base.html#Trackable">tensorflow.python.training.tracking.base.Trackable</a></dd>
+<dd><a href="tensorflow.python.keras.utils.version_utils.html#LayerVersionSelector">tensorflow.python.keras.utils.version_utils.LayerVersionSelector</a></dd>
+<dd><a href="tensorflow.python.keras.utils.version_utils.html#ModelVersionSelector">tensorflow.python.keras.utils.version_utils.ModelVersionSelector</a></dd>
+<dd><a href="builtins.html#object">builtins.object</a></dd>
+</dl>
+<hr>
+Methods defined here:<br>
+<dl><dt><a name="AutoEncoder-__init__"><strong>__init__</strong></a>(self)</dt></dl>
+
+<dl><dt><a name="AutoEncoder-attention"><strong>attention</strong></a>(self, features, hidden)</dt></dl>
+
+<dl><dt><a name="AutoEncoder-call"><strong>call</strong></a>(self, inputs, training=False)</dt><dd><tt>Calls&nbsp;the&nbsp;model&nbsp;on&nbsp;new&nbsp;inputs.<br>
+&nbsp;<br>
+In&nbsp;this&nbsp;case&nbsp;`call`&nbsp;just&nbsp;reapplies<br>
+all&nbsp;ops&nbsp;in&nbsp;the&nbsp;graph&nbsp;to&nbsp;the&nbsp;new&nbsp;inputs<br>
+(e.g.&nbsp;build&nbsp;a&nbsp;new&nbsp;computational&nbsp;graph&nbsp;from&nbsp;the&nbsp;provided&nbsp;inputs).<br>
+&nbsp;<br>
+Arguments:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;inputs:&nbsp;A&nbsp;tensor&nbsp;or&nbsp;list&nbsp;of&nbsp;tensors.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;training:&nbsp;Boolean&nbsp;or&nbsp;boolean&nbsp;scalar&nbsp;tensor,&nbsp;indicating&nbsp;whether&nbsp;to&nbsp;run<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;the&nbsp;`Network`&nbsp;in&nbsp;training&nbsp;mode&nbsp;or&nbsp;inference&nbsp;mode.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;mask:&nbsp;A&nbsp;mask&nbsp;or&nbsp;list&nbsp;of&nbsp;masks.&nbsp;A&nbsp;mask&nbsp;can&nbsp;be<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;either&nbsp;a&nbsp;tensor&nbsp;or&nbsp;None&nbsp;(no&nbsp;mask).<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;A&nbsp;tensor&nbsp;if&nbsp;there&nbsp;is&nbsp;a&nbsp;single&nbsp;output,&nbsp;or<br>
+&nbsp;&nbsp;&nbsp;&nbsp;a&nbsp;list&nbsp;of&nbsp;tensors&nbsp;if&nbsp;there&nbsp;are&nbsp;more&nbsp;than&nbsp;one&nbsp;outputs.</tt></dd></dl>
+
+<hr>
+Methods inherited from <a href="tensorflow.python.keras.engine.training.html#Model">tensorflow.python.keras.engine.training.Model</a>:<br>
+<dl><dt><a name="AutoEncoder-__setattr__"><strong>__setattr__</strong></a>(self, name, value)</dt><dd><tt>Support&nbsp;self.<strong>foo</strong>&nbsp;=&nbsp;trackable&nbsp;syntax.</tt></dd></dl>
+
+<dl><dt><a name="AutoEncoder-build"><strong>build</strong></a>(self, input_shape)</dt><dd><tt>Builds&nbsp;the&nbsp;model&nbsp;based&nbsp;on&nbsp;input&nbsp;shapes&nbsp;received.<br>
+&nbsp;<br>
+This&nbsp;is&nbsp;to&nbsp;be&nbsp;used&nbsp;for&nbsp;subclassed&nbsp;models,&nbsp;which&nbsp;do&nbsp;not&nbsp;know&nbsp;at&nbsp;instantiation<br>
+time&nbsp;what&nbsp;their&nbsp;inputs&nbsp;look&nbsp;like.<br>
+&nbsp;<br>
+This&nbsp;method&nbsp;only&nbsp;exists&nbsp;for&nbsp;users&nbsp;who&nbsp;want&nbsp;to&nbsp;call&nbsp;`model.<a href="#AutoEncoder-build">build</a>()`&nbsp;in&nbsp;a<br>
+standalone&nbsp;way&nbsp;(as&nbsp;a&nbsp;substitute&nbsp;for&nbsp;calling&nbsp;the&nbsp;model&nbsp;on&nbsp;real&nbsp;data&nbsp;to<br>
+build&nbsp;it).&nbsp;It&nbsp;will&nbsp;never&nbsp;be&nbsp;called&nbsp;by&nbsp;the&nbsp;framework&nbsp;(and&nbsp;thus&nbsp;it&nbsp;will<br>
+never&nbsp;throw&nbsp;unexpected&nbsp;errors&nbsp;in&nbsp;an&nbsp;unrelated&nbsp;workflow).<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;input_shape:&nbsp;Single&nbsp;tuple,&nbsp;TensorShape,&nbsp;or&nbsp;list/dict&nbsp;of&nbsp;shapes,&nbsp;where<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;shapes&nbsp;are&nbsp;tuples,&nbsp;integers,&nbsp;or&nbsp;TensorShapes.<br>
+&nbsp;<br>
+Raises:<br>
+&nbsp;&nbsp;ValueError:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;1.&nbsp;In&nbsp;case&nbsp;of&nbsp;invalid&nbsp;user-provided&nbsp;data&nbsp;(not&nbsp;of&nbsp;type&nbsp;tuple,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;list,&nbsp;TensorShape,&nbsp;or&nbsp;dict).<br>
+&nbsp;&nbsp;&nbsp;&nbsp;2.&nbsp;If&nbsp;the&nbsp;model&nbsp;requires&nbsp;call&nbsp;arguments&nbsp;that&nbsp;are&nbsp;agnostic<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;to&nbsp;the&nbsp;input&nbsp;shapes&nbsp;(positional&nbsp;or&nbsp;kwarg&nbsp;in&nbsp;call&nbsp;signature).<br>
+&nbsp;&nbsp;&nbsp;&nbsp;3.&nbsp;If&nbsp;not&nbsp;all&nbsp;layers&nbsp;were&nbsp;properly&nbsp;built.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;4.&nbsp;If&nbsp;float&nbsp;type&nbsp;inputs&nbsp;are&nbsp;not&nbsp;supported&nbsp;within&nbsp;the&nbsp;layers.<br>
+&nbsp;<br>
+&nbsp;&nbsp;In&nbsp;each&nbsp;of&nbsp;these&nbsp;cases,&nbsp;the&nbsp;user&nbsp;should&nbsp;build&nbsp;their&nbsp;model&nbsp;by&nbsp;calling&nbsp;it<br>
+&nbsp;&nbsp;on&nbsp;real&nbsp;tensor&nbsp;data.</tt></dd></dl>
+
+<dl><dt><a name="AutoEncoder-compile"><strong>compile</strong></a>(self, optimizer='rmsprop', loss=None, metrics=None, loss_weights=None, weighted_metrics=None, run_eagerly=None, steps_per_execution=None, **kwargs)</dt><dd><tt>Configures&nbsp;the&nbsp;model&nbsp;for&nbsp;training.<br>
+&nbsp;<br>
+Arguments:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;optimizer:&nbsp;String&nbsp;(name&nbsp;of&nbsp;optimizer)&nbsp;or&nbsp;optimizer&nbsp;instance.&nbsp;See<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`tf.keras.optimizers`.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;loss:&nbsp;String&nbsp;(name&nbsp;of&nbsp;objective&nbsp;function),&nbsp;objective&nbsp;function&nbsp;or<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`tf.keras.losses.Loss`&nbsp;instance.&nbsp;See&nbsp;`tf.keras.losses`.&nbsp;An&nbsp;objective<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;function&nbsp;is&nbsp;any&nbsp;callable&nbsp;with&nbsp;the&nbsp;signature&nbsp;`loss&nbsp;=&nbsp;fn(y_true,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;y_pred)`,&nbsp;where&nbsp;y_true&nbsp;=&nbsp;ground&nbsp;truth&nbsp;values&nbsp;with&nbsp;shape&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`[batch_size,&nbsp;d0,&nbsp;..&nbsp;dN]`,&nbsp;except&nbsp;sparse&nbsp;loss&nbsp;functions&nbsp;such&nbsp;as&nbsp;sparse<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;categorical&nbsp;crossentropy&nbsp;where&nbsp;shape&nbsp;=&nbsp;`[batch_size,&nbsp;d0,&nbsp;..&nbsp;dN-1]`.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;y_pred&nbsp;=&nbsp;predicted&nbsp;values&nbsp;with&nbsp;shape&nbsp;=&nbsp;`[batch_size,&nbsp;d0,&nbsp;..&nbsp;dN]`.&nbsp;It<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;returns&nbsp;a&nbsp;weighted&nbsp;loss&nbsp;float&nbsp;tensor.&nbsp;If&nbsp;a&nbsp;custom&nbsp;`Loss`&nbsp;instance&nbsp;is<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;used&nbsp;and&nbsp;reduction&nbsp;is&nbsp;set&nbsp;to&nbsp;NONE,&nbsp;return&nbsp;value&nbsp;has&nbsp;the&nbsp;shape<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[batch_size,&nbsp;d0,&nbsp;..&nbsp;dN-1]&nbsp;ie.&nbsp;per-sample&nbsp;or&nbsp;per-timestep&nbsp;loss&nbsp;values;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;otherwise,&nbsp;it&nbsp;is&nbsp;a&nbsp;scalar.&nbsp;If&nbsp;the&nbsp;model&nbsp;has&nbsp;multiple&nbsp;outputs,&nbsp;you&nbsp;can<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;use&nbsp;a&nbsp;different&nbsp;loss&nbsp;on&nbsp;each&nbsp;output&nbsp;by&nbsp;passing&nbsp;a&nbsp;dictionary&nbsp;or&nbsp;a&nbsp;list<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;of&nbsp;losses.&nbsp;The&nbsp;loss&nbsp;value&nbsp;that&nbsp;will&nbsp;be&nbsp;minimized&nbsp;by&nbsp;the&nbsp;model&nbsp;will<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;then&nbsp;be&nbsp;the&nbsp;sum&nbsp;of&nbsp;all&nbsp;individual&nbsp;losses.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;metrics:&nbsp;List&nbsp;of&nbsp;metrics&nbsp;to&nbsp;be&nbsp;evaluated&nbsp;by&nbsp;the&nbsp;model&nbsp;during&nbsp;training<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;and&nbsp;testing.&nbsp;Each&nbsp;of&nbsp;this&nbsp;can&nbsp;be&nbsp;a&nbsp;string&nbsp;(name&nbsp;of&nbsp;a&nbsp;built-in<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;function),&nbsp;function&nbsp;or&nbsp;a&nbsp;`tf.keras.metrics.Metric`&nbsp;instance.&nbsp;See<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`tf.keras.metrics`.&nbsp;Typically&nbsp;you&nbsp;will&nbsp;use&nbsp;`metrics=['accuracy']`.&nbsp;A<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;function&nbsp;is&nbsp;any&nbsp;callable&nbsp;with&nbsp;the&nbsp;signature&nbsp;`result&nbsp;=&nbsp;fn(y_true,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;y_pred)`.&nbsp;To&nbsp;specify&nbsp;different&nbsp;metrics&nbsp;for&nbsp;different&nbsp;outputs&nbsp;of&nbsp;a<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;multi-output&nbsp;model,&nbsp;you&nbsp;could&nbsp;also&nbsp;pass&nbsp;a&nbsp;dictionary,&nbsp;such&nbsp;as<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`metrics={'output_a':&nbsp;'accuracy',&nbsp;'output_b':&nbsp;['accuracy',&nbsp;'mse']}`.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;You&nbsp;can&nbsp;also&nbsp;pass&nbsp;a&nbsp;list&nbsp;(len&nbsp;=&nbsp;len(outputs))&nbsp;of&nbsp;lists&nbsp;of&nbsp;metrics<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;such&nbsp;as&nbsp;`metrics=[['accuracy'],&nbsp;['accuracy',&nbsp;'mse']]`&nbsp;or<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`metrics=['accuracy',&nbsp;['accuracy',&nbsp;'mse']]`.&nbsp;When&nbsp;you&nbsp;pass&nbsp;the<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;strings&nbsp;'accuracy'&nbsp;or&nbsp;'acc',&nbsp;we&nbsp;convert&nbsp;this&nbsp;to&nbsp;one&nbsp;of<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`tf.keras.metrics.BinaryAccuracy`,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`tf.keras.metrics.CategoricalAccuracy`,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`tf.keras.metrics.SparseCategoricalAccuracy`&nbsp;based&nbsp;on&nbsp;the&nbsp;loss<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;function&nbsp;used&nbsp;and&nbsp;the&nbsp;model&nbsp;output&nbsp;shape.&nbsp;We&nbsp;do&nbsp;a&nbsp;similar<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;conversion&nbsp;for&nbsp;the&nbsp;strings&nbsp;'crossentropy'&nbsp;and&nbsp;'ce'&nbsp;as&nbsp;well.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;loss_weights:&nbsp;Optional&nbsp;list&nbsp;or&nbsp;dictionary&nbsp;specifying&nbsp;scalar&nbsp;coefficients<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(Python&nbsp;floats)&nbsp;to&nbsp;weight&nbsp;the&nbsp;loss&nbsp;contributions&nbsp;of&nbsp;different&nbsp;model<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;outputs.&nbsp;The&nbsp;loss&nbsp;value&nbsp;that&nbsp;will&nbsp;be&nbsp;minimized&nbsp;by&nbsp;the&nbsp;model&nbsp;will&nbsp;then<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;be&nbsp;the&nbsp;*weighted&nbsp;sum*&nbsp;of&nbsp;all&nbsp;individual&nbsp;losses,&nbsp;weighted&nbsp;by&nbsp;the<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`loss_weights`&nbsp;coefficients.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;If&nbsp;a&nbsp;list,&nbsp;it&nbsp;is&nbsp;expected&nbsp;to&nbsp;have&nbsp;a&nbsp;1:1&nbsp;mapping&nbsp;to&nbsp;the&nbsp;model's<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;outputs.&nbsp;If&nbsp;a&nbsp;dict,&nbsp;it&nbsp;is&nbsp;expected&nbsp;to&nbsp;map&nbsp;output&nbsp;names&nbsp;(strings)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;to&nbsp;scalar&nbsp;coefficients.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;weighted_metrics:&nbsp;List&nbsp;of&nbsp;metrics&nbsp;to&nbsp;be&nbsp;evaluated&nbsp;and&nbsp;weighted&nbsp;by<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sample_weight&nbsp;or&nbsp;class_weight&nbsp;during&nbsp;training&nbsp;and&nbsp;testing.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;run_eagerly:&nbsp;Bool.&nbsp;Defaults&nbsp;to&nbsp;`False`.&nbsp;If&nbsp;`True`,&nbsp;this&nbsp;`<a href="tensorflow.python.keras.engine.training.html#Model">Model</a>`'s<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;logic&nbsp;will&nbsp;not&nbsp;be&nbsp;wrapped&nbsp;in&nbsp;a&nbsp;`tf.function`.&nbsp;Recommended&nbsp;to&nbsp;leave<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;this&nbsp;as&nbsp;`None`&nbsp;unless&nbsp;your&nbsp;`<a href="tensorflow.python.keras.engine.training.html#Model">Model</a>`&nbsp;cannot&nbsp;be&nbsp;run&nbsp;inside&nbsp;a<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`tf.function`.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;steps_per_execution:&nbsp;Int.&nbsp;Defaults&nbsp;to&nbsp;1.&nbsp;The&nbsp;number&nbsp;of&nbsp;batches&nbsp;to<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;run&nbsp;during&nbsp;each&nbsp;`tf.function`&nbsp;call.&nbsp;Running&nbsp;multiple&nbsp;batches<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;inside&nbsp;a&nbsp;single&nbsp;`tf.function`&nbsp;call&nbsp;can&nbsp;greatly&nbsp;improve&nbsp;performance<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;on&nbsp;TPUs&nbsp;or&nbsp;small&nbsp;models&nbsp;with&nbsp;a&nbsp;large&nbsp;Python&nbsp;overhead.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;At&nbsp;most,&nbsp;one&nbsp;full&nbsp;epoch&nbsp;will&nbsp;be&nbsp;run&nbsp;each<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;execution.&nbsp;If&nbsp;a&nbsp;number&nbsp;larger&nbsp;than&nbsp;the&nbsp;size&nbsp;of&nbsp;the&nbsp;epoch&nbsp;is&nbsp;passed,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;the&nbsp;execution&nbsp;will&nbsp;be&nbsp;truncated&nbsp;to&nbsp;the&nbsp;size&nbsp;of&nbsp;the&nbsp;epoch.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Note&nbsp;that&nbsp;if&nbsp;`steps_per_execution`&nbsp;is&nbsp;set&nbsp;to&nbsp;`N`,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`Callback.on_batch_begin`&nbsp;and&nbsp;`Callback.on_batch_end`&nbsp;methods<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;will&nbsp;only&nbsp;be&nbsp;called&nbsp;every&nbsp;`N`&nbsp;batches<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(i.e.&nbsp;before/after&nbsp;each&nbsp;`tf.function`&nbsp;execution).<br>
+&nbsp;&nbsp;&nbsp;&nbsp;**kwargs:&nbsp;Arguments&nbsp;supported&nbsp;for&nbsp;backwards&nbsp;compatibility&nbsp;only.<br>
+&nbsp;<br>
+Raises:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;ValueError:&nbsp;In&nbsp;case&nbsp;of&nbsp;invalid&nbsp;arguments&nbsp;for<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`optimizer`,&nbsp;`loss`&nbsp;or&nbsp;`metrics`.</tt></dd></dl>
+
+<dl><dt><a name="AutoEncoder-evaluate"><strong>evaluate</strong></a>(self, x=None, y=None, batch_size=None, verbose=1, sample_weight=None, steps=None, callbacks=None, max_queue_size=10, workers=1, use_multiprocessing=False, return_dict=False)</dt><dd><tt>Returns&nbsp;the&nbsp;loss&nbsp;value&nbsp;&amp;&nbsp;metrics&nbsp;values&nbsp;for&nbsp;the&nbsp;model&nbsp;in&nbsp;test&nbsp;mode.<br>
+&nbsp;<br>
+Computation&nbsp;is&nbsp;done&nbsp;in&nbsp;batches&nbsp;(see&nbsp;the&nbsp;`batch_size`&nbsp;arg.)<br>
+&nbsp;<br>
+Arguments:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;x:&nbsp;Input&nbsp;data.&nbsp;It&nbsp;could&nbsp;be:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;A&nbsp;Numpy&nbsp;array&nbsp;(or&nbsp;array-like),&nbsp;or&nbsp;a&nbsp;list&nbsp;of&nbsp;arrays<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(in&nbsp;case&nbsp;the&nbsp;model&nbsp;has&nbsp;multiple&nbsp;inputs).<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;A&nbsp;TensorFlow&nbsp;tensor,&nbsp;or&nbsp;a&nbsp;list&nbsp;of&nbsp;tensors<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(in&nbsp;case&nbsp;the&nbsp;model&nbsp;has&nbsp;multiple&nbsp;inputs).<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;A&nbsp;dict&nbsp;mapping&nbsp;input&nbsp;names&nbsp;to&nbsp;the&nbsp;corresponding&nbsp;array/tensors,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;the&nbsp;model&nbsp;has&nbsp;named&nbsp;inputs.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;A&nbsp;`tf.data`&nbsp;dataset.&nbsp;Should&nbsp;return&nbsp;a&nbsp;tuple<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;of&nbsp;either&nbsp;`(inputs,&nbsp;targets)`&nbsp;or<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`(inputs,&nbsp;targets,&nbsp;sample_weights)`.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;A&nbsp;generator&nbsp;or&nbsp;`keras.utils.Sequence`&nbsp;returning&nbsp;`(inputs,&nbsp;targets)`<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;or&nbsp;`(inputs,&nbsp;targets,&nbsp;sample_weights)`.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;A&nbsp;more&nbsp;detailed&nbsp;description&nbsp;of&nbsp;unpacking&nbsp;behavior&nbsp;for&nbsp;iterator&nbsp;types<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(Dataset,&nbsp;generator,&nbsp;Sequence)&nbsp;is&nbsp;given&nbsp;in&nbsp;the&nbsp;`Unpacking&nbsp;behavior<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;for&nbsp;iterator-like&nbsp;inputs`&nbsp;section&nbsp;of&nbsp;`<a href="tensorflow.python.keras.engine.training.html#Model">Model</a>.fit`.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;y:&nbsp;Target&nbsp;data.&nbsp;Like&nbsp;the&nbsp;input&nbsp;data&nbsp;`x`,&nbsp;it&nbsp;could&nbsp;be&nbsp;either&nbsp;Numpy<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;array(s)&nbsp;or&nbsp;TensorFlow&nbsp;tensor(s).&nbsp;It&nbsp;should&nbsp;be&nbsp;consistent&nbsp;with&nbsp;`x`<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(you&nbsp;cannot&nbsp;have&nbsp;Numpy&nbsp;inputs&nbsp;and&nbsp;tensor&nbsp;targets,&nbsp;or&nbsp;inversely).&nbsp;If<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`x`&nbsp;is&nbsp;a&nbsp;dataset,&nbsp;generator&nbsp;or&nbsp;`keras.utils.Sequence`&nbsp;instance,&nbsp;`y`<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;should&nbsp;not&nbsp;be&nbsp;specified&nbsp;(since&nbsp;targets&nbsp;will&nbsp;be&nbsp;obtained&nbsp;from&nbsp;the<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;iterator/dataset).<br>
+&nbsp;&nbsp;&nbsp;&nbsp;batch_size:&nbsp;Integer&nbsp;or&nbsp;`None`.&nbsp;Number&nbsp;of&nbsp;samples&nbsp;per&nbsp;batch&nbsp;of<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;computation.&nbsp;If&nbsp;unspecified,&nbsp;`batch_size`&nbsp;will&nbsp;default&nbsp;to&nbsp;32.&nbsp;Do&nbsp;not<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;specify&nbsp;the&nbsp;`batch_size`&nbsp;if&nbsp;your&nbsp;data&nbsp;is&nbsp;in&nbsp;the&nbsp;form&nbsp;of&nbsp;a&nbsp;dataset,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;generators,&nbsp;or&nbsp;`keras.utils.Sequence`&nbsp;instances&nbsp;(since&nbsp;they&nbsp;generate<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;batches).<br>
+&nbsp;&nbsp;&nbsp;&nbsp;verbose:&nbsp;0&nbsp;or&nbsp;1.&nbsp;Verbosity&nbsp;mode.&nbsp;0&nbsp;=&nbsp;silent,&nbsp;1&nbsp;=&nbsp;progress&nbsp;bar.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;sample_weight:&nbsp;Optional&nbsp;Numpy&nbsp;array&nbsp;of&nbsp;weights&nbsp;for&nbsp;the&nbsp;test&nbsp;samples,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;used&nbsp;for&nbsp;weighting&nbsp;the&nbsp;loss&nbsp;function.&nbsp;You&nbsp;can&nbsp;either&nbsp;pass&nbsp;a&nbsp;flat&nbsp;(1D)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Numpy&nbsp;array&nbsp;with&nbsp;the&nbsp;same&nbsp;length&nbsp;as&nbsp;the&nbsp;input&nbsp;samples<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(1:1&nbsp;mapping&nbsp;between&nbsp;weights&nbsp;and&nbsp;samples),&nbsp;or&nbsp;in&nbsp;the&nbsp;case&nbsp;of<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;temporal&nbsp;data,&nbsp;you&nbsp;can&nbsp;pass&nbsp;a&nbsp;2D&nbsp;array&nbsp;with&nbsp;shape&nbsp;`(samples,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sequence_length)`,&nbsp;to&nbsp;apply&nbsp;a&nbsp;different&nbsp;weight&nbsp;to&nbsp;every&nbsp;timestep<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;of&nbsp;every&nbsp;sample.&nbsp;This&nbsp;argument&nbsp;is&nbsp;not&nbsp;supported&nbsp;when&nbsp;`x`&nbsp;is&nbsp;a<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dataset,&nbsp;instead&nbsp;pass&nbsp;sample&nbsp;weights&nbsp;as&nbsp;the&nbsp;third&nbsp;element&nbsp;of&nbsp;`x`.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;steps:&nbsp;Integer&nbsp;or&nbsp;`None`.&nbsp;Total&nbsp;number&nbsp;of&nbsp;steps&nbsp;(batches&nbsp;of&nbsp;samples)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;before&nbsp;declaring&nbsp;the&nbsp;evaluation&nbsp;round&nbsp;finished.&nbsp;Ignored&nbsp;with&nbsp;the<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;default&nbsp;value&nbsp;of&nbsp;`None`.&nbsp;If&nbsp;x&nbsp;is&nbsp;a&nbsp;`tf.data`&nbsp;dataset&nbsp;and&nbsp;`steps`&nbsp;is<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;None,&nbsp;'evaluate'&nbsp;will&nbsp;run&nbsp;until&nbsp;the&nbsp;dataset&nbsp;is&nbsp;exhausted.&nbsp;This<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;argument&nbsp;is&nbsp;not&nbsp;supported&nbsp;with&nbsp;array&nbsp;inputs.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;callbacks:&nbsp;List&nbsp;of&nbsp;`keras.callbacks.Callback`&nbsp;instances.&nbsp;List&nbsp;of<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;callbacks&nbsp;to&nbsp;apply&nbsp;during&nbsp;evaluation.&nbsp;See<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[callbacks](/api_docs/python/tf/keras/callbacks).<br>
+&nbsp;&nbsp;&nbsp;&nbsp;max_queue_size:&nbsp;Integer.&nbsp;Used&nbsp;for&nbsp;generator&nbsp;or&nbsp;`keras.utils.Sequence`<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;input&nbsp;only.&nbsp;Maximum&nbsp;size&nbsp;for&nbsp;the&nbsp;generator&nbsp;queue.&nbsp;If&nbsp;unspecified,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`max_queue_size`&nbsp;will&nbsp;default&nbsp;to&nbsp;10.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;workers:&nbsp;Integer.&nbsp;Used&nbsp;for&nbsp;generator&nbsp;or&nbsp;`keras.utils.Sequence`&nbsp;input<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;only.&nbsp;Maximum&nbsp;number&nbsp;of&nbsp;processes&nbsp;to&nbsp;spin&nbsp;up&nbsp;when&nbsp;using&nbsp;process-based<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;threading.&nbsp;If&nbsp;unspecified,&nbsp;`workers`&nbsp;will&nbsp;default&nbsp;to&nbsp;1.&nbsp;If&nbsp;0,&nbsp;will<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;execute&nbsp;the&nbsp;generator&nbsp;on&nbsp;the&nbsp;main&nbsp;thread.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;use_multiprocessing:&nbsp;Boolean.&nbsp;Used&nbsp;for&nbsp;generator&nbsp;or<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`keras.utils.Sequence`&nbsp;input&nbsp;only.&nbsp;If&nbsp;`True`,&nbsp;use&nbsp;process-based<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;threading.&nbsp;If&nbsp;unspecified,&nbsp;`use_multiprocessing`&nbsp;will&nbsp;default&nbsp;to<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`False`.&nbsp;Note&nbsp;that&nbsp;because&nbsp;this&nbsp;implementation&nbsp;relies&nbsp;on<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;multiprocessing,&nbsp;you&nbsp;should&nbsp;not&nbsp;pass&nbsp;non-picklable&nbsp;arguments&nbsp;to&nbsp;the<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;generator&nbsp;as&nbsp;they&nbsp;can't&nbsp;be&nbsp;passed&nbsp;easily&nbsp;to&nbsp;children&nbsp;processes.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;return_dict:&nbsp;If&nbsp;`True`,&nbsp;loss&nbsp;and&nbsp;metric&nbsp;results&nbsp;are&nbsp;returned&nbsp;as&nbsp;a&nbsp;dict,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;with&nbsp;each&nbsp;key&nbsp;being&nbsp;the&nbsp;name&nbsp;of&nbsp;the&nbsp;metric.&nbsp;If&nbsp;`False`,&nbsp;they&nbsp;are<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;returned&nbsp;as&nbsp;a&nbsp;list.<br>
+&nbsp;<br>
+See&nbsp;the&nbsp;discussion&nbsp;of&nbsp;`Unpacking&nbsp;behavior&nbsp;for&nbsp;iterator-like&nbsp;inputs`&nbsp;for<br>
+`<a href="tensorflow.python.keras.engine.training.html#Model">Model</a>.fit`.<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Scalar&nbsp;test&nbsp;loss&nbsp;(if&nbsp;the&nbsp;model&nbsp;has&nbsp;a&nbsp;single&nbsp;output&nbsp;and&nbsp;no&nbsp;metrics)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;or&nbsp;list&nbsp;of&nbsp;scalars&nbsp;(if&nbsp;the&nbsp;model&nbsp;has&nbsp;multiple&nbsp;outputs<br>
+&nbsp;&nbsp;&nbsp;&nbsp;and/or&nbsp;metrics).&nbsp;The&nbsp;attribute&nbsp;`model.metrics_names`&nbsp;will&nbsp;give&nbsp;you<br>
+&nbsp;&nbsp;&nbsp;&nbsp;the&nbsp;display&nbsp;labels&nbsp;for&nbsp;the&nbsp;scalar&nbsp;outputs.<br>
+&nbsp;<br>
+Raises:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;RuntimeError:&nbsp;If&nbsp;`model.evaluate`&nbsp;is&nbsp;wrapped&nbsp;in&nbsp;`tf.function`.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;ValueError:&nbsp;in&nbsp;case&nbsp;of&nbsp;invalid&nbsp;arguments.</tt></dd></dl>
+
+<dl><dt><a name="AutoEncoder-evaluate_generator"><strong>evaluate_generator</strong></a>(self, generator, steps=None, callbacks=None, max_queue_size=10, workers=1, use_multiprocessing=False, verbose=0)</dt><dd><tt>Evaluates&nbsp;the&nbsp;model&nbsp;on&nbsp;a&nbsp;data&nbsp;generator.<br>
+&nbsp;<br>
+DEPRECATED:<br>
+&nbsp;&nbsp;`<a href="tensorflow.python.keras.engine.training.html#Model">Model</a>.evaluate`&nbsp;now&nbsp;supports&nbsp;generators,&nbsp;so&nbsp;there&nbsp;is&nbsp;no&nbsp;longer&nbsp;any&nbsp;need<br>
+&nbsp;&nbsp;to&nbsp;use&nbsp;this&nbsp;endpoint.</tt></dd></dl>
+
+<dl><dt><a name="AutoEncoder-fit"><strong>fit</strong></a>(self, x=None, y=None, batch_size=None, epochs=1, verbose=1, callbacks=None, validation_split=0.0, validation_data=None, shuffle=True, class_weight=None, sample_weight=None, initial_epoch=0, steps_per_epoch=None, validation_steps=None, validation_batch_size=None, validation_freq=1, max_queue_size=10, workers=1, use_multiprocessing=False)</dt><dd><tt>Trains&nbsp;the&nbsp;model&nbsp;for&nbsp;a&nbsp;fixed&nbsp;number&nbsp;of&nbsp;epochs&nbsp;(iterations&nbsp;on&nbsp;a&nbsp;dataset).<br>
+&nbsp;<br>
+Arguments:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;x:&nbsp;Input&nbsp;data.&nbsp;It&nbsp;could&nbsp;be:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;A&nbsp;Numpy&nbsp;array&nbsp;(or&nbsp;array-like),&nbsp;or&nbsp;a&nbsp;list&nbsp;of&nbsp;arrays<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(in&nbsp;case&nbsp;the&nbsp;model&nbsp;has&nbsp;multiple&nbsp;inputs).<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;A&nbsp;TensorFlow&nbsp;tensor,&nbsp;or&nbsp;a&nbsp;list&nbsp;of&nbsp;tensors<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(in&nbsp;case&nbsp;the&nbsp;model&nbsp;has&nbsp;multiple&nbsp;inputs).<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;A&nbsp;dict&nbsp;mapping&nbsp;input&nbsp;names&nbsp;to&nbsp;the&nbsp;corresponding&nbsp;array/tensors,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;the&nbsp;model&nbsp;has&nbsp;named&nbsp;inputs.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;A&nbsp;`tf.data`&nbsp;dataset.&nbsp;Should&nbsp;return&nbsp;a&nbsp;tuple<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;of&nbsp;either&nbsp;`(inputs,&nbsp;targets)`&nbsp;or<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`(inputs,&nbsp;targets,&nbsp;sample_weights)`.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;A&nbsp;generator&nbsp;or&nbsp;`keras.utils.Sequence`&nbsp;returning&nbsp;`(inputs,&nbsp;targets)`<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;or&nbsp;`(inputs,&nbsp;targets,&nbsp;sample_weights)`.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;A&nbsp;more&nbsp;detailed&nbsp;description&nbsp;of&nbsp;unpacking&nbsp;behavior&nbsp;for&nbsp;iterator&nbsp;types<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(Dataset,&nbsp;generator,&nbsp;Sequence)&nbsp;is&nbsp;given&nbsp;below.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;y:&nbsp;Target&nbsp;data.&nbsp;Like&nbsp;the&nbsp;input&nbsp;data&nbsp;`x`,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;it&nbsp;could&nbsp;be&nbsp;either&nbsp;Numpy&nbsp;array(s)&nbsp;or&nbsp;TensorFlow&nbsp;tensor(s).<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;It&nbsp;should&nbsp;be&nbsp;consistent&nbsp;with&nbsp;`x`&nbsp;(you&nbsp;cannot&nbsp;have&nbsp;Numpy&nbsp;inputs&nbsp;and<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;tensor&nbsp;targets,&nbsp;or&nbsp;inversely).&nbsp;If&nbsp;`x`&nbsp;is&nbsp;a&nbsp;dataset,&nbsp;generator,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;or&nbsp;`keras.utils.Sequence`&nbsp;instance,&nbsp;`y`&nbsp;should<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;not&nbsp;be&nbsp;specified&nbsp;(since&nbsp;targets&nbsp;will&nbsp;be&nbsp;obtained&nbsp;from&nbsp;`x`).<br>
+&nbsp;&nbsp;&nbsp;&nbsp;batch_size:&nbsp;Integer&nbsp;or&nbsp;`None`.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Number&nbsp;of&nbsp;samples&nbsp;per&nbsp;gradient&nbsp;update.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;If&nbsp;unspecified,&nbsp;`batch_size`&nbsp;will&nbsp;default&nbsp;to&nbsp;32.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Do&nbsp;not&nbsp;specify&nbsp;the&nbsp;`batch_size`&nbsp;if&nbsp;your&nbsp;data&nbsp;is&nbsp;in&nbsp;the<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;form&nbsp;of&nbsp;datasets,&nbsp;generators,&nbsp;or&nbsp;`keras.utils.Sequence`&nbsp;instances<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(since&nbsp;they&nbsp;generate&nbsp;batches).<br>
+&nbsp;&nbsp;&nbsp;&nbsp;epochs:&nbsp;Integer.&nbsp;Number&nbsp;of&nbsp;epochs&nbsp;to&nbsp;train&nbsp;the&nbsp;model.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;An&nbsp;epoch&nbsp;is&nbsp;an&nbsp;iteration&nbsp;over&nbsp;the&nbsp;entire&nbsp;`x`&nbsp;and&nbsp;`y`<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;data&nbsp;provided.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Note&nbsp;that&nbsp;in&nbsp;conjunction&nbsp;with&nbsp;`initial_epoch`,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`epochs`&nbsp;is&nbsp;to&nbsp;be&nbsp;understood&nbsp;as&nbsp;"final&nbsp;epoch".<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The&nbsp;model&nbsp;is&nbsp;not&nbsp;trained&nbsp;for&nbsp;a&nbsp;number&nbsp;of&nbsp;iterations<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;given&nbsp;by&nbsp;`epochs`,&nbsp;but&nbsp;merely&nbsp;until&nbsp;the&nbsp;epoch<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;of&nbsp;index&nbsp;`epochs`&nbsp;is&nbsp;reached.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;verbose:&nbsp;0,&nbsp;1,&nbsp;or&nbsp;2.&nbsp;Verbosity&nbsp;mode.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;0&nbsp;=&nbsp;silent,&nbsp;1&nbsp;=&nbsp;progress&nbsp;bar,&nbsp;2&nbsp;=&nbsp;one&nbsp;line&nbsp;per&nbsp;epoch.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Note&nbsp;that&nbsp;the&nbsp;progress&nbsp;bar&nbsp;is&nbsp;not&nbsp;particularly&nbsp;useful&nbsp;when<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;logged&nbsp;to&nbsp;a&nbsp;file,&nbsp;so&nbsp;verbose=2&nbsp;is&nbsp;recommended&nbsp;when&nbsp;not&nbsp;running<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;interactively&nbsp;(eg,&nbsp;in&nbsp;a&nbsp;production&nbsp;environment).<br>
+&nbsp;&nbsp;&nbsp;&nbsp;callbacks:&nbsp;List&nbsp;of&nbsp;`keras.callbacks.Callback`&nbsp;instances.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;List&nbsp;of&nbsp;callbacks&nbsp;to&nbsp;apply&nbsp;during&nbsp;training.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;See&nbsp;`tf.keras.callbacks`.&nbsp;Note&nbsp;`tf.keras.callbacks.ProgbarLogger`<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;and&nbsp;`tf.keras.callbacks.History`&nbsp;callbacks&nbsp;are&nbsp;created&nbsp;automatically<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;and&nbsp;need&nbsp;not&nbsp;be&nbsp;passed&nbsp;into&nbsp;`model.fit`.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`tf.keras.callbacks.ProgbarLogger`&nbsp;is&nbsp;created&nbsp;or&nbsp;not&nbsp;based&nbsp;on<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`verbose`&nbsp;argument&nbsp;to&nbsp;`model.fit`.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;validation_split:&nbsp;Float&nbsp;between&nbsp;0&nbsp;and&nbsp;1.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Fraction&nbsp;of&nbsp;the&nbsp;training&nbsp;data&nbsp;to&nbsp;be&nbsp;used&nbsp;as&nbsp;validation&nbsp;data.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The&nbsp;model&nbsp;will&nbsp;set&nbsp;apart&nbsp;this&nbsp;fraction&nbsp;of&nbsp;the&nbsp;training&nbsp;data,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;will&nbsp;not&nbsp;train&nbsp;on&nbsp;it,&nbsp;and&nbsp;will&nbsp;evaluate<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;the&nbsp;loss&nbsp;and&nbsp;any&nbsp;model&nbsp;metrics<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;on&nbsp;this&nbsp;data&nbsp;at&nbsp;the&nbsp;end&nbsp;of&nbsp;each&nbsp;epoch.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The&nbsp;validation&nbsp;data&nbsp;is&nbsp;selected&nbsp;from&nbsp;the&nbsp;last&nbsp;samples<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;in&nbsp;the&nbsp;`x`&nbsp;and&nbsp;`y`&nbsp;data&nbsp;provided,&nbsp;before&nbsp;shuffling.&nbsp;This&nbsp;argument&nbsp;is<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;not&nbsp;supported&nbsp;when&nbsp;`x`&nbsp;is&nbsp;a&nbsp;dataset,&nbsp;generator&nbsp;or<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`keras.utils.Sequence`&nbsp;instance.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;validation_data:&nbsp;Data&nbsp;on&nbsp;which&nbsp;to&nbsp;evaluate<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;the&nbsp;loss&nbsp;and&nbsp;any&nbsp;model&nbsp;metrics&nbsp;at&nbsp;the&nbsp;end&nbsp;of&nbsp;each&nbsp;epoch.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The&nbsp;model&nbsp;will&nbsp;not&nbsp;be&nbsp;trained&nbsp;on&nbsp;this&nbsp;data.&nbsp;Thus,&nbsp;note&nbsp;the&nbsp;fact<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;that&nbsp;the&nbsp;validation&nbsp;loss&nbsp;of&nbsp;data&nbsp;provided&nbsp;using&nbsp;`validation_split`<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;or&nbsp;`validation_data`&nbsp;is&nbsp;not&nbsp;affected&nbsp;by&nbsp;regularization&nbsp;layers&nbsp;like<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;noise&nbsp;and&nbsp;dropout.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`validation_data`&nbsp;will&nbsp;override&nbsp;`validation_split`.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`validation_data`&nbsp;could&nbsp;be:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;tuple&nbsp;`(x_val,&nbsp;y_val)`&nbsp;of&nbsp;Numpy&nbsp;arrays&nbsp;or&nbsp;tensors<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;tuple&nbsp;`(x_val,&nbsp;y_val,&nbsp;val_sample_weights)`&nbsp;of&nbsp;Numpy&nbsp;arrays<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;dataset<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;For&nbsp;the&nbsp;first&nbsp;two&nbsp;cases,&nbsp;`batch_size`&nbsp;must&nbsp;be&nbsp;provided.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;For&nbsp;the&nbsp;last&nbsp;case,&nbsp;`validation_steps`&nbsp;could&nbsp;be&nbsp;provided.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Note&nbsp;that&nbsp;`validation_data`&nbsp;does&nbsp;not&nbsp;support&nbsp;all&nbsp;the&nbsp;data&nbsp;types&nbsp;that<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;are&nbsp;supported&nbsp;in&nbsp;`x`,&nbsp;eg,&nbsp;dict,&nbsp;generator&nbsp;or&nbsp;`keras.utils.Sequence`.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;shuffle:&nbsp;Boolean&nbsp;(whether&nbsp;to&nbsp;shuffle&nbsp;the&nbsp;training&nbsp;data<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;before&nbsp;each&nbsp;epoch)&nbsp;or&nbsp;str&nbsp;(for&nbsp;'batch').&nbsp;This&nbsp;argument&nbsp;is&nbsp;ignored<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;when&nbsp;`x`&nbsp;is&nbsp;a&nbsp;generator.&nbsp;'batch'&nbsp;is&nbsp;a&nbsp;special&nbsp;option&nbsp;for&nbsp;dealing<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;with&nbsp;the&nbsp;limitations&nbsp;of&nbsp;HDF5&nbsp;data;&nbsp;it&nbsp;shuffles&nbsp;in&nbsp;batch-sized<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;chunks.&nbsp;Has&nbsp;no&nbsp;effect&nbsp;when&nbsp;`steps_per_epoch`&nbsp;is&nbsp;not&nbsp;`None`.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;class_weight:&nbsp;Optional&nbsp;dictionary&nbsp;mapping&nbsp;class&nbsp;indices&nbsp;(integers)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;to&nbsp;a&nbsp;weight&nbsp;(float)&nbsp;value,&nbsp;used&nbsp;for&nbsp;weighting&nbsp;the&nbsp;loss&nbsp;function<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(during&nbsp;training&nbsp;only).<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;This&nbsp;can&nbsp;be&nbsp;useful&nbsp;to&nbsp;tell&nbsp;the&nbsp;model&nbsp;to<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"pay&nbsp;more&nbsp;attention"&nbsp;to&nbsp;samples&nbsp;from<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;an&nbsp;under-represented&nbsp;class.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;sample_weight:&nbsp;Optional&nbsp;Numpy&nbsp;array&nbsp;of&nbsp;weights&nbsp;for<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;the&nbsp;training&nbsp;samples,&nbsp;used&nbsp;for&nbsp;weighting&nbsp;the&nbsp;loss&nbsp;function<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(during&nbsp;training&nbsp;only).&nbsp;You&nbsp;can&nbsp;either&nbsp;pass&nbsp;a&nbsp;flat&nbsp;(1D)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Numpy&nbsp;array&nbsp;with&nbsp;the&nbsp;same&nbsp;length&nbsp;as&nbsp;the&nbsp;input&nbsp;samples<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(1:1&nbsp;mapping&nbsp;between&nbsp;weights&nbsp;and&nbsp;samples),<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;or&nbsp;in&nbsp;the&nbsp;case&nbsp;of&nbsp;temporal&nbsp;data,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;you&nbsp;can&nbsp;pass&nbsp;a&nbsp;2D&nbsp;array&nbsp;with&nbsp;shape<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`(samples,&nbsp;sequence_length)`,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;to&nbsp;apply&nbsp;a&nbsp;different&nbsp;weight&nbsp;to&nbsp;every&nbsp;timestep&nbsp;of&nbsp;every&nbsp;sample.&nbsp;This<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;argument&nbsp;is&nbsp;not&nbsp;supported&nbsp;when&nbsp;`x`&nbsp;is&nbsp;a&nbsp;dataset,&nbsp;generator,&nbsp;or<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`keras.utils.Sequence`&nbsp;instance,&nbsp;instead&nbsp;provide&nbsp;the&nbsp;sample_weights<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;as&nbsp;the&nbsp;third&nbsp;element&nbsp;of&nbsp;`x`.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;initial_epoch:&nbsp;Integer.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Epoch&nbsp;at&nbsp;which&nbsp;to&nbsp;start&nbsp;training<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(useful&nbsp;for&nbsp;resuming&nbsp;a&nbsp;previous&nbsp;training&nbsp;run).<br>
+&nbsp;&nbsp;&nbsp;&nbsp;steps_per_epoch:&nbsp;Integer&nbsp;or&nbsp;`None`.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Total&nbsp;number&nbsp;of&nbsp;steps&nbsp;(batches&nbsp;of&nbsp;samples)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;before&nbsp;declaring&nbsp;one&nbsp;epoch&nbsp;finished&nbsp;and&nbsp;starting&nbsp;the<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;next&nbsp;epoch.&nbsp;When&nbsp;training&nbsp;with&nbsp;input&nbsp;tensors&nbsp;such&nbsp;as<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TensorFlow&nbsp;data&nbsp;tensors,&nbsp;the&nbsp;default&nbsp;`None`&nbsp;is&nbsp;equal&nbsp;to<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;the&nbsp;number&nbsp;of&nbsp;samples&nbsp;in&nbsp;your&nbsp;dataset&nbsp;divided&nbsp;by<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;the&nbsp;batch&nbsp;size,&nbsp;or&nbsp;1&nbsp;if&nbsp;that&nbsp;cannot&nbsp;be&nbsp;determined.&nbsp;If&nbsp;x&nbsp;is&nbsp;a<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`tf.data`&nbsp;dataset,&nbsp;and&nbsp;'steps_per_epoch'<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;is&nbsp;None,&nbsp;the&nbsp;epoch&nbsp;will&nbsp;run&nbsp;until&nbsp;the&nbsp;input&nbsp;dataset&nbsp;is&nbsp;exhausted.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;When&nbsp;passing&nbsp;an&nbsp;infinitely&nbsp;repeating&nbsp;dataset,&nbsp;you&nbsp;must&nbsp;specify&nbsp;the<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`steps_per_epoch`&nbsp;argument.&nbsp;This&nbsp;argument&nbsp;is&nbsp;not&nbsp;supported&nbsp;with<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;array&nbsp;inputs.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;validation_steps:&nbsp;Only&nbsp;relevant&nbsp;if&nbsp;`validation_data`&nbsp;is&nbsp;provided&nbsp;and<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;is&nbsp;a&nbsp;`tf.data`&nbsp;dataset.&nbsp;Total&nbsp;number&nbsp;of&nbsp;steps&nbsp;(batches&nbsp;of<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;samples)&nbsp;to&nbsp;draw&nbsp;before&nbsp;stopping&nbsp;when&nbsp;performing&nbsp;validation<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;at&nbsp;the&nbsp;end&nbsp;of&nbsp;every&nbsp;epoch.&nbsp;If&nbsp;'validation_steps'&nbsp;is&nbsp;None,&nbsp;validation<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;will&nbsp;run&nbsp;until&nbsp;the&nbsp;`validation_data`&nbsp;dataset&nbsp;is&nbsp;exhausted.&nbsp;In&nbsp;the<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;case&nbsp;of&nbsp;an&nbsp;infinitely&nbsp;repeated&nbsp;dataset,&nbsp;it&nbsp;will&nbsp;run&nbsp;into&nbsp;an<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;infinite&nbsp;loop.&nbsp;If&nbsp;'validation_steps'&nbsp;is&nbsp;specified&nbsp;and&nbsp;only&nbsp;part&nbsp;of<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;the&nbsp;dataset&nbsp;will&nbsp;be&nbsp;consumed,&nbsp;the&nbsp;evaluation&nbsp;will&nbsp;start&nbsp;from&nbsp;the<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;beginning&nbsp;of&nbsp;the&nbsp;dataset&nbsp;at&nbsp;each&nbsp;epoch.&nbsp;This&nbsp;ensures&nbsp;that&nbsp;the&nbsp;same<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;validation&nbsp;samples&nbsp;are&nbsp;used&nbsp;every&nbsp;time.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;validation_batch_size:&nbsp;Integer&nbsp;or&nbsp;`None`.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Number&nbsp;of&nbsp;samples&nbsp;per&nbsp;validation&nbsp;batch.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;If&nbsp;unspecified,&nbsp;will&nbsp;default&nbsp;to&nbsp;`batch_size`.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Do&nbsp;not&nbsp;specify&nbsp;the&nbsp;`validation_batch_size`&nbsp;if&nbsp;your&nbsp;data&nbsp;is&nbsp;in&nbsp;the<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;form&nbsp;of&nbsp;datasets,&nbsp;generators,&nbsp;or&nbsp;`keras.utils.Sequence`&nbsp;instances<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(since&nbsp;they&nbsp;generate&nbsp;batches).<br>
+&nbsp;&nbsp;&nbsp;&nbsp;validation_freq:&nbsp;Only&nbsp;relevant&nbsp;if&nbsp;validation&nbsp;data&nbsp;is&nbsp;provided.&nbsp;Integer<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;or&nbsp;`collections_abc.Container`&nbsp;instance&nbsp;(e.g.&nbsp;list,&nbsp;tuple,&nbsp;etc.).<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;If&nbsp;an&nbsp;integer,&nbsp;specifies&nbsp;how&nbsp;many&nbsp;training&nbsp;epochs&nbsp;to&nbsp;run&nbsp;before&nbsp;a<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;new&nbsp;validation&nbsp;run&nbsp;is&nbsp;performed,&nbsp;e.g.&nbsp;`validation_freq=2`&nbsp;runs<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;validation&nbsp;every&nbsp;2&nbsp;epochs.&nbsp;If&nbsp;a&nbsp;Container,&nbsp;specifies&nbsp;the&nbsp;epochs&nbsp;on<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;which&nbsp;to&nbsp;run&nbsp;validation,&nbsp;e.g.&nbsp;`validation_freq=[1,&nbsp;2,&nbsp;10]`&nbsp;runs<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;validation&nbsp;at&nbsp;the&nbsp;end&nbsp;of&nbsp;the&nbsp;1st,&nbsp;2nd,&nbsp;and&nbsp;10th&nbsp;epochs.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;max_queue_size:&nbsp;Integer.&nbsp;Used&nbsp;for&nbsp;generator&nbsp;or&nbsp;`keras.utils.Sequence`<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;input&nbsp;only.&nbsp;Maximum&nbsp;size&nbsp;for&nbsp;the&nbsp;generator&nbsp;queue.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;If&nbsp;unspecified,&nbsp;`max_queue_size`&nbsp;will&nbsp;default&nbsp;to&nbsp;10.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;workers:&nbsp;Integer.&nbsp;Used&nbsp;for&nbsp;generator&nbsp;or&nbsp;`keras.utils.Sequence`&nbsp;input<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;only.&nbsp;Maximum&nbsp;number&nbsp;of&nbsp;processes&nbsp;to&nbsp;spin&nbsp;up<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;when&nbsp;using&nbsp;process-based&nbsp;threading.&nbsp;If&nbsp;unspecified,&nbsp;`workers`<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;will&nbsp;default&nbsp;to&nbsp;1.&nbsp;If&nbsp;0,&nbsp;will&nbsp;execute&nbsp;the&nbsp;generator&nbsp;on&nbsp;the&nbsp;main<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;thread.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;use_multiprocessing:&nbsp;Boolean.&nbsp;Used&nbsp;for&nbsp;generator&nbsp;or<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`keras.utils.Sequence`&nbsp;input&nbsp;only.&nbsp;If&nbsp;`True`,&nbsp;use&nbsp;process-based<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;threading.&nbsp;If&nbsp;unspecified,&nbsp;`use_multiprocessing`&nbsp;will&nbsp;default&nbsp;to<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`False`.&nbsp;Note&nbsp;that&nbsp;because&nbsp;this&nbsp;implementation&nbsp;relies&nbsp;on<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;multiprocessing,&nbsp;you&nbsp;should&nbsp;not&nbsp;pass&nbsp;non-picklable&nbsp;arguments&nbsp;to<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;the&nbsp;generator&nbsp;as&nbsp;they&nbsp;can't&nbsp;be&nbsp;passed&nbsp;easily&nbsp;to&nbsp;children&nbsp;processes.<br>
+&nbsp;<br>
+Unpacking&nbsp;behavior&nbsp;for&nbsp;iterator-like&nbsp;inputs:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;A&nbsp;common&nbsp;pattern&nbsp;is&nbsp;to&nbsp;pass&nbsp;a&nbsp;tf.data.Dataset,&nbsp;generator,&nbsp;or<br>
+&nbsp;&nbsp;tf.keras.utils.Sequence&nbsp;to&nbsp;the&nbsp;`x`&nbsp;argument&nbsp;of&nbsp;fit,&nbsp;which&nbsp;will&nbsp;in&nbsp;fact<br>
+&nbsp;&nbsp;yield&nbsp;not&nbsp;only&nbsp;features&nbsp;(x)&nbsp;but&nbsp;optionally&nbsp;targets&nbsp;(y)&nbsp;and&nbsp;sample&nbsp;weights.<br>
+&nbsp;&nbsp;Keras&nbsp;requires&nbsp;that&nbsp;the&nbsp;output&nbsp;of&nbsp;such&nbsp;iterator-likes&nbsp;be&nbsp;unambiguous.&nbsp;The<br>
+&nbsp;&nbsp;iterator&nbsp;should&nbsp;return&nbsp;a&nbsp;tuple&nbsp;of&nbsp;length&nbsp;1,&nbsp;2,&nbsp;or&nbsp;3,&nbsp;where&nbsp;the&nbsp;optional<br>
+&nbsp;&nbsp;second&nbsp;and&nbsp;third&nbsp;elements&nbsp;will&nbsp;be&nbsp;used&nbsp;for&nbsp;y&nbsp;and&nbsp;sample_weight<br>
+&nbsp;&nbsp;respectively.&nbsp;Any&nbsp;other&nbsp;type&nbsp;provided&nbsp;will&nbsp;be&nbsp;wrapped&nbsp;in&nbsp;a&nbsp;length&nbsp;one<br>
+&nbsp;&nbsp;tuple,&nbsp;effectively&nbsp;treating&nbsp;everything&nbsp;as&nbsp;'x'.&nbsp;When&nbsp;yielding&nbsp;dicts,&nbsp;they<br>
+&nbsp;&nbsp;should&nbsp;still&nbsp;adhere&nbsp;to&nbsp;the&nbsp;top-level&nbsp;tuple&nbsp;structure.<br>
+&nbsp;&nbsp;e.g.&nbsp;`({"x0":&nbsp;x0,&nbsp;"x1":&nbsp;x1},&nbsp;y)`.&nbsp;Keras&nbsp;will&nbsp;not&nbsp;attempt&nbsp;to&nbsp;separate<br>
+&nbsp;&nbsp;features,&nbsp;targets,&nbsp;and&nbsp;weights&nbsp;from&nbsp;the&nbsp;keys&nbsp;of&nbsp;a&nbsp;single&nbsp;dict.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;A&nbsp;notable&nbsp;unsupported&nbsp;data&nbsp;type&nbsp;is&nbsp;the&nbsp;namedtuple.&nbsp;The&nbsp;reason&nbsp;is&nbsp;that<br>
+&nbsp;&nbsp;it&nbsp;behaves&nbsp;like&nbsp;both&nbsp;an&nbsp;ordered&nbsp;datatype&nbsp;(tuple)&nbsp;and&nbsp;a&nbsp;mapping<br>
+&nbsp;&nbsp;datatype&nbsp;(dict).&nbsp;So&nbsp;given&nbsp;a&nbsp;namedtuple&nbsp;of&nbsp;the&nbsp;form:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`namedtuple("example_tuple",&nbsp;["y",&nbsp;"x"])`<br>
+&nbsp;&nbsp;it&nbsp;is&nbsp;ambiguous&nbsp;whether&nbsp;to&nbsp;reverse&nbsp;the&nbsp;order&nbsp;of&nbsp;the&nbsp;elements&nbsp;when<br>
+&nbsp;&nbsp;interpreting&nbsp;the&nbsp;value.&nbsp;Even&nbsp;worse&nbsp;is&nbsp;a&nbsp;tuple&nbsp;of&nbsp;the&nbsp;form:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`namedtuple("other_tuple",&nbsp;["x",&nbsp;"y",&nbsp;"z"])`<br>
+&nbsp;&nbsp;where&nbsp;it&nbsp;is&nbsp;unclear&nbsp;if&nbsp;the&nbsp;tuple&nbsp;was&nbsp;intended&nbsp;to&nbsp;be&nbsp;unpacked&nbsp;into&nbsp;x,&nbsp;y,<br>
+&nbsp;&nbsp;and&nbsp;sample_weight&nbsp;or&nbsp;passed&nbsp;through&nbsp;as&nbsp;a&nbsp;single&nbsp;element&nbsp;to&nbsp;`x`.&nbsp;As&nbsp;a<br>
+&nbsp;&nbsp;result&nbsp;the&nbsp;data&nbsp;processing&nbsp;code&nbsp;will&nbsp;simply&nbsp;raise&nbsp;a&nbsp;ValueError&nbsp;if&nbsp;it<br>
+&nbsp;&nbsp;encounters&nbsp;a&nbsp;namedtuple.&nbsp;(Along&nbsp;with&nbsp;instructions&nbsp;to&nbsp;remedy&nbsp;the&nbsp;issue.)<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;A&nbsp;`History`&nbsp;object.&nbsp;Its&nbsp;`History.history`&nbsp;attribute&nbsp;is<br>
+&nbsp;&nbsp;&nbsp;&nbsp;a&nbsp;record&nbsp;of&nbsp;training&nbsp;loss&nbsp;values&nbsp;and&nbsp;metrics&nbsp;values<br>
+&nbsp;&nbsp;&nbsp;&nbsp;at&nbsp;successive&nbsp;epochs,&nbsp;as&nbsp;well&nbsp;as&nbsp;validation&nbsp;loss&nbsp;values<br>
+&nbsp;&nbsp;&nbsp;&nbsp;and&nbsp;validation&nbsp;metrics&nbsp;values&nbsp;(if&nbsp;applicable).<br>
+&nbsp;<br>
+Raises:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;RuntimeError:&nbsp;1.&nbsp;If&nbsp;the&nbsp;model&nbsp;was&nbsp;never&nbsp;compiled&nbsp;or,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;2.&nbsp;If&nbsp;`model.fit`&nbsp;is&nbsp;&nbsp;wrapped&nbsp;in&nbsp;`tf.function`.<br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;ValueError:&nbsp;In&nbsp;case&nbsp;of&nbsp;mismatch&nbsp;between&nbsp;the&nbsp;provided&nbsp;input&nbsp;data<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;and&nbsp;what&nbsp;the&nbsp;model&nbsp;expects&nbsp;or&nbsp;when&nbsp;the&nbsp;input&nbsp;data&nbsp;is&nbsp;empty.</tt></dd></dl>
+
+<dl><dt><a name="AutoEncoder-fit_generator"><strong>fit_generator</strong></a>(self, generator, steps_per_epoch=None, epochs=1, verbose=1, callbacks=None, validation_data=None, validation_steps=None, validation_freq=1, class_weight=None, max_queue_size=10, workers=1, use_multiprocessing=False, shuffle=True, initial_epoch=0)</dt><dd><tt>Fits&nbsp;the&nbsp;model&nbsp;on&nbsp;data&nbsp;yielded&nbsp;batch-by-batch&nbsp;by&nbsp;a&nbsp;Python&nbsp;generator.<br>
+&nbsp;<br>
+DEPRECATED:<br>
+&nbsp;&nbsp;`<a href="tensorflow.python.keras.engine.training.html#Model">Model</a>.fit`&nbsp;now&nbsp;supports&nbsp;generators,&nbsp;so&nbsp;there&nbsp;is&nbsp;no&nbsp;longer&nbsp;any&nbsp;need&nbsp;to&nbsp;use<br>
+&nbsp;&nbsp;this&nbsp;endpoint.</tt></dd></dl>
+
+<dl><dt><a name="AutoEncoder-get_config"><strong>get_config</strong></a>(self)</dt><dd><tt>Returns&nbsp;the&nbsp;config&nbsp;of&nbsp;the&nbsp;layer.<br>
+&nbsp;<br>
+A&nbsp;layer&nbsp;config&nbsp;is&nbsp;a&nbsp;Python&nbsp;dictionary&nbsp;(serializable)<br>
+containing&nbsp;the&nbsp;configuration&nbsp;of&nbsp;a&nbsp;layer.<br>
+The&nbsp;same&nbsp;layer&nbsp;can&nbsp;be&nbsp;reinstantiated&nbsp;later<br>
+(without&nbsp;its&nbsp;trained&nbsp;weights)&nbsp;from&nbsp;this&nbsp;configuration.<br>
+&nbsp;<br>
+The&nbsp;config&nbsp;of&nbsp;a&nbsp;layer&nbsp;does&nbsp;not&nbsp;include&nbsp;connectivity<br>
+information,&nbsp;nor&nbsp;the&nbsp;layer&nbsp;class&nbsp;name.&nbsp;These&nbsp;are&nbsp;handled<br>
+by&nbsp;`Network`&nbsp;(one&nbsp;layer&nbsp;of&nbsp;abstraction&nbsp;above).<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Python&nbsp;dictionary.</tt></dd></dl>
+
+<dl><dt><a name="AutoEncoder-get_layer"><strong>get_layer</strong></a>(self, name=None, index=None)</dt><dd><tt>Retrieves&nbsp;a&nbsp;layer&nbsp;based&nbsp;on&nbsp;either&nbsp;its&nbsp;name&nbsp;(unique)&nbsp;or&nbsp;index.<br>
+&nbsp;<br>
+If&nbsp;`name`&nbsp;and&nbsp;`index`&nbsp;are&nbsp;both&nbsp;provided,&nbsp;`index`&nbsp;will&nbsp;take&nbsp;precedence.<br>
+Indices&nbsp;are&nbsp;based&nbsp;on&nbsp;order&nbsp;of&nbsp;horizontal&nbsp;graph&nbsp;traversal&nbsp;(bottom-up).<br>
+&nbsp;<br>
+Arguments:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;name:&nbsp;String,&nbsp;name&nbsp;of&nbsp;layer.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;index:&nbsp;Integer,&nbsp;index&nbsp;of&nbsp;layer.<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;A&nbsp;layer&nbsp;instance.<br>
+&nbsp;<br>
+Raises:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;ValueError:&nbsp;In&nbsp;case&nbsp;of&nbsp;invalid&nbsp;layer&nbsp;name&nbsp;or&nbsp;index.</tt></dd></dl>
+
+<dl><dt><a name="AutoEncoder-get_weights"><strong>get_weights</strong></a>(self)</dt><dd><tt>Retrieves&nbsp;the&nbsp;weights&nbsp;of&nbsp;the&nbsp;model.<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;A&nbsp;flat&nbsp;list&nbsp;of&nbsp;Numpy&nbsp;arrays.</tt></dd></dl>
+
+<dl><dt><a name="AutoEncoder-load_weights"><strong>load_weights</strong></a>(self, filepath, by_name=False, skip_mismatch=False, options=None)</dt><dd><tt>Loads&nbsp;all&nbsp;layer&nbsp;weights,&nbsp;either&nbsp;from&nbsp;a&nbsp;TensorFlow&nbsp;or&nbsp;an&nbsp;HDF5&nbsp;weight&nbsp;file.<br>
+&nbsp;<br>
+If&nbsp;`by_name`&nbsp;is&nbsp;False&nbsp;weights&nbsp;are&nbsp;loaded&nbsp;based&nbsp;on&nbsp;the&nbsp;network's<br>
+topology.&nbsp;This&nbsp;means&nbsp;the&nbsp;architecture&nbsp;should&nbsp;be&nbsp;the&nbsp;same&nbsp;as&nbsp;when&nbsp;the&nbsp;weights<br>
+were&nbsp;saved.&nbsp;&nbsp;Note&nbsp;that&nbsp;layers&nbsp;that&nbsp;don't&nbsp;have&nbsp;weights&nbsp;are&nbsp;not&nbsp;taken&nbsp;into<br>
+account&nbsp;in&nbsp;the&nbsp;topological&nbsp;ordering,&nbsp;so&nbsp;adding&nbsp;or&nbsp;removing&nbsp;layers&nbsp;is&nbsp;fine&nbsp;as<br>
+long&nbsp;as&nbsp;they&nbsp;don't&nbsp;have&nbsp;weights.<br>
+&nbsp;<br>
+If&nbsp;`by_name`&nbsp;is&nbsp;True,&nbsp;weights&nbsp;are&nbsp;loaded&nbsp;into&nbsp;layers&nbsp;only&nbsp;if&nbsp;they&nbsp;share&nbsp;the<br>
+same&nbsp;name.&nbsp;This&nbsp;is&nbsp;useful&nbsp;for&nbsp;fine-tuning&nbsp;or&nbsp;transfer-learning&nbsp;models&nbsp;where<br>
+some&nbsp;of&nbsp;the&nbsp;layers&nbsp;have&nbsp;changed.<br>
+&nbsp;<br>
+Only&nbsp;topological&nbsp;loading&nbsp;(`by_name=False`)&nbsp;is&nbsp;supported&nbsp;when&nbsp;loading&nbsp;weights<br>
+from&nbsp;the&nbsp;TensorFlow&nbsp;format.&nbsp;Note&nbsp;that&nbsp;topological&nbsp;loading&nbsp;differs&nbsp;slightly<br>
+between&nbsp;TensorFlow&nbsp;and&nbsp;HDF5&nbsp;formats&nbsp;for&nbsp;user-defined&nbsp;classes&nbsp;inheriting&nbsp;from<br>
+`tf.keras.<a href="tensorflow.python.keras.engine.training.html#Model">Model</a>`:&nbsp;HDF5&nbsp;loads&nbsp;based&nbsp;on&nbsp;a&nbsp;flattened&nbsp;list&nbsp;of&nbsp;weights,&nbsp;while&nbsp;the<br>
+TensorFlow&nbsp;format&nbsp;loads&nbsp;based&nbsp;on&nbsp;the&nbsp;object-local&nbsp;names&nbsp;of&nbsp;attributes&nbsp;to<br>
+which&nbsp;layers&nbsp;are&nbsp;assigned&nbsp;in&nbsp;the&nbsp;`<a href="tensorflow.python.keras.engine.training.html#Model">Model</a>`'s&nbsp;constructor.<br>
+&nbsp;<br>
+Arguments:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;filepath:&nbsp;String,&nbsp;path&nbsp;to&nbsp;the&nbsp;weights&nbsp;file&nbsp;to&nbsp;load.&nbsp;For&nbsp;weight&nbsp;files&nbsp;in<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TensorFlow&nbsp;format,&nbsp;this&nbsp;is&nbsp;the&nbsp;file&nbsp;prefix&nbsp;(the&nbsp;same&nbsp;as&nbsp;was&nbsp;passed<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;to&nbsp;`save_weights`).<br>
+&nbsp;&nbsp;&nbsp;&nbsp;by_name:&nbsp;Boolean,&nbsp;whether&nbsp;to&nbsp;load&nbsp;weights&nbsp;by&nbsp;name&nbsp;or&nbsp;by&nbsp;topological<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;order.&nbsp;Only&nbsp;topological&nbsp;loading&nbsp;is&nbsp;supported&nbsp;for&nbsp;weight&nbsp;files&nbsp;in<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TensorFlow&nbsp;format.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;skip_mismatch:&nbsp;Boolean,&nbsp;whether&nbsp;to&nbsp;skip&nbsp;loading&nbsp;of&nbsp;layers&nbsp;where&nbsp;there&nbsp;is<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;a&nbsp;mismatch&nbsp;in&nbsp;the&nbsp;number&nbsp;of&nbsp;weights,&nbsp;or&nbsp;a&nbsp;mismatch&nbsp;in&nbsp;the&nbsp;shape&nbsp;of<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;the&nbsp;weight&nbsp;(only&nbsp;valid&nbsp;when&nbsp;`by_name=True`).<br>
+&nbsp;&nbsp;&nbsp;&nbsp;options:&nbsp;Optional&nbsp;`tf.train.CheckpointOptions`&nbsp;object&nbsp;that&nbsp;specifies<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;options&nbsp;for&nbsp;loading&nbsp;weights.<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;When&nbsp;loading&nbsp;a&nbsp;weight&nbsp;file&nbsp;in&nbsp;TensorFlow&nbsp;format,&nbsp;returns&nbsp;the&nbsp;same&nbsp;status<br>
+&nbsp;&nbsp;&nbsp;&nbsp;object&nbsp;as&nbsp;`tf.train.Checkpoint.restore`.&nbsp;When&nbsp;graph&nbsp;building,&nbsp;restore<br>
+&nbsp;&nbsp;&nbsp;&nbsp;ops&nbsp;are&nbsp;run&nbsp;automatically&nbsp;as&nbsp;soon&nbsp;as&nbsp;the&nbsp;network&nbsp;is&nbsp;built&nbsp;(on&nbsp;first&nbsp;call<br>
+&nbsp;&nbsp;&nbsp;&nbsp;for&nbsp;user-defined&nbsp;classes&nbsp;inheriting&nbsp;from&nbsp;`<a href="tensorflow.python.keras.engine.training.html#Model">Model</a>`,&nbsp;immediately&nbsp;if&nbsp;it&nbsp;is<br>
+&nbsp;&nbsp;&nbsp;&nbsp;already&nbsp;built).<br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;When&nbsp;loading&nbsp;weights&nbsp;in&nbsp;HDF5&nbsp;format,&nbsp;returns&nbsp;`None`.<br>
+&nbsp;<br>
+Raises:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;ImportError:&nbsp;If&nbsp;h5py&nbsp;is&nbsp;not&nbsp;available&nbsp;and&nbsp;the&nbsp;weight&nbsp;file&nbsp;is&nbsp;in&nbsp;HDF5<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;format.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;ValueError:&nbsp;If&nbsp;`skip_mismatch`&nbsp;is&nbsp;set&nbsp;to&nbsp;`True`&nbsp;when&nbsp;`by_name`&nbsp;is<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`False`.</tt></dd></dl>
+
+<dl><dt><a name="AutoEncoder-make_predict_function"><strong>make_predict_function</strong></a>(self)</dt><dd><tt>Creates&nbsp;a&nbsp;function&nbsp;that&nbsp;executes&nbsp;one&nbsp;step&nbsp;of&nbsp;inference.<br>
+&nbsp;<br>
+This&nbsp;method&nbsp;can&nbsp;be&nbsp;overridden&nbsp;to&nbsp;support&nbsp;custom&nbsp;inference&nbsp;logic.<br>
+This&nbsp;method&nbsp;is&nbsp;called&nbsp;by&nbsp;`<a href="tensorflow.python.keras.engine.training.html#Model">Model</a>.predict`&nbsp;and&nbsp;`<a href="tensorflow.python.keras.engine.training.html#Model">Model</a>.predict_on_batch`.<br>
+&nbsp;<br>
+Typically,&nbsp;this&nbsp;method&nbsp;directly&nbsp;controls&nbsp;`tf.function`&nbsp;and<br>
+`tf.distribute.Strategy`&nbsp;settings,&nbsp;and&nbsp;delegates&nbsp;the&nbsp;actual&nbsp;evaluation<br>
+logic&nbsp;to&nbsp;`<a href="tensorflow.python.keras.engine.training.html#Model">Model</a>.predict_step`.<br>
+&nbsp;<br>
+This&nbsp;function&nbsp;is&nbsp;cached&nbsp;the&nbsp;first&nbsp;time&nbsp;`<a href="tensorflow.python.keras.engine.training.html#Model">Model</a>.predict`&nbsp;or<br>
+`<a href="tensorflow.python.keras.engine.training.html#Model">Model</a>.predict_on_batch`&nbsp;is&nbsp;called.&nbsp;The&nbsp;cache&nbsp;is&nbsp;cleared&nbsp;whenever<br>
+`<a href="tensorflow.python.keras.engine.training.html#Model">Model</a>.compile`&nbsp;is&nbsp;called.<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;Function.&nbsp;The&nbsp;function&nbsp;created&nbsp;by&nbsp;this&nbsp;method&nbsp;should&nbsp;accept&nbsp;a<br>
+&nbsp;&nbsp;`tf.data.Iterator`,&nbsp;and&nbsp;return&nbsp;the&nbsp;outputs&nbsp;of&nbsp;the&nbsp;`<a href="tensorflow.python.keras.engine.training.html#Model">Model</a>`.</tt></dd></dl>
+
+<dl><dt><a name="AutoEncoder-make_test_function"><strong>make_test_function</strong></a>(self)</dt><dd><tt>Creates&nbsp;a&nbsp;function&nbsp;that&nbsp;executes&nbsp;one&nbsp;step&nbsp;of&nbsp;evaluation.<br>
+&nbsp;<br>
+This&nbsp;method&nbsp;can&nbsp;be&nbsp;overridden&nbsp;to&nbsp;support&nbsp;custom&nbsp;evaluation&nbsp;logic.<br>
+This&nbsp;method&nbsp;is&nbsp;called&nbsp;by&nbsp;`<a href="tensorflow.python.keras.engine.training.html#Model">Model</a>.evaluate`&nbsp;and&nbsp;`<a href="tensorflow.python.keras.engine.training.html#Model">Model</a>.test_on_batch`.<br>
+&nbsp;<br>
+Typically,&nbsp;this&nbsp;method&nbsp;directly&nbsp;controls&nbsp;`tf.function`&nbsp;and<br>
+`tf.distribute.Strategy`&nbsp;settings,&nbsp;and&nbsp;delegates&nbsp;the&nbsp;actual&nbsp;evaluation<br>
+logic&nbsp;to&nbsp;`<a href="tensorflow.python.keras.engine.training.html#Model">Model</a>.test_step`.<br>
+&nbsp;<br>
+This&nbsp;function&nbsp;is&nbsp;cached&nbsp;the&nbsp;first&nbsp;time&nbsp;`<a href="tensorflow.python.keras.engine.training.html#Model">Model</a>.evaluate`&nbsp;or<br>
+`<a href="tensorflow.python.keras.engine.training.html#Model">Model</a>.test_on_batch`&nbsp;is&nbsp;called.&nbsp;The&nbsp;cache&nbsp;is&nbsp;cleared&nbsp;whenever<br>
+`<a href="tensorflow.python.keras.engine.training.html#Model">Model</a>.compile`&nbsp;is&nbsp;called.<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;Function.&nbsp;The&nbsp;function&nbsp;created&nbsp;by&nbsp;this&nbsp;method&nbsp;should&nbsp;accept&nbsp;a<br>
+&nbsp;&nbsp;`tf.data.Iterator`,&nbsp;and&nbsp;return&nbsp;a&nbsp;`dict`&nbsp;containing&nbsp;values&nbsp;that&nbsp;will<br>
+&nbsp;&nbsp;be&nbsp;passed&nbsp;to&nbsp;`tf.keras.Callbacks.on_test_batch_end`.</tt></dd></dl>
+
+<dl><dt><a name="AutoEncoder-make_train_function"><strong>make_train_function</strong></a>(self)</dt><dd><tt>Creates&nbsp;a&nbsp;function&nbsp;that&nbsp;executes&nbsp;one&nbsp;step&nbsp;of&nbsp;training.<br>
+&nbsp;<br>
+This&nbsp;method&nbsp;can&nbsp;be&nbsp;overridden&nbsp;to&nbsp;support&nbsp;custom&nbsp;training&nbsp;logic.<br>
+This&nbsp;method&nbsp;is&nbsp;called&nbsp;by&nbsp;`<a href="tensorflow.python.keras.engine.training.html#Model">Model</a>.fit`&nbsp;and&nbsp;`<a href="tensorflow.python.keras.engine.training.html#Model">Model</a>.train_on_batch`.<br>
+&nbsp;<br>
+Typically,&nbsp;this&nbsp;method&nbsp;directly&nbsp;controls&nbsp;`tf.function`&nbsp;and<br>
+`tf.distribute.Strategy`&nbsp;settings,&nbsp;and&nbsp;delegates&nbsp;the&nbsp;actual&nbsp;training<br>
+logic&nbsp;to&nbsp;`<a href="tensorflow.python.keras.engine.training.html#Model">Model</a>.train_step`.<br>
+&nbsp;<br>
+This&nbsp;function&nbsp;is&nbsp;cached&nbsp;the&nbsp;first&nbsp;time&nbsp;`<a href="tensorflow.python.keras.engine.training.html#Model">Model</a>.fit`&nbsp;or<br>
+`<a href="tensorflow.python.keras.engine.training.html#Model">Model</a>.train_on_batch`&nbsp;is&nbsp;called.&nbsp;The&nbsp;cache&nbsp;is&nbsp;cleared&nbsp;whenever<br>
+`<a href="tensorflow.python.keras.engine.training.html#Model">Model</a>.compile`&nbsp;is&nbsp;called.<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;Function.&nbsp;The&nbsp;function&nbsp;created&nbsp;by&nbsp;this&nbsp;method&nbsp;should&nbsp;accept&nbsp;a<br>
+&nbsp;&nbsp;`tf.data.Iterator`,&nbsp;and&nbsp;return&nbsp;a&nbsp;`dict`&nbsp;containing&nbsp;values&nbsp;that&nbsp;will<br>
+&nbsp;&nbsp;be&nbsp;passed&nbsp;to&nbsp;`tf.keras.Callbacks.on_train_batch_end`,&nbsp;such&nbsp;as<br>
+&nbsp;&nbsp;`{'loss':&nbsp;0.2,&nbsp;'accuracy':&nbsp;0.7}`.</tt></dd></dl>
+
+<dl><dt><a name="AutoEncoder-predict"><strong>predict</strong></a>(self, x, batch_size=None, verbose=0, steps=None, callbacks=None, max_queue_size=10, workers=1, use_multiprocessing=False)</dt><dd><tt>Generates&nbsp;output&nbsp;predictions&nbsp;for&nbsp;the&nbsp;input&nbsp;samples.<br>
+&nbsp;<br>
+Computation&nbsp;is&nbsp;done&nbsp;in&nbsp;batches.&nbsp;This&nbsp;method&nbsp;is&nbsp;designed&nbsp;for&nbsp;performance&nbsp;in<br>
+large&nbsp;scale&nbsp;inputs.&nbsp;For&nbsp;small&nbsp;amount&nbsp;of&nbsp;inputs&nbsp;that&nbsp;fit&nbsp;in&nbsp;one&nbsp;batch,<br>
+directly&nbsp;using&nbsp;`__call__`&nbsp;is&nbsp;recommended&nbsp;for&nbsp;faster&nbsp;execution,&nbsp;e.g.,<br>
+`model(x)`,&nbsp;or&nbsp;`model(x,&nbsp;training=False)`&nbsp;if&nbsp;you&nbsp;have&nbsp;layers&nbsp;such&nbsp;as<br>
+`tf.keras.layers.BatchNormalization`&nbsp;that&nbsp;behaves&nbsp;differently&nbsp;during<br>
+inference.&nbsp;Also,&nbsp;note&nbsp;the&nbsp;fact&nbsp;that&nbsp;test&nbsp;loss&nbsp;is&nbsp;not&nbsp;affected&nbsp;by<br>
+regularization&nbsp;layers&nbsp;like&nbsp;noise&nbsp;and&nbsp;dropout.<br>
+&nbsp;<br>
+Arguments:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;x:&nbsp;Input&nbsp;samples.&nbsp;It&nbsp;could&nbsp;be:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;A&nbsp;Numpy&nbsp;array&nbsp;(or&nbsp;array-like),&nbsp;or&nbsp;a&nbsp;list&nbsp;of&nbsp;arrays<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(in&nbsp;case&nbsp;the&nbsp;model&nbsp;has&nbsp;multiple&nbsp;inputs).<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;A&nbsp;TensorFlow&nbsp;tensor,&nbsp;or&nbsp;a&nbsp;list&nbsp;of&nbsp;tensors<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(in&nbsp;case&nbsp;the&nbsp;model&nbsp;has&nbsp;multiple&nbsp;inputs).<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;A&nbsp;`tf.data`&nbsp;dataset.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;A&nbsp;generator&nbsp;or&nbsp;`keras.utils.Sequence`&nbsp;instance.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;A&nbsp;more&nbsp;detailed&nbsp;description&nbsp;of&nbsp;unpacking&nbsp;behavior&nbsp;for&nbsp;iterator&nbsp;types<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(Dataset,&nbsp;generator,&nbsp;Sequence)&nbsp;is&nbsp;given&nbsp;in&nbsp;the&nbsp;`Unpacking&nbsp;behavior<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;for&nbsp;iterator-like&nbsp;inputs`&nbsp;section&nbsp;of&nbsp;`<a href="tensorflow.python.keras.engine.training.html#Model">Model</a>.fit`.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;batch_size:&nbsp;Integer&nbsp;or&nbsp;`None`.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Number&nbsp;of&nbsp;samples&nbsp;per&nbsp;batch.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;If&nbsp;unspecified,&nbsp;`batch_size`&nbsp;will&nbsp;default&nbsp;to&nbsp;32.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Do&nbsp;not&nbsp;specify&nbsp;the&nbsp;`batch_size`&nbsp;if&nbsp;your&nbsp;data&nbsp;is&nbsp;in&nbsp;the<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;form&nbsp;of&nbsp;dataset,&nbsp;generators,&nbsp;or&nbsp;`keras.utils.Sequence`&nbsp;instances<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(since&nbsp;they&nbsp;generate&nbsp;batches).<br>
+&nbsp;&nbsp;&nbsp;&nbsp;verbose:&nbsp;Verbosity&nbsp;mode,&nbsp;0&nbsp;or&nbsp;1.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;steps:&nbsp;Total&nbsp;number&nbsp;of&nbsp;steps&nbsp;(batches&nbsp;of&nbsp;samples)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;before&nbsp;declaring&nbsp;the&nbsp;prediction&nbsp;round&nbsp;finished.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Ignored&nbsp;with&nbsp;the&nbsp;default&nbsp;value&nbsp;of&nbsp;`None`.&nbsp;If&nbsp;x&nbsp;is&nbsp;a&nbsp;`tf.data`<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dataset&nbsp;and&nbsp;`steps`&nbsp;is&nbsp;None,&nbsp;`predict`&nbsp;will<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;run&nbsp;until&nbsp;the&nbsp;input&nbsp;dataset&nbsp;is&nbsp;exhausted.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;callbacks:&nbsp;List&nbsp;of&nbsp;`keras.callbacks.Callback`&nbsp;instances.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;List&nbsp;of&nbsp;callbacks&nbsp;to&nbsp;apply&nbsp;during&nbsp;prediction.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;See&nbsp;[callbacks](/api_docs/python/tf/keras/callbacks).<br>
+&nbsp;&nbsp;&nbsp;&nbsp;max_queue_size:&nbsp;Integer.&nbsp;Used&nbsp;for&nbsp;generator&nbsp;or&nbsp;`keras.utils.Sequence`<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;input&nbsp;only.&nbsp;Maximum&nbsp;size&nbsp;for&nbsp;the&nbsp;generator&nbsp;queue.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;If&nbsp;unspecified,&nbsp;`max_queue_size`&nbsp;will&nbsp;default&nbsp;to&nbsp;10.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;workers:&nbsp;Integer.&nbsp;Used&nbsp;for&nbsp;generator&nbsp;or&nbsp;`keras.utils.Sequence`&nbsp;input<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;only.&nbsp;Maximum&nbsp;number&nbsp;of&nbsp;processes&nbsp;to&nbsp;spin&nbsp;up&nbsp;when&nbsp;using<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;process-based&nbsp;threading.&nbsp;If&nbsp;unspecified,&nbsp;`workers`&nbsp;will&nbsp;default<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;to&nbsp;1.&nbsp;If&nbsp;0,&nbsp;will&nbsp;execute&nbsp;the&nbsp;generator&nbsp;on&nbsp;the&nbsp;main&nbsp;thread.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;use_multiprocessing:&nbsp;Boolean.&nbsp;Used&nbsp;for&nbsp;generator&nbsp;or<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`keras.utils.Sequence`&nbsp;input&nbsp;only.&nbsp;If&nbsp;`True`,&nbsp;use&nbsp;process-based<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;threading.&nbsp;If&nbsp;unspecified,&nbsp;`use_multiprocessing`&nbsp;will&nbsp;default&nbsp;to<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`False`.&nbsp;Note&nbsp;that&nbsp;because&nbsp;this&nbsp;implementation&nbsp;relies&nbsp;on<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;multiprocessing,&nbsp;you&nbsp;should&nbsp;not&nbsp;pass&nbsp;non-picklable&nbsp;arguments&nbsp;to<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;the&nbsp;generator&nbsp;as&nbsp;they&nbsp;can't&nbsp;be&nbsp;passed&nbsp;easily&nbsp;to&nbsp;children&nbsp;processes.<br>
+&nbsp;<br>
+See&nbsp;the&nbsp;discussion&nbsp;of&nbsp;`Unpacking&nbsp;behavior&nbsp;for&nbsp;iterator-like&nbsp;inputs`&nbsp;for<br>
+`<a href="tensorflow.python.keras.engine.training.html#Model">Model</a>.fit`.&nbsp;Note&nbsp;that&nbsp;<a href="tensorflow.python.keras.engine.training.html#Model">Model</a>.predict&nbsp;uses&nbsp;the&nbsp;same&nbsp;interpretation&nbsp;rules&nbsp;as<br>
+`<a href="tensorflow.python.keras.engine.training.html#Model">Model</a>.fit`&nbsp;and&nbsp;`<a href="tensorflow.python.keras.engine.training.html#Model">Model</a>.evaluate`,&nbsp;so&nbsp;inputs&nbsp;must&nbsp;be&nbsp;unambiguous&nbsp;for&nbsp;all<br>
+three&nbsp;methods.<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Numpy&nbsp;array(s)&nbsp;of&nbsp;predictions.<br>
+&nbsp;<br>
+Raises:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;RuntimeError:&nbsp;If&nbsp;`model.predict`&nbsp;is&nbsp;wrapped&nbsp;in&nbsp;`tf.function`.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;ValueError:&nbsp;In&nbsp;case&nbsp;of&nbsp;mismatch&nbsp;between&nbsp;the&nbsp;provided<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;input&nbsp;data&nbsp;and&nbsp;the&nbsp;model's&nbsp;expectations,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;or&nbsp;in&nbsp;case&nbsp;a&nbsp;stateful&nbsp;model&nbsp;receives&nbsp;a&nbsp;number&nbsp;of&nbsp;samples<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;that&nbsp;is&nbsp;not&nbsp;a&nbsp;multiple&nbsp;of&nbsp;the&nbsp;batch&nbsp;size.</tt></dd></dl>
+
+<dl><dt><a name="AutoEncoder-predict_generator"><strong>predict_generator</strong></a>(self, generator, steps=None, callbacks=None, max_queue_size=10, workers=1, use_multiprocessing=False, verbose=0)</dt><dd><tt>Generates&nbsp;predictions&nbsp;for&nbsp;the&nbsp;input&nbsp;samples&nbsp;from&nbsp;a&nbsp;data&nbsp;generator.<br>
+&nbsp;<br>
+DEPRECATED:<br>
+&nbsp;&nbsp;`<a href="tensorflow.python.keras.engine.training.html#Model">Model</a>.predict`&nbsp;now&nbsp;supports&nbsp;generators,&nbsp;so&nbsp;there&nbsp;is&nbsp;no&nbsp;longer&nbsp;any&nbsp;need<br>
+&nbsp;&nbsp;to&nbsp;use&nbsp;this&nbsp;endpoint.</tt></dd></dl>
+
+<dl><dt><a name="AutoEncoder-predict_on_batch"><strong>predict_on_batch</strong></a>(self, x)</dt><dd><tt>Returns&nbsp;predictions&nbsp;for&nbsp;a&nbsp;single&nbsp;batch&nbsp;of&nbsp;samples.<br>
+&nbsp;<br>
+Arguments:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;x:&nbsp;Input&nbsp;data.&nbsp;It&nbsp;could&nbsp;be:&nbsp;-&nbsp;A&nbsp;Numpy&nbsp;array&nbsp;(or&nbsp;array-like),&nbsp;or&nbsp;a&nbsp;list<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;of&nbsp;arrays&nbsp;(in&nbsp;case&nbsp;the&nbsp;model&nbsp;has&nbsp;multiple&nbsp;inputs).&nbsp;-&nbsp;A&nbsp;TensorFlow<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;tensor,&nbsp;or&nbsp;a&nbsp;list&nbsp;of&nbsp;tensors&nbsp;(in&nbsp;case&nbsp;the&nbsp;model&nbsp;has&nbsp;multiple&nbsp;inputs).<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Numpy&nbsp;array(s)&nbsp;of&nbsp;predictions.<br>
+&nbsp;<br>
+Raises:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;RuntimeError:&nbsp;If&nbsp;`model.predict_on_batch`&nbsp;is&nbsp;wrapped&nbsp;in&nbsp;`tf.function`.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;ValueError:&nbsp;In&nbsp;case&nbsp;of&nbsp;mismatch&nbsp;between&nbsp;given&nbsp;number&nbsp;of&nbsp;inputs&nbsp;and<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;expectations&nbsp;of&nbsp;the&nbsp;model.</tt></dd></dl>
+
+<dl><dt><a name="AutoEncoder-predict_step"><strong>predict_step</strong></a>(self, data)</dt><dd><tt>The&nbsp;logic&nbsp;for&nbsp;one&nbsp;inference&nbsp;step.<br>
+&nbsp;<br>
+This&nbsp;method&nbsp;can&nbsp;be&nbsp;overridden&nbsp;to&nbsp;support&nbsp;custom&nbsp;inference&nbsp;logic.<br>
+This&nbsp;method&nbsp;is&nbsp;called&nbsp;by&nbsp;`<a href="tensorflow.python.keras.engine.training.html#Model">Model</a>.make_predict_function`.<br>
+&nbsp;<br>
+This&nbsp;method&nbsp;should&nbsp;contain&nbsp;the&nbsp;mathematical&nbsp;logic&nbsp;for&nbsp;one&nbsp;step&nbsp;of&nbsp;inference.<br>
+This&nbsp;typically&nbsp;includes&nbsp;the&nbsp;forward&nbsp;pass.<br>
+&nbsp;<br>
+Configuration&nbsp;details&nbsp;for&nbsp;*how*&nbsp;this&nbsp;logic&nbsp;is&nbsp;run&nbsp;(e.g.&nbsp;`tf.function`&nbsp;and<br>
+`tf.distribute.Strategy`&nbsp;settings),&nbsp;should&nbsp;be&nbsp;left&nbsp;to<br>
+`<a href="tensorflow.python.keras.engine.training.html#Model">Model</a>.make_predict_function`,&nbsp;which&nbsp;can&nbsp;also&nbsp;be&nbsp;overridden.<br>
+&nbsp;<br>
+Arguments:<br>
+&nbsp;&nbsp;data:&nbsp;A&nbsp;nested&nbsp;structure&nbsp;of&nbsp;`Tensor`s.<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;The&nbsp;result&nbsp;of&nbsp;one&nbsp;inference&nbsp;step,&nbsp;typically&nbsp;the&nbsp;output&nbsp;of&nbsp;calling&nbsp;the<br>
+&nbsp;&nbsp;`<a href="tensorflow.python.keras.engine.training.html#Model">Model</a>`&nbsp;on&nbsp;data.</tt></dd></dl>
+
+<dl><dt><a name="AutoEncoder-reset_metrics"><strong>reset_metrics</strong></a>(self)</dt><dd><tt>Resets&nbsp;the&nbsp;state&nbsp;of&nbsp;all&nbsp;the&nbsp;metrics&nbsp;in&nbsp;the&nbsp;model.<br>
+&nbsp;<br>
+Examples:<br>
+&nbsp;<br>
+&gt;&gt;&gt;&nbsp;inputs&nbsp;=&nbsp;tf.keras.layers.Input(shape=(3,))<br>
+&gt;&gt;&gt;&nbsp;outputs&nbsp;=&nbsp;tf.keras.layers.Dense(2)(inputs)<br>
+&gt;&gt;&gt;&nbsp;model&nbsp;=&nbsp;tf.keras.models.<a href="tensorflow.python.keras.engine.training.html#Model">Model</a>(inputs=inputs,&nbsp;outputs=outputs)<br>
+&gt;&gt;&gt;&nbsp;model.<a href="#AutoEncoder-compile">compile</a>(optimizer="Adam",&nbsp;loss="mse",&nbsp;metrics=["mae"])<br>
+&nbsp;<br>
+&gt;&gt;&gt;&nbsp;x&nbsp;=&nbsp;np.random.random((2,&nbsp;3))<br>
+&gt;&gt;&gt;&nbsp;y&nbsp;=&nbsp;np.random.randint(0,&nbsp;2,&nbsp;(2,&nbsp;2))<br>
+&gt;&gt;&gt;&nbsp;_&nbsp;=&nbsp;model.<a href="#AutoEncoder-fit">fit</a>(x,&nbsp;y,&nbsp;verbose=0)<br>
+&gt;&gt;&gt;&nbsp;assert&nbsp;all(float(m.result())&nbsp;for&nbsp;m&nbsp;in&nbsp;model.metrics)<br>
+&nbsp;<br>
+&gt;&gt;&gt;&nbsp;model.<a href="#AutoEncoder-reset_metrics">reset_metrics</a>()<br>
+&gt;&gt;&gt;&nbsp;assert&nbsp;all(float(m.result())&nbsp;==&nbsp;0&nbsp;for&nbsp;m&nbsp;in&nbsp;model.metrics)</tt></dd></dl>
+
+<dl><dt><a name="AutoEncoder-reset_states"><strong>reset_states</strong></a>(self)</dt></dl>
+
+<dl><dt><a name="AutoEncoder-save"><strong>save</strong></a>(self, filepath, overwrite=True, include_optimizer=True, save_format=None, signatures=None, options=None, save_traces=True)</dt><dd><tt>Saves&nbsp;the&nbsp;model&nbsp;to&nbsp;Tensorflow&nbsp;SavedModel&nbsp;or&nbsp;a&nbsp;single&nbsp;HDF5&nbsp;file.<br>
+&nbsp;<br>
+Please&nbsp;see&nbsp;`tf.keras.models.save_model`&nbsp;or&nbsp;the<br>
+[Serialization&nbsp;and&nbsp;Saving&nbsp;guide](https://keras.io/guides/serialization_and_saving/)<br>
+for&nbsp;details.<br>
+&nbsp;<br>
+Arguments:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;filepath:&nbsp;String,&nbsp;PathLike,&nbsp;path&nbsp;to&nbsp;SavedModel&nbsp;or&nbsp;H5&nbsp;file&nbsp;to&nbsp;save&nbsp;the<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;model.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;overwrite:&nbsp;Whether&nbsp;to&nbsp;silently&nbsp;overwrite&nbsp;any&nbsp;existing&nbsp;file&nbsp;at&nbsp;the<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;target&nbsp;location,&nbsp;or&nbsp;provide&nbsp;the&nbsp;user&nbsp;with&nbsp;a&nbsp;manual&nbsp;prompt.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;include_optimizer:&nbsp;If&nbsp;True,&nbsp;save&nbsp;optimizer's&nbsp;state&nbsp;together.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;save_format:&nbsp;Either&nbsp;`'tf'`&nbsp;or&nbsp;`'h5'`,&nbsp;indicating&nbsp;whether&nbsp;to&nbsp;save&nbsp;the<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;model&nbsp;to&nbsp;Tensorflow&nbsp;SavedModel&nbsp;or&nbsp;HDF5.&nbsp;Defaults&nbsp;to&nbsp;'tf'&nbsp;in&nbsp;TF&nbsp;2.X,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;and&nbsp;'h5'&nbsp;in&nbsp;TF&nbsp;1.X.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;signatures:&nbsp;Signatures&nbsp;to&nbsp;save&nbsp;with&nbsp;the&nbsp;SavedModel.&nbsp;Applicable&nbsp;to&nbsp;the<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'tf'&nbsp;format&nbsp;only.&nbsp;Please&nbsp;see&nbsp;the&nbsp;`signatures`&nbsp;argument&nbsp;in<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`tf.saved_model.save`&nbsp;for&nbsp;details.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;options:&nbsp;(only&nbsp;applies&nbsp;to&nbsp;SavedModel&nbsp;format)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`tf.saved_model.SaveOptions`&nbsp;object&nbsp;that&nbsp;specifies&nbsp;options&nbsp;for<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;saving&nbsp;to&nbsp;SavedModel.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;save_traces:&nbsp;(only&nbsp;applies&nbsp;to&nbsp;SavedModel&nbsp;format)&nbsp;When&nbsp;enabled,&nbsp;the<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SavedModel&nbsp;will&nbsp;store&nbsp;the&nbsp;function&nbsp;traces&nbsp;for&nbsp;each&nbsp;layer.&nbsp;This<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;can&nbsp;be&nbsp;disabled,&nbsp;so&nbsp;that&nbsp;only&nbsp;the&nbsp;configs&nbsp;of&nbsp;each&nbsp;layer&nbsp;are&nbsp;stored.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Defaults&nbsp;to&nbsp;`True`.&nbsp;Disabling&nbsp;this&nbsp;will&nbsp;decrease&nbsp;serialization&nbsp;time<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;and&nbsp;reduce&nbsp;file&nbsp;size,&nbsp;but&nbsp;it&nbsp;requires&nbsp;that&nbsp;all&nbsp;custom&nbsp;layers/models<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;implement&nbsp;a&nbsp;`<a href="#AutoEncoder-get_config">get_config</a>()`&nbsp;method.<br>
+&nbsp;<br>
+Example:<br>
+&nbsp;<br>
+```python<br>
+from&nbsp;keras.models&nbsp;import&nbsp;load_model<br>
+&nbsp;<br>
+model.<a href="#AutoEncoder-save">save</a>('my_model.h5')&nbsp;&nbsp;#&nbsp;creates&nbsp;a&nbsp;HDF5&nbsp;file&nbsp;'my_model.h5'<br>
+del&nbsp;model&nbsp;&nbsp;#&nbsp;deletes&nbsp;the&nbsp;existing&nbsp;model<br>
+&nbsp;<br>
+#&nbsp;returns&nbsp;a&nbsp;compiled&nbsp;model<br>
+#&nbsp;identical&nbsp;to&nbsp;the&nbsp;previous&nbsp;one<br>
+model&nbsp;=&nbsp;load_model('my_model.h5')<br>
+```</tt></dd></dl>
+
+<dl><dt><a name="AutoEncoder-save_weights"><strong>save_weights</strong></a>(self, filepath, overwrite=True, save_format=None, options=None)</dt><dd><tt>Saves&nbsp;all&nbsp;layer&nbsp;weights.<br>
+&nbsp;<br>
+Either&nbsp;saves&nbsp;in&nbsp;HDF5&nbsp;or&nbsp;in&nbsp;TensorFlow&nbsp;format&nbsp;based&nbsp;on&nbsp;the&nbsp;`save_format`<br>
+argument.<br>
+&nbsp;<br>
+When&nbsp;saving&nbsp;in&nbsp;HDF5&nbsp;format,&nbsp;the&nbsp;weight&nbsp;file&nbsp;has:<br>
+&nbsp;&nbsp;-&nbsp;`layer_names`&nbsp;(attribute),&nbsp;a&nbsp;list&nbsp;of&nbsp;strings<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(ordered&nbsp;names&nbsp;of&nbsp;model&nbsp;layers).<br>
+&nbsp;&nbsp;-&nbsp;For&nbsp;every&nbsp;layer,&nbsp;a&nbsp;`group`&nbsp;named&nbsp;`layer.name`<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;For&nbsp;every&nbsp;such&nbsp;layer&nbsp;group,&nbsp;a&nbsp;group&nbsp;attribute&nbsp;`weight_names`,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;a&nbsp;list&nbsp;of&nbsp;strings<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(ordered&nbsp;names&nbsp;of&nbsp;weights&nbsp;tensor&nbsp;of&nbsp;the&nbsp;layer).<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;For&nbsp;every&nbsp;weight&nbsp;in&nbsp;the&nbsp;layer,&nbsp;a&nbsp;dataset<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;storing&nbsp;the&nbsp;weight&nbsp;value,&nbsp;named&nbsp;after&nbsp;the&nbsp;weight&nbsp;tensor.<br>
+&nbsp;<br>
+When&nbsp;saving&nbsp;in&nbsp;TensorFlow&nbsp;format,&nbsp;all&nbsp;objects&nbsp;referenced&nbsp;by&nbsp;the&nbsp;network&nbsp;are<br>
+saved&nbsp;in&nbsp;the&nbsp;same&nbsp;format&nbsp;as&nbsp;`tf.train.Checkpoint`,&nbsp;including&nbsp;any&nbsp;`Layer`<br>
+instances&nbsp;or&nbsp;`Optimizer`&nbsp;instances&nbsp;assigned&nbsp;to&nbsp;object&nbsp;attributes.&nbsp;For<br>
+networks&nbsp;constructed&nbsp;from&nbsp;inputs&nbsp;and&nbsp;outputs&nbsp;using&nbsp;`tf.keras.<a href="tensorflow.python.keras.engine.training.html#Model">Model</a>(inputs,<br>
+outputs)`,&nbsp;`Layer`&nbsp;instances&nbsp;used&nbsp;by&nbsp;the&nbsp;network&nbsp;are&nbsp;tracked/saved<br>
+automatically.&nbsp;For&nbsp;user-defined&nbsp;classes&nbsp;which&nbsp;inherit&nbsp;from&nbsp;`tf.keras.<a href="tensorflow.python.keras.engine.training.html#Model">Model</a>`,<br>
+`Layer`&nbsp;instances&nbsp;must&nbsp;be&nbsp;assigned&nbsp;to&nbsp;object&nbsp;attributes,&nbsp;typically&nbsp;in&nbsp;the<br>
+constructor.&nbsp;See&nbsp;the&nbsp;documentation&nbsp;of&nbsp;`tf.train.Checkpoint`&nbsp;and<br>
+`tf.keras.<a href="tensorflow.python.keras.engine.training.html#Model">Model</a>`&nbsp;for&nbsp;details.<br>
+&nbsp;<br>
+While&nbsp;the&nbsp;formats&nbsp;are&nbsp;the&nbsp;same,&nbsp;do&nbsp;not&nbsp;mix&nbsp;`save_weights`&nbsp;and<br>
+`tf.train.Checkpoint`.&nbsp;Checkpoints&nbsp;saved&nbsp;by&nbsp;`<a href="tensorflow.python.keras.engine.training.html#Model">Model</a>.save_weights`&nbsp;should&nbsp;be<br>
+loaded&nbsp;using&nbsp;`<a href="tensorflow.python.keras.engine.training.html#Model">Model</a>.load_weights`.&nbsp;Checkpoints&nbsp;saved&nbsp;using<br>
+`tf.train.Checkpoint.save`&nbsp;should&nbsp;be&nbsp;restored&nbsp;using&nbsp;the&nbsp;corresponding<br>
+`tf.train.Checkpoint.restore`.&nbsp;Prefer&nbsp;`tf.train.Checkpoint`&nbsp;over<br>
+`save_weights`&nbsp;for&nbsp;training&nbsp;checkpoints.<br>
+&nbsp;<br>
+The&nbsp;TensorFlow&nbsp;format&nbsp;matches&nbsp;objects&nbsp;and&nbsp;variables&nbsp;by&nbsp;starting&nbsp;at&nbsp;a&nbsp;root<br>
+object,&nbsp;`self`&nbsp;for&nbsp;`save_weights`,&nbsp;and&nbsp;greedily&nbsp;matching&nbsp;attribute<br>
+names.&nbsp;For&nbsp;`<a href="tensorflow.python.keras.engine.training.html#Model">Model</a>.save`&nbsp;this&nbsp;is&nbsp;the&nbsp;`<a href="tensorflow.python.keras.engine.training.html#Model">Model</a>`,&nbsp;and&nbsp;for&nbsp;`Checkpoint.save`&nbsp;this<br>
+is&nbsp;the&nbsp;`Checkpoint`&nbsp;even&nbsp;if&nbsp;the&nbsp;`Checkpoint`&nbsp;has&nbsp;a&nbsp;model&nbsp;attached.&nbsp;This<br>
+means&nbsp;saving&nbsp;a&nbsp;`tf.keras.<a href="tensorflow.python.keras.engine.training.html#Model">Model</a>`&nbsp;using&nbsp;`save_weights`&nbsp;and&nbsp;loading&nbsp;into&nbsp;a<br>
+`tf.train.Checkpoint`&nbsp;with&nbsp;a&nbsp;`<a href="tensorflow.python.keras.engine.training.html#Model">Model</a>`&nbsp;attached&nbsp;(or&nbsp;vice&nbsp;versa)&nbsp;will&nbsp;not&nbsp;match<br>
+the&nbsp;`<a href="tensorflow.python.keras.engine.training.html#Model">Model</a>`'s&nbsp;variables.&nbsp;See&nbsp;the&nbsp;[guide&nbsp;to&nbsp;training<br>
+checkpoints](https://www.tensorflow.org/guide/checkpoint)&nbsp;for&nbsp;details<br>
+on&nbsp;the&nbsp;TensorFlow&nbsp;format.<br>
+&nbsp;<br>
+Arguments:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;filepath:&nbsp;String&nbsp;or&nbsp;PathLike,&nbsp;path&nbsp;to&nbsp;the&nbsp;file&nbsp;to&nbsp;save&nbsp;the&nbsp;weights&nbsp;to.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;When&nbsp;saving&nbsp;in&nbsp;TensorFlow&nbsp;format,&nbsp;this&nbsp;is&nbsp;the&nbsp;prefix&nbsp;used&nbsp;for<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;checkpoint&nbsp;files&nbsp;(multiple&nbsp;files&nbsp;are&nbsp;generated).&nbsp;Note&nbsp;that&nbsp;the&nbsp;'.h5'<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;suffix&nbsp;causes&nbsp;weights&nbsp;to&nbsp;be&nbsp;saved&nbsp;in&nbsp;HDF5&nbsp;format.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;overwrite:&nbsp;Whether&nbsp;to&nbsp;silently&nbsp;overwrite&nbsp;any&nbsp;existing&nbsp;file&nbsp;at&nbsp;the<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;target&nbsp;location,&nbsp;or&nbsp;provide&nbsp;the&nbsp;user&nbsp;with&nbsp;a&nbsp;manual&nbsp;prompt.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;save_format:&nbsp;Either&nbsp;'tf'&nbsp;or&nbsp;'h5'.&nbsp;A&nbsp;`filepath`&nbsp;ending&nbsp;in&nbsp;'.h5'&nbsp;or<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.keras'&nbsp;will&nbsp;default&nbsp;to&nbsp;HDF5&nbsp;if&nbsp;`save_format`&nbsp;is&nbsp;`None`.&nbsp;Otherwise<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`None`&nbsp;defaults&nbsp;to&nbsp;'tf'.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;options:&nbsp;Optional&nbsp;`tf.train.CheckpointOptions`&nbsp;object&nbsp;that&nbsp;specifies<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;options&nbsp;for&nbsp;saving&nbsp;weights.<br>
+&nbsp;<br>
+Raises:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;ImportError:&nbsp;If&nbsp;h5py&nbsp;is&nbsp;not&nbsp;available&nbsp;when&nbsp;attempting&nbsp;to&nbsp;save&nbsp;in&nbsp;HDF5<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;format.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;ValueError:&nbsp;For&nbsp;invalid/unknown&nbsp;format&nbsp;arguments.</tt></dd></dl>
+
+<dl><dt><a name="AutoEncoder-summary"><strong>summary</strong></a>(self, line_length=None, positions=None, print_fn=None)</dt><dd><tt>Prints&nbsp;a&nbsp;string&nbsp;summary&nbsp;of&nbsp;the&nbsp;network.<br>
+&nbsp;<br>
+Arguments:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;line_length:&nbsp;Total&nbsp;length&nbsp;of&nbsp;printed&nbsp;lines<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(e.g.&nbsp;set&nbsp;this&nbsp;to&nbsp;adapt&nbsp;the&nbsp;display&nbsp;to&nbsp;different<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;terminal&nbsp;window&nbsp;sizes).<br>
+&nbsp;&nbsp;&nbsp;&nbsp;positions:&nbsp;Relative&nbsp;or&nbsp;absolute&nbsp;positions&nbsp;of&nbsp;log&nbsp;elements<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;in&nbsp;each&nbsp;line.&nbsp;If&nbsp;not&nbsp;provided,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;defaults&nbsp;to&nbsp;`[.33,&nbsp;.55,&nbsp;.67,&nbsp;1.]`.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;print_fn:&nbsp;Print&nbsp;function&nbsp;to&nbsp;use.&nbsp;Defaults&nbsp;to&nbsp;`print`.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;It&nbsp;will&nbsp;be&nbsp;called&nbsp;on&nbsp;each&nbsp;line&nbsp;of&nbsp;the&nbsp;summary.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;You&nbsp;can&nbsp;set&nbsp;it&nbsp;to&nbsp;a&nbsp;custom&nbsp;function<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;in&nbsp;order&nbsp;to&nbsp;capture&nbsp;the&nbsp;string&nbsp;summary.<br>
+&nbsp;<br>
+Raises:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;ValueError:&nbsp;if&nbsp;`<a href="#AutoEncoder-summary">summary</a>()`&nbsp;is&nbsp;called&nbsp;before&nbsp;the&nbsp;model&nbsp;is&nbsp;built.</tt></dd></dl>
+
+<dl><dt><a name="AutoEncoder-test_on_batch"><strong>test_on_batch</strong></a>(self, x, y=None, sample_weight=None, reset_metrics=True, return_dict=False)</dt><dd><tt>Test&nbsp;the&nbsp;model&nbsp;on&nbsp;a&nbsp;single&nbsp;batch&nbsp;of&nbsp;samples.<br>
+&nbsp;<br>
+Arguments:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;x:&nbsp;Input&nbsp;data.&nbsp;It&nbsp;could&nbsp;be:&nbsp;-&nbsp;A&nbsp;Numpy&nbsp;array&nbsp;(or&nbsp;array-like),&nbsp;or&nbsp;a&nbsp;list<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;of&nbsp;arrays&nbsp;(in&nbsp;case&nbsp;the&nbsp;model&nbsp;has&nbsp;multiple&nbsp;inputs).&nbsp;-&nbsp;A&nbsp;TensorFlow<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;tensor,&nbsp;or&nbsp;a&nbsp;list&nbsp;of&nbsp;tensors&nbsp;(in&nbsp;case&nbsp;the&nbsp;model&nbsp;has&nbsp;multiple&nbsp;inputs).<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;A&nbsp;dict&nbsp;mapping&nbsp;input&nbsp;names&nbsp;to&nbsp;the&nbsp;corresponding&nbsp;array/tensors,&nbsp;if<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;the&nbsp;model&nbsp;has&nbsp;named&nbsp;inputs.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;y:&nbsp;Target&nbsp;data.&nbsp;Like&nbsp;the&nbsp;input&nbsp;data&nbsp;`x`,&nbsp;it&nbsp;could&nbsp;be&nbsp;either&nbsp;Numpy<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;array(s)&nbsp;or&nbsp;TensorFlow&nbsp;tensor(s).&nbsp;It&nbsp;should&nbsp;be&nbsp;consistent&nbsp;with&nbsp;`x`<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(you&nbsp;cannot&nbsp;have&nbsp;Numpy&nbsp;inputs&nbsp;and&nbsp;tensor&nbsp;targets,&nbsp;or&nbsp;inversely).<br>
+&nbsp;&nbsp;&nbsp;&nbsp;sample_weight:&nbsp;Optional&nbsp;array&nbsp;of&nbsp;the&nbsp;same&nbsp;length&nbsp;as&nbsp;x,&nbsp;containing<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;weights&nbsp;to&nbsp;apply&nbsp;to&nbsp;the&nbsp;model's&nbsp;loss&nbsp;for&nbsp;each&nbsp;sample.&nbsp;In&nbsp;the&nbsp;case&nbsp;of<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;temporal&nbsp;data,&nbsp;you&nbsp;can&nbsp;pass&nbsp;a&nbsp;2D&nbsp;array&nbsp;with&nbsp;shape&nbsp;(samples,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sequence_length),&nbsp;to&nbsp;apply&nbsp;a&nbsp;different&nbsp;weight&nbsp;to&nbsp;every&nbsp;timestep&nbsp;of<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;every&nbsp;sample.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;reset_metrics:&nbsp;If&nbsp;`True`,&nbsp;the&nbsp;metrics&nbsp;returned&nbsp;will&nbsp;be&nbsp;only&nbsp;for&nbsp;this<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;batch.&nbsp;If&nbsp;`False`,&nbsp;the&nbsp;metrics&nbsp;will&nbsp;be&nbsp;statefully&nbsp;accumulated&nbsp;across<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;batches.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;return_dict:&nbsp;If&nbsp;`True`,&nbsp;loss&nbsp;and&nbsp;metric&nbsp;results&nbsp;are&nbsp;returned&nbsp;as&nbsp;a&nbsp;dict,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;with&nbsp;each&nbsp;key&nbsp;being&nbsp;the&nbsp;name&nbsp;of&nbsp;the&nbsp;metric.&nbsp;If&nbsp;`False`,&nbsp;they&nbsp;are<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;returned&nbsp;as&nbsp;a&nbsp;list.<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Scalar&nbsp;test&nbsp;loss&nbsp;(if&nbsp;the&nbsp;model&nbsp;has&nbsp;a&nbsp;single&nbsp;output&nbsp;and&nbsp;no&nbsp;metrics)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;or&nbsp;list&nbsp;of&nbsp;scalars&nbsp;(if&nbsp;the&nbsp;model&nbsp;has&nbsp;multiple&nbsp;outputs<br>
+&nbsp;&nbsp;&nbsp;&nbsp;and/or&nbsp;metrics).&nbsp;The&nbsp;attribute&nbsp;`model.metrics_names`&nbsp;will&nbsp;give&nbsp;you<br>
+&nbsp;&nbsp;&nbsp;&nbsp;the&nbsp;display&nbsp;labels&nbsp;for&nbsp;the&nbsp;scalar&nbsp;outputs.<br>
+&nbsp;<br>
+Raises:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;RuntimeError:&nbsp;If&nbsp;`model.test_on_batch`&nbsp;is&nbsp;wrapped&nbsp;in&nbsp;`tf.function`.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;ValueError:&nbsp;In&nbsp;case&nbsp;of&nbsp;invalid&nbsp;user-provided&nbsp;arguments.</tt></dd></dl>
+
+<dl><dt><a name="AutoEncoder-test_step"><strong>test_step</strong></a>(self, data)</dt><dd><tt>The&nbsp;logic&nbsp;for&nbsp;one&nbsp;evaluation&nbsp;step.<br>
+&nbsp;<br>
+This&nbsp;method&nbsp;can&nbsp;be&nbsp;overridden&nbsp;to&nbsp;support&nbsp;custom&nbsp;evaluation&nbsp;logic.<br>
+This&nbsp;method&nbsp;is&nbsp;called&nbsp;by&nbsp;`<a href="tensorflow.python.keras.engine.training.html#Model">Model</a>.make_test_function`.<br>
+&nbsp;<br>
+This&nbsp;function&nbsp;should&nbsp;contain&nbsp;the&nbsp;mathematical&nbsp;logic&nbsp;for&nbsp;one&nbsp;step&nbsp;of<br>
+evaluation.<br>
+This&nbsp;typically&nbsp;includes&nbsp;the&nbsp;forward&nbsp;pass,&nbsp;loss&nbsp;calculation,&nbsp;and&nbsp;metrics<br>
+updates.<br>
+&nbsp;<br>
+Configuration&nbsp;details&nbsp;for&nbsp;*how*&nbsp;this&nbsp;logic&nbsp;is&nbsp;run&nbsp;(e.g.&nbsp;`tf.function`&nbsp;and<br>
+`tf.distribute.Strategy`&nbsp;settings),&nbsp;should&nbsp;be&nbsp;left&nbsp;to<br>
+`<a href="tensorflow.python.keras.engine.training.html#Model">Model</a>.make_test_function`,&nbsp;which&nbsp;can&nbsp;also&nbsp;be&nbsp;overridden.<br>
+&nbsp;<br>
+Arguments:<br>
+&nbsp;&nbsp;data:&nbsp;A&nbsp;nested&nbsp;structure&nbsp;of&nbsp;`Tensor`s.<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;A&nbsp;`dict`&nbsp;containing&nbsp;values&nbsp;that&nbsp;will&nbsp;be&nbsp;passed&nbsp;to<br>
+&nbsp;&nbsp;`tf.keras.callbacks.CallbackList.on_train_batch_end`.&nbsp;Typically,&nbsp;the<br>
+&nbsp;&nbsp;values&nbsp;of&nbsp;the&nbsp;`<a href="tensorflow.python.keras.engine.training.html#Model">Model</a>`'s&nbsp;metrics&nbsp;are&nbsp;returned.</tt></dd></dl>
+
+<dl><dt><a name="AutoEncoder-to_json"><strong>to_json</strong></a>(self, **kwargs)</dt><dd><tt>Returns&nbsp;a&nbsp;JSON&nbsp;string&nbsp;containing&nbsp;the&nbsp;network&nbsp;configuration.<br>
+&nbsp;<br>
+To&nbsp;load&nbsp;a&nbsp;network&nbsp;from&nbsp;a&nbsp;JSON&nbsp;save&nbsp;file,&nbsp;use<br>
+`keras.models.model_from_json(json_string,&nbsp;custom_objects={})`.<br>
+&nbsp;<br>
+Arguments:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;**kwargs:&nbsp;Additional&nbsp;keyword&nbsp;arguments<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;to&nbsp;be&nbsp;passed&nbsp;to&nbsp;`json.dumps()`.<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;A&nbsp;JSON&nbsp;string.</tt></dd></dl>
+
+<dl><dt><a name="AutoEncoder-to_yaml"><strong>to_yaml</strong></a>(self, **kwargs)</dt><dd><tt>Returns&nbsp;a&nbsp;yaml&nbsp;string&nbsp;containing&nbsp;the&nbsp;network&nbsp;configuration.<br>
+&nbsp;<br>
+To&nbsp;load&nbsp;a&nbsp;network&nbsp;from&nbsp;a&nbsp;yaml&nbsp;save&nbsp;file,&nbsp;use<br>
+`keras.models.model_from_yaml(yaml_string,&nbsp;custom_objects={})`.<br>
+&nbsp;<br>
+`custom_objects`&nbsp;should&nbsp;be&nbsp;a&nbsp;dictionary&nbsp;mapping<br>
+the&nbsp;names&nbsp;of&nbsp;custom&nbsp;losses&nbsp;/&nbsp;layers&nbsp;/&nbsp;etc&nbsp;to&nbsp;the&nbsp;corresponding<br>
+functions&nbsp;/&nbsp;classes.<br>
+&nbsp;<br>
+Arguments:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;**kwargs:&nbsp;Additional&nbsp;keyword&nbsp;arguments<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;to&nbsp;be&nbsp;passed&nbsp;to&nbsp;`yaml.dump()`.<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;A&nbsp;YAML&nbsp;string.<br>
+&nbsp;<br>
+Raises:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;ImportError:&nbsp;if&nbsp;yaml&nbsp;module&nbsp;is&nbsp;not&nbsp;found.</tt></dd></dl>
+
+<dl><dt><a name="AutoEncoder-train_on_batch"><strong>train_on_batch</strong></a>(self, x, y=None, sample_weight=None, class_weight=None, reset_metrics=True, return_dict=False)</dt><dd><tt>Runs&nbsp;a&nbsp;single&nbsp;gradient&nbsp;update&nbsp;on&nbsp;a&nbsp;single&nbsp;batch&nbsp;of&nbsp;data.<br>
+&nbsp;<br>
+Arguments:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;x:&nbsp;Input&nbsp;data.&nbsp;It&nbsp;could&nbsp;be:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;A&nbsp;Numpy&nbsp;array&nbsp;(or&nbsp;array-like),&nbsp;or&nbsp;a&nbsp;list&nbsp;of&nbsp;arrays<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(in&nbsp;case&nbsp;the&nbsp;model&nbsp;has&nbsp;multiple&nbsp;inputs).<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;A&nbsp;TensorFlow&nbsp;tensor,&nbsp;or&nbsp;a&nbsp;list&nbsp;of&nbsp;tensors<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(in&nbsp;case&nbsp;the&nbsp;model&nbsp;has&nbsp;multiple&nbsp;inputs).<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;A&nbsp;dict&nbsp;mapping&nbsp;input&nbsp;names&nbsp;to&nbsp;the&nbsp;corresponding&nbsp;array/tensors,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;the&nbsp;model&nbsp;has&nbsp;named&nbsp;inputs.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;y:&nbsp;Target&nbsp;data.&nbsp;Like&nbsp;the&nbsp;input&nbsp;data&nbsp;`x`,&nbsp;it&nbsp;could&nbsp;be&nbsp;either&nbsp;Numpy<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;array(s)&nbsp;or&nbsp;TensorFlow&nbsp;tensor(s).&nbsp;It&nbsp;should&nbsp;be&nbsp;consistent&nbsp;with&nbsp;`x`<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(you&nbsp;cannot&nbsp;have&nbsp;Numpy&nbsp;inputs&nbsp;and&nbsp;tensor&nbsp;targets,&nbsp;or&nbsp;inversely).<br>
+&nbsp;&nbsp;&nbsp;&nbsp;sample_weight:&nbsp;Optional&nbsp;array&nbsp;of&nbsp;the&nbsp;same&nbsp;length&nbsp;as&nbsp;x,&nbsp;containing<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;weights&nbsp;to&nbsp;apply&nbsp;to&nbsp;the&nbsp;model's&nbsp;loss&nbsp;for&nbsp;each&nbsp;sample.&nbsp;In&nbsp;the&nbsp;case&nbsp;of<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;temporal&nbsp;data,&nbsp;you&nbsp;can&nbsp;pass&nbsp;a&nbsp;2D&nbsp;array&nbsp;with&nbsp;shape&nbsp;(samples,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sequence_length),&nbsp;to&nbsp;apply&nbsp;a&nbsp;different&nbsp;weight&nbsp;to&nbsp;every&nbsp;timestep&nbsp;of<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;every&nbsp;sample.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;class_weight:&nbsp;Optional&nbsp;dictionary&nbsp;mapping&nbsp;class&nbsp;indices&nbsp;(integers)&nbsp;to&nbsp;a<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;weight&nbsp;(float)&nbsp;to&nbsp;apply&nbsp;to&nbsp;the&nbsp;model's&nbsp;loss&nbsp;for&nbsp;the&nbsp;samples&nbsp;from&nbsp;this<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;class&nbsp;during&nbsp;training.&nbsp;This&nbsp;can&nbsp;be&nbsp;useful&nbsp;to&nbsp;tell&nbsp;the&nbsp;model&nbsp;to&nbsp;"pay<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;more&nbsp;attention"&nbsp;to&nbsp;samples&nbsp;from&nbsp;an&nbsp;under-represented&nbsp;class.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;reset_metrics:&nbsp;If&nbsp;`True`,&nbsp;the&nbsp;metrics&nbsp;returned&nbsp;will&nbsp;be&nbsp;only&nbsp;for&nbsp;this<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;batch.&nbsp;If&nbsp;`False`,&nbsp;the&nbsp;metrics&nbsp;will&nbsp;be&nbsp;statefully&nbsp;accumulated&nbsp;across<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;batches.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;return_dict:&nbsp;If&nbsp;`True`,&nbsp;loss&nbsp;and&nbsp;metric&nbsp;results&nbsp;are&nbsp;returned&nbsp;as&nbsp;a&nbsp;dict,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;with&nbsp;each&nbsp;key&nbsp;being&nbsp;the&nbsp;name&nbsp;of&nbsp;the&nbsp;metric.&nbsp;If&nbsp;`False`,&nbsp;they&nbsp;are<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;returned&nbsp;as&nbsp;a&nbsp;list.<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Scalar&nbsp;training&nbsp;loss<br>
+&nbsp;&nbsp;&nbsp;&nbsp;(if&nbsp;the&nbsp;model&nbsp;has&nbsp;a&nbsp;single&nbsp;output&nbsp;and&nbsp;no&nbsp;metrics)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;or&nbsp;list&nbsp;of&nbsp;scalars&nbsp;(if&nbsp;the&nbsp;model&nbsp;has&nbsp;multiple&nbsp;outputs<br>
+&nbsp;&nbsp;&nbsp;&nbsp;and/or&nbsp;metrics).&nbsp;The&nbsp;attribute&nbsp;`model.metrics_names`&nbsp;will&nbsp;give&nbsp;you<br>
+&nbsp;&nbsp;&nbsp;&nbsp;the&nbsp;display&nbsp;labels&nbsp;for&nbsp;the&nbsp;scalar&nbsp;outputs.<br>
+&nbsp;<br>
+Raises:<br>
+&nbsp;&nbsp;RuntimeError:&nbsp;If&nbsp;`model.train_on_batch`&nbsp;is&nbsp;wrapped&nbsp;in&nbsp;`tf.function`.<br>
+&nbsp;&nbsp;ValueError:&nbsp;In&nbsp;case&nbsp;of&nbsp;invalid&nbsp;user-provided&nbsp;arguments.</tt></dd></dl>
+
+<dl><dt><a name="AutoEncoder-train_step"><strong>train_step</strong></a>(self, data)</dt><dd><tt>The&nbsp;logic&nbsp;for&nbsp;one&nbsp;training&nbsp;step.<br>
+&nbsp;<br>
+This&nbsp;method&nbsp;can&nbsp;be&nbsp;overridden&nbsp;to&nbsp;support&nbsp;custom&nbsp;training&nbsp;logic.<br>
+This&nbsp;method&nbsp;is&nbsp;called&nbsp;by&nbsp;`<a href="tensorflow.python.keras.engine.training.html#Model">Model</a>.make_train_function`.<br>
+&nbsp;<br>
+This&nbsp;method&nbsp;should&nbsp;contain&nbsp;the&nbsp;mathematical&nbsp;logic&nbsp;for&nbsp;one&nbsp;step&nbsp;of&nbsp;training.<br>
+This&nbsp;typically&nbsp;includes&nbsp;the&nbsp;forward&nbsp;pass,&nbsp;loss&nbsp;calculation,&nbsp;backpropagation,<br>
+and&nbsp;metric&nbsp;updates.<br>
+&nbsp;<br>
+Configuration&nbsp;details&nbsp;for&nbsp;*how*&nbsp;this&nbsp;logic&nbsp;is&nbsp;run&nbsp;(e.g.&nbsp;`tf.function`&nbsp;and<br>
+`tf.distribute.Strategy`&nbsp;settings),&nbsp;should&nbsp;be&nbsp;left&nbsp;to<br>
+`<a href="tensorflow.python.keras.engine.training.html#Model">Model</a>.make_train_function`,&nbsp;which&nbsp;can&nbsp;also&nbsp;be&nbsp;overridden.<br>
+&nbsp;<br>
+Arguments:<br>
+&nbsp;&nbsp;data:&nbsp;A&nbsp;nested&nbsp;structure&nbsp;of&nbsp;`Tensor`s.<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;A&nbsp;`dict`&nbsp;containing&nbsp;values&nbsp;that&nbsp;will&nbsp;be&nbsp;passed&nbsp;to<br>
+&nbsp;&nbsp;`tf.keras.callbacks.CallbackList.on_train_batch_end`.&nbsp;Typically,&nbsp;the<br>
+&nbsp;&nbsp;values&nbsp;of&nbsp;the&nbsp;`<a href="tensorflow.python.keras.engine.training.html#Model">Model</a>`'s&nbsp;metrics&nbsp;are&nbsp;returned.&nbsp;Example:<br>
+&nbsp;&nbsp;`{'loss':&nbsp;0.2,&nbsp;'accuracy':&nbsp;0.7}`.</tt></dd></dl>
+
+<hr>
+Class methods inherited from <a href="tensorflow.python.keras.engine.training.html#Model">tensorflow.python.keras.engine.training.Model</a>:<br>
+<dl><dt><a name="AutoEncoder-from_config"><strong>from_config</strong></a>(config, custom_objects=None)<font color="#909090"><font face="helvetica, arial"> from <a href="builtins.html#type">builtins.type</a></font></font></dt><dd><tt>Creates&nbsp;a&nbsp;layer&nbsp;from&nbsp;its&nbsp;config.<br>
+&nbsp;<br>
+This&nbsp;method&nbsp;is&nbsp;the&nbsp;reverse&nbsp;of&nbsp;`get_config`,<br>
+capable&nbsp;of&nbsp;instantiating&nbsp;the&nbsp;same&nbsp;layer&nbsp;from&nbsp;the&nbsp;config<br>
+dictionary.&nbsp;It&nbsp;does&nbsp;not&nbsp;handle&nbsp;layer&nbsp;connectivity<br>
+(handled&nbsp;by&nbsp;Network),&nbsp;nor&nbsp;weights&nbsp;(handled&nbsp;by&nbsp;`set_weights`).<br>
+&nbsp;<br>
+Arguments:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;config:&nbsp;A&nbsp;Python&nbsp;dictionary,&nbsp;typically&nbsp;the<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;output&nbsp;of&nbsp;get_config.<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;A&nbsp;layer&nbsp;instance.</tt></dd></dl>
+
+<hr>
+Static methods inherited from <a href="tensorflow.python.keras.engine.training.html#Model">tensorflow.python.keras.engine.training.Model</a>:<br>
+<dl><dt><a name="AutoEncoder-__new__"><strong>__new__</strong></a>(cls, *args, **kwargs)</dt><dd><tt>Create&nbsp;and&nbsp;return&nbsp;a&nbsp;new&nbsp;object.&nbsp;&nbsp;See&nbsp;help(type)&nbsp;for&nbsp;accurate&nbsp;signature.</tt></dd></dl>
+
+<hr>
+Readonly properties inherited from <a href="tensorflow.python.keras.engine.training.html#Model">tensorflow.python.keras.engine.training.Model</a>:<br>
+<dl><dt><strong>distribute_strategy</strong></dt>
+<dd><tt>The&nbsp;`tf.distribute.Strategy`&nbsp;this&nbsp;model&nbsp;was&nbsp;created&nbsp;under.</tt></dd>
+</dl>
+<dl><dt><strong>layers</strong></dt>
+</dl>
+<dl><dt><strong>metrics</strong></dt>
+<dd><tt>Returns&nbsp;the&nbsp;model's&nbsp;metrics&nbsp;added&nbsp;using&nbsp;`compile`,&nbsp;`add_metric`&nbsp;APIs.<br>
+&nbsp;<br>
+Note:&nbsp;Metrics&nbsp;passed&nbsp;to&nbsp;`compile()`&nbsp;are&nbsp;available&nbsp;only&nbsp;after&nbsp;a&nbsp;`keras.Model`<br>
+has&nbsp;been&nbsp;trained/evaluated&nbsp;on&nbsp;actual&nbsp;data.<br>
+&nbsp;<br>
+Examples:<br>
+&nbsp;<br>
+&gt;&gt;&gt;&nbsp;inputs&nbsp;=&nbsp;tf.keras.layers.Input(shape=(3,))<br>
+&gt;&gt;&gt;&nbsp;outputs&nbsp;=&nbsp;tf.keras.layers.Dense(2)(inputs)<br>
+&gt;&gt;&gt;&nbsp;model&nbsp;=&nbsp;tf.keras.models.Model(inputs=inputs,&nbsp;outputs=outputs)<br>
+&gt;&gt;&gt;&nbsp;model.compile(optimizer="Adam",&nbsp;loss="mse",&nbsp;metrics=["mae"])<br>
+&gt;&gt;&gt;&nbsp;[m.name&nbsp;for&nbsp;m&nbsp;in&nbsp;model.metrics]<br>
+[]<br>
+&nbsp;<br>
+&gt;&gt;&gt;&nbsp;x&nbsp;=&nbsp;np.random.random((2,&nbsp;3))<br>
+&gt;&gt;&gt;&nbsp;y&nbsp;=&nbsp;np.random.randint(0,&nbsp;2,&nbsp;(2,&nbsp;2))<br>
+&gt;&gt;&gt;&nbsp;model.fit(x,&nbsp;y)<br>
+&gt;&gt;&gt;&nbsp;[m.name&nbsp;for&nbsp;m&nbsp;in&nbsp;model.metrics]<br>
+['loss',&nbsp;'mae']<br>
+&nbsp;<br>
+&gt;&gt;&gt;&nbsp;inputs&nbsp;=&nbsp;tf.keras.layers.Input(shape=(3,))<br>
+&gt;&gt;&gt;&nbsp;d&nbsp;=&nbsp;tf.keras.layers.Dense(2,&nbsp;name='out')<br>
+&gt;&gt;&gt;&nbsp;output_1&nbsp;=&nbsp;d(inputs)<br>
+&gt;&gt;&gt;&nbsp;output_2&nbsp;=&nbsp;d(inputs)<br>
+&gt;&gt;&gt;&nbsp;model&nbsp;=&nbsp;tf.keras.models.Model(<br>
+...&nbsp;&nbsp;&nbsp;&nbsp;inputs=inputs,&nbsp;outputs=[output_1,&nbsp;output_2])<br>
+&gt;&gt;&gt;&nbsp;model.add_metric(<br>
+...&nbsp;&nbsp;&nbsp;&nbsp;tf.reduce_sum(output_2),&nbsp;name='mean',&nbsp;aggregation='mean')<br>
+&gt;&gt;&gt;&nbsp;model.compile(optimizer="Adam",&nbsp;loss="mse",&nbsp;metrics=["mae",&nbsp;"acc"])<br>
+&gt;&gt;&gt;&nbsp;model.fit(x,&nbsp;(y,&nbsp;y))<br>
+&gt;&gt;&gt;&nbsp;[m.name&nbsp;for&nbsp;m&nbsp;in&nbsp;model.metrics]<br>
+['loss',&nbsp;'out_loss',&nbsp;'out_1_loss',&nbsp;'out_mae',&nbsp;'out_acc',&nbsp;'out_1_mae',<br>
+'out_1_acc',&nbsp;'mean']</tt></dd>
+</dl>
+<dl><dt><strong>metrics_names</strong></dt>
+<dd><tt>Returns&nbsp;the&nbsp;model's&nbsp;display&nbsp;labels&nbsp;for&nbsp;all&nbsp;outputs.<br>
+&nbsp;<br>
+Note:&nbsp;`metrics_names`&nbsp;are&nbsp;available&nbsp;only&nbsp;after&nbsp;a&nbsp;`keras.Model`&nbsp;has&nbsp;been<br>
+trained/evaluated&nbsp;on&nbsp;actual&nbsp;data.<br>
+&nbsp;<br>
+Examples:<br>
+&nbsp;<br>
+&gt;&gt;&gt;&nbsp;inputs&nbsp;=&nbsp;tf.keras.layers.Input(shape=(3,))<br>
+&gt;&gt;&gt;&nbsp;outputs&nbsp;=&nbsp;tf.keras.layers.Dense(2)(inputs)<br>
+&gt;&gt;&gt;&nbsp;model&nbsp;=&nbsp;tf.keras.models.Model(inputs=inputs,&nbsp;outputs=outputs)<br>
+&gt;&gt;&gt;&nbsp;model.compile(optimizer="Adam",&nbsp;loss="mse",&nbsp;metrics=["mae"])<br>
+&gt;&gt;&gt;&nbsp;model.metrics_names<br>
+[]<br>
+&nbsp;<br>
+&gt;&gt;&gt;&nbsp;x&nbsp;=&nbsp;np.random.random((2,&nbsp;3))<br>
+&gt;&gt;&gt;&nbsp;y&nbsp;=&nbsp;np.random.randint(0,&nbsp;2,&nbsp;(2,&nbsp;2))<br>
+&gt;&gt;&gt;&nbsp;model.fit(x,&nbsp;y)<br>
+&gt;&gt;&gt;&nbsp;model.metrics_names<br>
+['loss',&nbsp;'mae']<br>
+&nbsp;<br>
+&gt;&gt;&gt;&nbsp;inputs&nbsp;=&nbsp;tf.keras.layers.Input(shape=(3,))<br>
+&gt;&gt;&gt;&nbsp;d&nbsp;=&nbsp;tf.keras.layers.Dense(2,&nbsp;name='out')<br>
+&gt;&gt;&gt;&nbsp;output_1&nbsp;=&nbsp;d(inputs)<br>
+&gt;&gt;&gt;&nbsp;output_2&nbsp;=&nbsp;d(inputs)<br>
+&gt;&gt;&gt;&nbsp;model&nbsp;=&nbsp;tf.keras.models.Model(<br>
+...&nbsp;&nbsp;&nbsp;&nbsp;inputs=inputs,&nbsp;outputs=[output_1,&nbsp;output_2])<br>
+&gt;&gt;&gt;&nbsp;model.compile(optimizer="Adam",&nbsp;loss="mse",&nbsp;metrics=["mae",&nbsp;"acc"])<br>
+&gt;&gt;&gt;&nbsp;model.fit(x,&nbsp;(y,&nbsp;y))<br>
+&gt;&gt;&gt;&nbsp;model.metrics_names<br>
+['loss',&nbsp;'out_loss',&nbsp;'out_1_loss',&nbsp;'out_mae',&nbsp;'out_acc',&nbsp;'out_1_mae',<br>
+'out_1_acc']</tt></dd>
+</dl>
+<dl><dt><strong>non_trainable_weights</strong></dt>
+<dd><tt>List&nbsp;of&nbsp;all&nbsp;non-trainable&nbsp;weights&nbsp;tracked&nbsp;by&nbsp;this&nbsp;layer.<br>
+&nbsp;<br>
+Non-trainable&nbsp;weights&nbsp;are&nbsp;*not*&nbsp;updated&nbsp;during&nbsp;training.&nbsp;They&nbsp;are&nbsp;expected<br>
+to&nbsp;be&nbsp;updated&nbsp;manually&nbsp;in&nbsp;`call()`.<br>
+&nbsp;<br>
+Note:&nbsp;This&nbsp;will&nbsp;not&nbsp;track&nbsp;the&nbsp;weights&nbsp;of&nbsp;nested&nbsp;`tf.Modules`&nbsp;that&nbsp;are&nbsp;not<br>
+themselves&nbsp;Keras&nbsp;layers.<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;A&nbsp;list&nbsp;of&nbsp;non-trainable&nbsp;variables.</tt></dd>
+</dl>
+<dl><dt><strong>state_updates</strong></dt>
+<dd><tt>Deprecated,&nbsp;do&nbsp;NOT&nbsp;use!<br>
+&nbsp;<br>
+Returns&nbsp;the&nbsp;`updates`&nbsp;from&nbsp;all&nbsp;layers&nbsp;that&nbsp;are&nbsp;stateful.<br>
+&nbsp;<br>
+This&nbsp;is&nbsp;useful&nbsp;for&nbsp;separating&nbsp;training&nbsp;updates&nbsp;and<br>
+state&nbsp;updates,&nbsp;e.g.&nbsp;when&nbsp;we&nbsp;need&nbsp;to&nbsp;update&nbsp;a&nbsp;layer's&nbsp;internal&nbsp;state<br>
+during&nbsp;prediction.<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;A&nbsp;list&nbsp;of&nbsp;update&nbsp;ops.</tt></dd>
+</dl>
+<dl><dt><strong>trainable_weights</strong></dt>
+<dd><tt>List&nbsp;of&nbsp;all&nbsp;trainable&nbsp;weights&nbsp;tracked&nbsp;by&nbsp;this&nbsp;layer.<br>
+&nbsp;<br>
+Trainable&nbsp;weights&nbsp;are&nbsp;updated&nbsp;via&nbsp;gradient&nbsp;descent&nbsp;during&nbsp;training.<br>
+&nbsp;<br>
+Note:&nbsp;This&nbsp;will&nbsp;not&nbsp;track&nbsp;the&nbsp;weights&nbsp;of&nbsp;nested&nbsp;`tf.Modules`&nbsp;that&nbsp;are&nbsp;not<br>
+themselves&nbsp;Keras&nbsp;layers.<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;A&nbsp;list&nbsp;of&nbsp;trainable&nbsp;variables.</tt></dd>
+</dl>
+<dl><dt><strong>weights</strong></dt>
+<dd><tt>Returns&nbsp;the&nbsp;list&nbsp;of&nbsp;all&nbsp;layer&nbsp;variables/weights.<br>
+&nbsp;<br>
+Note:&nbsp;This&nbsp;will&nbsp;not&nbsp;track&nbsp;the&nbsp;weights&nbsp;of&nbsp;nested&nbsp;`tf.Modules`&nbsp;that&nbsp;are&nbsp;not<br>
+themselves&nbsp;Keras&nbsp;layers.<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;A&nbsp;list&nbsp;of&nbsp;variables.</tt></dd>
+</dl>
+<hr>
+Data descriptors inherited from <a href="tensorflow.python.keras.engine.training.html#Model">tensorflow.python.keras.engine.training.Model</a>:<br>
+<dl><dt><strong>run_eagerly</strong></dt>
+<dd><tt>Settable&nbsp;attribute&nbsp;indicating&nbsp;whether&nbsp;the&nbsp;model&nbsp;should&nbsp;run&nbsp;eagerly.<br>
+&nbsp;<br>
+Running&nbsp;eagerly&nbsp;means&nbsp;that&nbsp;your&nbsp;model&nbsp;will&nbsp;be&nbsp;run&nbsp;step&nbsp;by&nbsp;step,<br>
+like&nbsp;Python&nbsp;code.&nbsp;Your&nbsp;model&nbsp;might&nbsp;run&nbsp;slower,&nbsp;but&nbsp;it&nbsp;should&nbsp;become&nbsp;easier<br>
+for&nbsp;you&nbsp;to&nbsp;debug&nbsp;it&nbsp;by&nbsp;stepping&nbsp;into&nbsp;individual&nbsp;layer&nbsp;calls.<br>
+&nbsp;<br>
+By&nbsp;default,&nbsp;we&nbsp;will&nbsp;attempt&nbsp;to&nbsp;compile&nbsp;your&nbsp;model&nbsp;to&nbsp;a&nbsp;static&nbsp;graph&nbsp;to<br>
+deliver&nbsp;the&nbsp;best&nbsp;execution&nbsp;performance.<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;Boolean,&nbsp;whether&nbsp;the&nbsp;model&nbsp;should&nbsp;run&nbsp;eagerly.</tt></dd>
+</dl>
+<hr>
+Methods inherited from <a href="tensorflow.python.keras.engine.base_layer.html#Layer">tensorflow.python.keras.engine.base_layer.Layer</a>:<br>
+<dl><dt><a name="AutoEncoder-__call__"><strong>__call__</strong></a>(self, *args, **kwargs)</dt><dd><tt>Wraps&nbsp;`call`,&nbsp;applying&nbsp;pre-&nbsp;and&nbsp;post-processing&nbsp;steps.<br>
+&nbsp;<br>
+Arguments:<br>
+&nbsp;&nbsp;*args:&nbsp;Positional&nbsp;arguments&nbsp;to&nbsp;be&nbsp;passed&nbsp;to&nbsp;`self.<strong>call</strong>`.<br>
+&nbsp;&nbsp;**kwargs:&nbsp;Keyword&nbsp;arguments&nbsp;to&nbsp;be&nbsp;passed&nbsp;to&nbsp;`self.<strong>call</strong>`.<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;Output&nbsp;tensor(s).<br>
+&nbsp;<br>
+Note:<br>
+&nbsp;&nbsp;-&nbsp;The&nbsp;following&nbsp;optional&nbsp;keyword&nbsp;arguments&nbsp;are&nbsp;reserved&nbsp;for&nbsp;specific&nbsp;uses:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;`training`:&nbsp;Boolean&nbsp;scalar&nbsp;tensor&nbsp;of&nbsp;Python&nbsp;boolean&nbsp;indicating<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;whether&nbsp;the&nbsp;`call`&nbsp;is&nbsp;meant&nbsp;for&nbsp;training&nbsp;or&nbsp;inference.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;`mask`:&nbsp;Boolean&nbsp;input&nbsp;mask.<br>
+&nbsp;&nbsp;-&nbsp;If&nbsp;the&nbsp;layer's&nbsp;`call`&nbsp;method&nbsp;takes&nbsp;a&nbsp;`mask`&nbsp;argument&nbsp;(as&nbsp;some&nbsp;Keras<br>
+&nbsp;&nbsp;&nbsp;&nbsp;layers&nbsp;do),&nbsp;its&nbsp;default&nbsp;value&nbsp;will&nbsp;be&nbsp;set&nbsp;to&nbsp;the&nbsp;mask&nbsp;generated<br>
+&nbsp;&nbsp;&nbsp;&nbsp;for&nbsp;`inputs`&nbsp;by&nbsp;the&nbsp;previous&nbsp;layer&nbsp;(if&nbsp;`input`&nbsp;did&nbsp;come&nbsp;from<br>
+&nbsp;&nbsp;&nbsp;&nbsp;a&nbsp;layer&nbsp;that&nbsp;generated&nbsp;a&nbsp;corresponding&nbsp;mask,&nbsp;i.e.&nbsp;if&nbsp;it&nbsp;came&nbsp;from<br>
+&nbsp;&nbsp;&nbsp;&nbsp;a&nbsp;Keras&nbsp;layer&nbsp;with&nbsp;masking&nbsp;support.<br>
+&nbsp;<br>
+Raises:<br>
+&nbsp;&nbsp;ValueError:&nbsp;if&nbsp;the&nbsp;layer's&nbsp;`call`&nbsp;method&nbsp;returns&nbsp;None&nbsp;(an&nbsp;invalid&nbsp;value).<br>
+&nbsp;&nbsp;RuntimeError:&nbsp;if&nbsp;`super().<a href="#AutoEncoder-__init__">__init__</a>()`&nbsp;was&nbsp;not&nbsp;called&nbsp;in&nbsp;the&nbsp;constructor.</tt></dd></dl>
+
+<dl><dt><a name="AutoEncoder-__delattr__"><strong>__delattr__</strong></a>(self, name)</dt><dd><tt>Implement&nbsp;delattr(self,&nbsp;name).</tt></dd></dl>
+
+<dl><dt><a name="AutoEncoder-__getstate__"><strong>__getstate__</strong></a>(self)</dt></dl>
+
+<dl><dt><a name="AutoEncoder-__setstate__"><strong>__setstate__</strong></a>(self, state)</dt></dl>
+
+<dl><dt><a name="AutoEncoder-add_loss"><strong>add_loss</strong></a>(self, losses, **kwargs)</dt><dd><tt>Add&nbsp;loss&nbsp;tensor(s),&nbsp;potentially&nbsp;dependent&nbsp;on&nbsp;layer&nbsp;inputs.<br>
+&nbsp;<br>
+Some&nbsp;losses&nbsp;(for&nbsp;instance,&nbsp;activity&nbsp;regularization&nbsp;losses)&nbsp;may&nbsp;be&nbsp;dependent<br>
+on&nbsp;the&nbsp;inputs&nbsp;passed&nbsp;when&nbsp;calling&nbsp;a&nbsp;layer.&nbsp;Hence,&nbsp;when&nbsp;reusing&nbsp;the&nbsp;same<br>
+layer&nbsp;on&nbsp;different&nbsp;inputs&nbsp;`a`&nbsp;and&nbsp;`b`,&nbsp;some&nbsp;entries&nbsp;in&nbsp;`layer.losses`&nbsp;may<br>
+be&nbsp;dependent&nbsp;on&nbsp;`a`&nbsp;and&nbsp;some&nbsp;on&nbsp;`b`.&nbsp;This&nbsp;method&nbsp;automatically&nbsp;keeps&nbsp;track<br>
+of&nbsp;dependencies.<br>
+&nbsp;<br>
+This&nbsp;method&nbsp;can&nbsp;be&nbsp;used&nbsp;inside&nbsp;a&nbsp;subclassed&nbsp;layer&nbsp;or&nbsp;model's&nbsp;`call`<br>
+function,&nbsp;in&nbsp;which&nbsp;case&nbsp;`losses`&nbsp;should&nbsp;be&nbsp;a&nbsp;Tensor&nbsp;or&nbsp;list&nbsp;of&nbsp;Tensors.<br>
+&nbsp;<br>
+Example:<br>
+&nbsp;<br>
+```python<br>
+class&nbsp;MyLayer(tf.keras.layers.Layer):<br>
+&nbsp;&nbsp;def&nbsp;<a href="#AutoEncoder-call">call</a>(self,&nbsp;inputs):<br>
+&nbsp;&nbsp;&nbsp;&nbsp;self.<a href="#AutoEncoder-add_loss">add_loss</a>(tf.abs(tf.reduce_mean(inputs)))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;inputs<br>
+```<br>
+&nbsp;<br>
+This&nbsp;method&nbsp;can&nbsp;also&nbsp;be&nbsp;called&nbsp;directly&nbsp;on&nbsp;a&nbsp;Functional&nbsp;<a href="tensorflow.python.keras.engine.training.html#Model">Model</a>&nbsp;during<br>
+construction.&nbsp;In&nbsp;this&nbsp;case,&nbsp;any&nbsp;loss&nbsp;Tensors&nbsp;passed&nbsp;to&nbsp;this&nbsp;<a href="tensorflow.python.keras.engine.training.html#Model">Model</a>&nbsp;must<br>
+be&nbsp;symbolic&nbsp;and&nbsp;be&nbsp;able&nbsp;to&nbsp;be&nbsp;traced&nbsp;back&nbsp;to&nbsp;the&nbsp;model's&nbsp;`Input`s.&nbsp;These<br>
+losses&nbsp;become&nbsp;part&nbsp;of&nbsp;the&nbsp;model's&nbsp;topology&nbsp;and&nbsp;are&nbsp;tracked&nbsp;in&nbsp;`get_config`.<br>
+&nbsp;<br>
+Example:<br>
+&nbsp;<br>
+```python<br>
+inputs&nbsp;=&nbsp;tf.keras.Input(shape=(10,))<br>
+x&nbsp;=&nbsp;tf.keras.layers.Dense(10)(inputs)<br>
+outputs&nbsp;=&nbsp;tf.keras.layers.Dense(1)(x)<br>
+model&nbsp;=&nbsp;tf.keras.<a href="tensorflow.python.keras.engine.training.html#Model">Model</a>(inputs,&nbsp;outputs)<br>
+#&nbsp;Activity&nbsp;regularization.<br>
+model.<a href="#AutoEncoder-add_loss">add_loss</a>(tf.abs(tf.reduce_mean(x)))<br>
+```<br>
+&nbsp;<br>
+If&nbsp;this&nbsp;is&nbsp;not&nbsp;the&nbsp;case&nbsp;for&nbsp;your&nbsp;loss&nbsp;(if,&nbsp;for&nbsp;example,&nbsp;your&nbsp;loss&nbsp;references<br>
+a&nbsp;`Variable`&nbsp;of&nbsp;one&nbsp;of&nbsp;the&nbsp;model's&nbsp;layers),&nbsp;you&nbsp;can&nbsp;wrap&nbsp;your&nbsp;loss&nbsp;in&nbsp;a<br>
+zero-argument&nbsp;lambda.&nbsp;These&nbsp;losses&nbsp;are&nbsp;not&nbsp;tracked&nbsp;as&nbsp;part&nbsp;of&nbsp;the&nbsp;model's<br>
+topology&nbsp;since&nbsp;they&nbsp;can't&nbsp;be&nbsp;serialized.<br>
+&nbsp;<br>
+Example:<br>
+&nbsp;<br>
+```python<br>
+inputs&nbsp;=&nbsp;tf.keras.Input(shape=(10,))<br>
+d&nbsp;=&nbsp;tf.keras.layers.Dense(10)<br>
+x&nbsp;=&nbsp;d(inputs)<br>
+outputs&nbsp;=&nbsp;tf.keras.layers.Dense(1)(x)<br>
+model&nbsp;=&nbsp;tf.keras.<a href="tensorflow.python.keras.engine.training.html#Model">Model</a>(inputs,&nbsp;outputs)<br>
+#&nbsp;Weight&nbsp;regularization.<br>
+model.<a href="#AutoEncoder-add_loss">add_loss</a>(lambda:&nbsp;tf.reduce_mean(d.kernel))<br>
+```<br>
+&nbsp;<br>
+Arguments:<br>
+&nbsp;&nbsp;losses:&nbsp;Loss&nbsp;tensor,&nbsp;or&nbsp;list/tuple&nbsp;of&nbsp;tensors.&nbsp;Rather&nbsp;than&nbsp;tensors,&nbsp;losses<br>
+&nbsp;&nbsp;&nbsp;&nbsp;may&nbsp;also&nbsp;be&nbsp;zero-argument&nbsp;callables&nbsp;which&nbsp;create&nbsp;a&nbsp;loss&nbsp;tensor.<br>
+&nbsp;&nbsp;**kwargs:&nbsp;Additional&nbsp;keyword&nbsp;arguments&nbsp;for&nbsp;backward&nbsp;compatibility.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Accepted&nbsp;values:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;inputs&nbsp;-&nbsp;Deprecated,&nbsp;will&nbsp;be&nbsp;automatically&nbsp;inferred.</tt></dd></dl>
+
+<dl><dt><a name="AutoEncoder-add_metric"><strong>add_metric</strong></a>(self, value, name=None, **kwargs)</dt><dd><tt>Adds&nbsp;metric&nbsp;tensor&nbsp;to&nbsp;the&nbsp;layer.<br>
+&nbsp;<br>
+This&nbsp;method&nbsp;can&nbsp;be&nbsp;used&nbsp;inside&nbsp;the&nbsp;`<a href="#AutoEncoder-call">call</a>()`&nbsp;method&nbsp;of&nbsp;a&nbsp;subclassed&nbsp;layer<br>
+or&nbsp;model.<br>
+&nbsp;<br>
+```python<br>
+class&nbsp;MyMetricLayer(tf.keras.layers.Layer):<br>
+&nbsp;&nbsp;def&nbsp;<a href="#AutoEncoder-__init__">__init__</a>(self):<br>
+&nbsp;&nbsp;&nbsp;&nbsp;super(MyMetricLayer,&nbsp;self).<a href="#AutoEncoder-__init__">__init__</a>(name='my_metric_layer')<br>
+&nbsp;&nbsp;&nbsp;&nbsp;self.<strong>mean</strong>&nbsp;=&nbsp;tf.keras.metrics.Mean(name='metric_1')<br>
+&nbsp;<br>
+&nbsp;&nbsp;def&nbsp;<a href="#AutoEncoder-call">call</a>(self,&nbsp;inputs):<br>
+&nbsp;&nbsp;&nbsp;&nbsp;self.<a href="#AutoEncoder-add_metric">add_metric</a>(self.mean(x))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;self.<a href="#AutoEncoder-add_metric">add_metric</a>(tf.reduce_sum(x),&nbsp;name='metric_2')<br>
+&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;inputs<br>
+```<br>
+&nbsp;<br>
+This&nbsp;method&nbsp;can&nbsp;also&nbsp;be&nbsp;called&nbsp;directly&nbsp;on&nbsp;a&nbsp;Functional&nbsp;<a href="tensorflow.python.keras.engine.training.html#Model">Model</a>&nbsp;during<br>
+construction.&nbsp;In&nbsp;this&nbsp;case,&nbsp;any&nbsp;tensor&nbsp;passed&nbsp;to&nbsp;this&nbsp;<a href="tensorflow.python.keras.engine.training.html#Model">Model</a>&nbsp;must<br>
+be&nbsp;symbolic&nbsp;and&nbsp;be&nbsp;able&nbsp;to&nbsp;be&nbsp;traced&nbsp;back&nbsp;to&nbsp;the&nbsp;model's&nbsp;`Input`s.&nbsp;These<br>
+metrics&nbsp;become&nbsp;part&nbsp;of&nbsp;the&nbsp;model's&nbsp;topology&nbsp;and&nbsp;are&nbsp;tracked&nbsp;when&nbsp;you<br>
+save&nbsp;the&nbsp;model&nbsp;via&nbsp;`<a href="#AutoEncoder-save">save</a>()`.<br>
+&nbsp;<br>
+```python<br>
+inputs&nbsp;=&nbsp;tf.keras.Input(shape=(10,))<br>
+x&nbsp;=&nbsp;tf.keras.layers.Dense(10)(inputs)<br>
+outputs&nbsp;=&nbsp;tf.keras.layers.Dense(1)(x)<br>
+model&nbsp;=&nbsp;tf.keras.<a href="tensorflow.python.keras.engine.training.html#Model">Model</a>(inputs,&nbsp;outputs)<br>
+model.<a href="#AutoEncoder-add_metric">add_metric</a>(math_ops.reduce_sum(x),&nbsp;name='metric_1')<br>
+```<br>
+&nbsp;<br>
+Note:&nbsp;Calling&nbsp;`<a href="#AutoEncoder-add_metric">add_metric</a>()`&nbsp;with&nbsp;the&nbsp;result&nbsp;of&nbsp;a&nbsp;metric&nbsp;object&nbsp;on&nbsp;a<br>
+Functional&nbsp;<a href="tensorflow.python.keras.engine.training.html#Model">Model</a>,&nbsp;as&nbsp;shown&nbsp;in&nbsp;the&nbsp;example&nbsp;below,&nbsp;is&nbsp;not&nbsp;supported.&nbsp;This&nbsp;is<br>
+because&nbsp;we&nbsp;cannot&nbsp;trace&nbsp;the&nbsp;metric&nbsp;result&nbsp;tensor&nbsp;back&nbsp;to&nbsp;the&nbsp;model's&nbsp;inputs.<br>
+&nbsp;<br>
+```python<br>
+inputs&nbsp;=&nbsp;tf.keras.Input(shape=(10,))<br>
+x&nbsp;=&nbsp;tf.keras.layers.Dense(10)(inputs)<br>
+outputs&nbsp;=&nbsp;tf.keras.layers.Dense(1)(x)<br>
+model&nbsp;=&nbsp;tf.keras.<a href="tensorflow.python.keras.engine.training.html#Model">Model</a>(inputs,&nbsp;outputs)<br>
+model.<a href="#AutoEncoder-add_metric">add_metric</a>(tf.keras.metrics.Mean()(x),&nbsp;name='metric_1')<br>
+```<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;value:&nbsp;Metric&nbsp;tensor.<br>
+&nbsp;&nbsp;name:&nbsp;String&nbsp;metric&nbsp;name.<br>
+&nbsp;&nbsp;**kwargs:&nbsp;Additional&nbsp;keyword&nbsp;arguments&nbsp;for&nbsp;backward&nbsp;compatibility.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Accepted&nbsp;values:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;`aggregation`&nbsp;-&nbsp;When&nbsp;the&nbsp;`value`&nbsp;tensor&nbsp;provided&nbsp;is&nbsp;not&nbsp;the&nbsp;result&nbsp;of<br>
+&nbsp;&nbsp;&nbsp;&nbsp;calling&nbsp;a&nbsp;`keras.Metric`&nbsp;instance,&nbsp;it&nbsp;will&nbsp;be&nbsp;aggregated&nbsp;by&nbsp;default<br>
+&nbsp;&nbsp;&nbsp;&nbsp;using&nbsp;a&nbsp;`keras.Metric.Mean`.</tt></dd></dl>
+
+<dl><dt><a name="AutoEncoder-add_update"><strong>add_update</strong></a>(self, updates, inputs=None)</dt><dd><tt>Add&nbsp;update&nbsp;op(s),&nbsp;potentially&nbsp;dependent&nbsp;on&nbsp;layer&nbsp;inputs.<br>
+&nbsp;<br>
+Weight&nbsp;updates&nbsp;(for&nbsp;instance,&nbsp;the&nbsp;updates&nbsp;of&nbsp;the&nbsp;moving&nbsp;mean&nbsp;and&nbsp;variance<br>
+in&nbsp;a&nbsp;BatchNormalization&nbsp;layer)&nbsp;may&nbsp;be&nbsp;dependent&nbsp;on&nbsp;the&nbsp;inputs&nbsp;passed<br>
+when&nbsp;calling&nbsp;a&nbsp;layer.&nbsp;Hence,&nbsp;when&nbsp;reusing&nbsp;the&nbsp;same&nbsp;layer&nbsp;on<br>
+different&nbsp;inputs&nbsp;`a`&nbsp;and&nbsp;`b`,&nbsp;some&nbsp;entries&nbsp;in&nbsp;`layer.updates`&nbsp;may&nbsp;be<br>
+dependent&nbsp;on&nbsp;`a`&nbsp;and&nbsp;some&nbsp;on&nbsp;`b`.&nbsp;This&nbsp;method&nbsp;automatically&nbsp;keeps&nbsp;track<br>
+of&nbsp;dependencies.<br>
+&nbsp;<br>
+This&nbsp;call&nbsp;is&nbsp;ignored&nbsp;when&nbsp;eager&nbsp;execution&nbsp;is&nbsp;enabled&nbsp;(in&nbsp;that&nbsp;case,&nbsp;variable<br>
+updates&nbsp;are&nbsp;run&nbsp;on&nbsp;the&nbsp;fly&nbsp;and&nbsp;thus&nbsp;do&nbsp;not&nbsp;need&nbsp;to&nbsp;be&nbsp;tracked&nbsp;for&nbsp;later<br>
+execution).<br>
+&nbsp;<br>
+Arguments:<br>
+&nbsp;&nbsp;updates:&nbsp;Update&nbsp;op,&nbsp;or&nbsp;list/tuple&nbsp;of&nbsp;update&nbsp;ops,&nbsp;or&nbsp;zero-arg&nbsp;callable<br>
+&nbsp;&nbsp;&nbsp;&nbsp;that&nbsp;returns&nbsp;an&nbsp;update&nbsp;op.&nbsp;A&nbsp;zero-arg&nbsp;callable&nbsp;should&nbsp;be&nbsp;passed&nbsp;in<br>
+&nbsp;&nbsp;&nbsp;&nbsp;order&nbsp;to&nbsp;disable&nbsp;running&nbsp;the&nbsp;updates&nbsp;by&nbsp;setting&nbsp;`trainable=False`<br>
+&nbsp;&nbsp;&nbsp;&nbsp;on&nbsp;this&nbsp;Layer,&nbsp;when&nbsp;executing&nbsp;in&nbsp;Eager&nbsp;mode.<br>
+&nbsp;&nbsp;inputs:&nbsp;Deprecated,&nbsp;will&nbsp;be&nbsp;automatically&nbsp;inferred.</tt></dd></dl>
+
+<dl><dt><a name="AutoEncoder-add_variable"><strong>add_variable</strong></a>(self, *args, **kwargs)</dt><dd><tt>Deprecated,&nbsp;do&nbsp;NOT&nbsp;use!&nbsp;Alias&nbsp;for&nbsp;`add_weight`.</tt></dd></dl>
+
+<dl><dt><a name="AutoEncoder-add_weight"><strong>add_weight</strong></a>(self, name=None, shape=None, dtype=None, initializer=None, regularizer=None, trainable=None, constraint=None, use_resource=None, synchronization=&lt;VariableSynchronization.AUTO: 0&gt;, aggregation=&lt;VariableAggregation.NONE: 0&gt;, **kwargs)</dt><dd><tt>Adds&nbsp;a&nbsp;new&nbsp;variable&nbsp;to&nbsp;the&nbsp;layer.<br>
+&nbsp;<br>
+Arguments:<br>
+&nbsp;&nbsp;name:&nbsp;Variable&nbsp;name.<br>
+&nbsp;&nbsp;shape:&nbsp;Variable&nbsp;shape.&nbsp;Defaults&nbsp;to&nbsp;scalar&nbsp;if&nbsp;unspecified.<br>
+&nbsp;&nbsp;dtype:&nbsp;The&nbsp;type&nbsp;of&nbsp;the&nbsp;variable.&nbsp;Defaults&nbsp;to&nbsp;`self.<strong>dtype</strong>`.<br>
+&nbsp;&nbsp;initializer:&nbsp;Initializer&nbsp;instance&nbsp;(callable).<br>
+&nbsp;&nbsp;regularizer:&nbsp;Regularizer&nbsp;instance&nbsp;(callable).<br>
+&nbsp;&nbsp;trainable:&nbsp;Boolean,&nbsp;whether&nbsp;the&nbsp;variable&nbsp;should&nbsp;be&nbsp;part&nbsp;of&nbsp;the&nbsp;layer's<br>
+&nbsp;&nbsp;&nbsp;&nbsp;"trainable_variables"&nbsp;(e.g.&nbsp;variables,&nbsp;biases)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;or&nbsp;"non_trainable_variables"&nbsp;(e.g.&nbsp;BatchNorm&nbsp;mean&nbsp;and&nbsp;variance).<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Note&nbsp;that&nbsp;`trainable`&nbsp;cannot&nbsp;be&nbsp;`True`&nbsp;if&nbsp;`synchronization`<br>
+&nbsp;&nbsp;&nbsp;&nbsp;is&nbsp;set&nbsp;to&nbsp;`ON_READ`.<br>
+&nbsp;&nbsp;constraint:&nbsp;Constraint&nbsp;instance&nbsp;(callable).<br>
+&nbsp;&nbsp;use_resource:&nbsp;Whether&nbsp;to&nbsp;use&nbsp;`ResourceVariable`.<br>
+&nbsp;&nbsp;synchronization:&nbsp;Indicates&nbsp;when&nbsp;a&nbsp;distributed&nbsp;a&nbsp;variable&nbsp;will&nbsp;be<br>
+&nbsp;&nbsp;&nbsp;&nbsp;aggregated.&nbsp;Accepted&nbsp;values&nbsp;are&nbsp;constants&nbsp;defined&nbsp;in&nbsp;the&nbsp;class<br>
+&nbsp;&nbsp;&nbsp;&nbsp;`tf.VariableSynchronization`.&nbsp;By&nbsp;default&nbsp;the&nbsp;synchronization&nbsp;is&nbsp;set&nbsp;to<br>
+&nbsp;&nbsp;&nbsp;&nbsp;`AUTO`&nbsp;and&nbsp;the&nbsp;current&nbsp;`DistributionStrategy`&nbsp;chooses<br>
+&nbsp;&nbsp;&nbsp;&nbsp;when&nbsp;to&nbsp;synchronize.&nbsp;If&nbsp;`synchronization`&nbsp;is&nbsp;set&nbsp;to&nbsp;`ON_READ`,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;`trainable`&nbsp;must&nbsp;not&nbsp;be&nbsp;set&nbsp;to&nbsp;`True`.<br>
+&nbsp;&nbsp;aggregation:&nbsp;Indicates&nbsp;how&nbsp;a&nbsp;distributed&nbsp;variable&nbsp;will&nbsp;be&nbsp;aggregated.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Accepted&nbsp;values&nbsp;are&nbsp;constants&nbsp;defined&nbsp;in&nbsp;the&nbsp;class<br>
+&nbsp;&nbsp;&nbsp;&nbsp;`tf.VariableAggregation`.<br>
+&nbsp;&nbsp;**kwargs:&nbsp;Additional&nbsp;keyword&nbsp;arguments.&nbsp;Accepted&nbsp;values&nbsp;are&nbsp;`getter`,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;`collections`,&nbsp;`experimental_autocast`&nbsp;and&nbsp;`caching_device`.<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;The&nbsp;variable&nbsp;created.<br>
+&nbsp;<br>
+Raises:<br>
+&nbsp;&nbsp;ValueError:&nbsp;When&nbsp;giving&nbsp;unsupported&nbsp;dtype&nbsp;and&nbsp;no&nbsp;initializer&nbsp;or&nbsp;when<br>
+&nbsp;&nbsp;&nbsp;&nbsp;trainable&nbsp;has&nbsp;been&nbsp;set&nbsp;to&nbsp;True&nbsp;with&nbsp;synchronization&nbsp;set&nbsp;as&nbsp;`ON_READ`.</tt></dd></dl>
+
+<dl><dt><a name="AutoEncoder-apply"><strong>apply</strong></a>(self, inputs, *args, **kwargs)</dt><dd><tt>Deprecated,&nbsp;do&nbsp;NOT&nbsp;use!<br>
+&nbsp;<br>
+This&nbsp;is&nbsp;an&nbsp;alias&nbsp;of&nbsp;`self.<strong>__call__</strong>`.<br>
+&nbsp;<br>
+Arguments:<br>
+&nbsp;&nbsp;inputs:&nbsp;Input&nbsp;tensor(s).<br>
+&nbsp;&nbsp;*args:&nbsp;additional&nbsp;positional&nbsp;arguments&nbsp;to&nbsp;be&nbsp;passed&nbsp;to&nbsp;`self.<strong>call</strong>`.<br>
+&nbsp;&nbsp;**kwargs:&nbsp;additional&nbsp;keyword&nbsp;arguments&nbsp;to&nbsp;be&nbsp;passed&nbsp;to&nbsp;`self.<strong>call</strong>`.<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;Output&nbsp;tensor(s).</tt></dd></dl>
+
+<dl><dt><a name="AutoEncoder-compute_mask"><strong>compute_mask</strong></a>(self, inputs, mask=None)</dt><dd><tt>Computes&nbsp;an&nbsp;output&nbsp;mask&nbsp;tensor.<br>
+&nbsp;<br>
+Arguments:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;inputs:&nbsp;Tensor&nbsp;or&nbsp;list&nbsp;of&nbsp;tensors.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;mask:&nbsp;Tensor&nbsp;or&nbsp;list&nbsp;of&nbsp;tensors.<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;None&nbsp;or&nbsp;a&nbsp;tensor&nbsp;(or&nbsp;list&nbsp;of&nbsp;tensors,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;one&nbsp;per&nbsp;output&nbsp;tensor&nbsp;of&nbsp;the&nbsp;layer).</tt></dd></dl>
+
+<dl><dt><a name="AutoEncoder-compute_output_shape"><strong>compute_output_shape</strong></a>(self, input_shape)</dt><dd><tt>Computes&nbsp;the&nbsp;output&nbsp;shape&nbsp;of&nbsp;the&nbsp;layer.<br>
+&nbsp;<br>
+If&nbsp;the&nbsp;layer&nbsp;has&nbsp;not&nbsp;been&nbsp;built,&nbsp;this&nbsp;method&nbsp;will&nbsp;call&nbsp;`build`&nbsp;on&nbsp;the<br>
+layer.&nbsp;This&nbsp;assumes&nbsp;that&nbsp;the&nbsp;layer&nbsp;will&nbsp;later&nbsp;be&nbsp;used&nbsp;with&nbsp;inputs&nbsp;that<br>
+match&nbsp;the&nbsp;input&nbsp;shape&nbsp;provided&nbsp;here.<br>
+&nbsp;<br>
+Arguments:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;input_shape:&nbsp;Shape&nbsp;tuple&nbsp;(tuple&nbsp;of&nbsp;integers)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;or&nbsp;list&nbsp;of&nbsp;shape&nbsp;tuples&nbsp;(one&nbsp;per&nbsp;output&nbsp;tensor&nbsp;of&nbsp;the&nbsp;layer).<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Shape&nbsp;tuples&nbsp;can&nbsp;include&nbsp;None&nbsp;for&nbsp;free&nbsp;dimensions,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;instead&nbsp;of&nbsp;an&nbsp;integer.<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;An&nbsp;input&nbsp;shape&nbsp;tuple.</tt></dd></dl>
+
+<dl><dt><a name="AutoEncoder-compute_output_signature"><strong>compute_output_signature</strong></a>(self, input_signature)</dt><dd><tt>Compute&nbsp;the&nbsp;output&nbsp;tensor&nbsp;signature&nbsp;of&nbsp;the&nbsp;layer&nbsp;based&nbsp;on&nbsp;the&nbsp;inputs.<br>
+&nbsp;<br>
+Unlike&nbsp;a&nbsp;TensorShape&nbsp;object,&nbsp;a&nbsp;TensorSpec&nbsp;object&nbsp;contains&nbsp;both&nbsp;shape<br>
+and&nbsp;dtype&nbsp;information&nbsp;for&nbsp;a&nbsp;tensor.&nbsp;This&nbsp;method&nbsp;allows&nbsp;layers&nbsp;to&nbsp;provide<br>
+output&nbsp;dtype&nbsp;information&nbsp;if&nbsp;it&nbsp;is&nbsp;different&nbsp;from&nbsp;the&nbsp;input&nbsp;dtype.<br>
+For&nbsp;any&nbsp;layer&nbsp;that&nbsp;doesn't&nbsp;implement&nbsp;this&nbsp;function,<br>
+the&nbsp;framework&nbsp;will&nbsp;fall&nbsp;back&nbsp;to&nbsp;use&nbsp;`compute_output_shape`,&nbsp;and&nbsp;will<br>
+assume&nbsp;that&nbsp;the&nbsp;output&nbsp;dtype&nbsp;matches&nbsp;the&nbsp;input&nbsp;dtype.<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;input_signature:&nbsp;Single&nbsp;TensorSpec&nbsp;or&nbsp;nested&nbsp;structure&nbsp;of&nbsp;TensorSpec<br>
+&nbsp;&nbsp;&nbsp;&nbsp;objects,&nbsp;describing&nbsp;a&nbsp;candidate&nbsp;input&nbsp;for&nbsp;the&nbsp;layer.<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;Single&nbsp;TensorSpec&nbsp;or&nbsp;nested&nbsp;structure&nbsp;of&nbsp;TensorSpec&nbsp;objects,&nbsp;describing<br>
+&nbsp;&nbsp;&nbsp;&nbsp;how&nbsp;the&nbsp;layer&nbsp;would&nbsp;transform&nbsp;the&nbsp;provided&nbsp;input.<br>
+&nbsp;<br>
+Raises:<br>
+&nbsp;&nbsp;TypeError:&nbsp;If&nbsp;input_signature&nbsp;contains&nbsp;a&nbsp;non-TensorSpec&nbsp;object.</tt></dd></dl>
+
+<dl><dt><a name="AutoEncoder-count_params"><strong>count_params</strong></a>(self)</dt><dd><tt>Count&nbsp;the&nbsp;total&nbsp;number&nbsp;of&nbsp;scalars&nbsp;composing&nbsp;the&nbsp;weights.<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;An&nbsp;integer&nbsp;count.<br>
+&nbsp;<br>
+Raises:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;ValueError:&nbsp;if&nbsp;the&nbsp;layer&nbsp;isn't&nbsp;yet&nbsp;built<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(in&nbsp;which&nbsp;case&nbsp;its&nbsp;weights&nbsp;aren't&nbsp;yet&nbsp;defined).</tt></dd></dl>
+
+<dl><dt><a name="AutoEncoder-get_input_at"><strong>get_input_at</strong></a>(self, node_index)</dt><dd><tt>Retrieves&nbsp;the&nbsp;input&nbsp;tensor(s)&nbsp;of&nbsp;a&nbsp;layer&nbsp;at&nbsp;a&nbsp;given&nbsp;node.<br>
+&nbsp;<br>
+Arguments:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;node_index:&nbsp;Integer,&nbsp;index&nbsp;of&nbsp;the&nbsp;node<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;from&nbsp;which&nbsp;to&nbsp;retrieve&nbsp;the&nbsp;attribute.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;E.g.&nbsp;`node_index=0`&nbsp;will&nbsp;correspond&nbsp;to&nbsp;the<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;first&nbsp;time&nbsp;the&nbsp;layer&nbsp;was&nbsp;called.<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;A&nbsp;tensor&nbsp;(or&nbsp;list&nbsp;of&nbsp;tensors&nbsp;if&nbsp;the&nbsp;layer&nbsp;has&nbsp;multiple&nbsp;inputs).<br>
+&nbsp;<br>
+Raises:<br>
+&nbsp;&nbsp;RuntimeError:&nbsp;If&nbsp;called&nbsp;in&nbsp;Eager&nbsp;mode.</tt></dd></dl>
+
+<dl><dt><a name="AutoEncoder-get_input_mask_at"><strong>get_input_mask_at</strong></a>(self, node_index)</dt><dd><tt>Retrieves&nbsp;the&nbsp;input&nbsp;mask&nbsp;tensor(s)&nbsp;of&nbsp;a&nbsp;layer&nbsp;at&nbsp;a&nbsp;given&nbsp;node.<br>
+&nbsp;<br>
+Arguments:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;node_index:&nbsp;Integer,&nbsp;index&nbsp;of&nbsp;the&nbsp;node<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;from&nbsp;which&nbsp;to&nbsp;retrieve&nbsp;the&nbsp;attribute.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;E.g.&nbsp;`node_index=0`&nbsp;will&nbsp;correspond&nbsp;to&nbsp;the<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;first&nbsp;time&nbsp;the&nbsp;layer&nbsp;was&nbsp;called.<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;A&nbsp;mask&nbsp;tensor<br>
+&nbsp;&nbsp;&nbsp;&nbsp;(or&nbsp;list&nbsp;of&nbsp;tensors&nbsp;if&nbsp;the&nbsp;layer&nbsp;has&nbsp;multiple&nbsp;inputs).</tt></dd></dl>
+
+<dl><dt><a name="AutoEncoder-get_input_shape_at"><strong>get_input_shape_at</strong></a>(self, node_index)</dt><dd><tt>Retrieves&nbsp;the&nbsp;input&nbsp;shape(s)&nbsp;of&nbsp;a&nbsp;layer&nbsp;at&nbsp;a&nbsp;given&nbsp;node.<br>
+&nbsp;<br>
+Arguments:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;node_index:&nbsp;Integer,&nbsp;index&nbsp;of&nbsp;the&nbsp;node<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;from&nbsp;which&nbsp;to&nbsp;retrieve&nbsp;the&nbsp;attribute.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;E.g.&nbsp;`node_index=0`&nbsp;will&nbsp;correspond&nbsp;to&nbsp;the<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;first&nbsp;time&nbsp;the&nbsp;layer&nbsp;was&nbsp;called.<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;A&nbsp;shape&nbsp;tuple<br>
+&nbsp;&nbsp;&nbsp;&nbsp;(or&nbsp;list&nbsp;of&nbsp;shape&nbsp;tuples&nbsp;if&nbsp;the&nbsp;layer&nbsp;has&nbsp;multiple&nbsp;inputs).<br>
+&nbsp;<br>
+Raises:<br>
+&nbsp;&nbsp;RuntimeError:&nbsp;If&nbsp;called&nbsp;in&nbsp;Eager&nbsp;mode.</tt></dd></dl>
+
+<dl><dt><a name="AutoEncoder-get_losses_for"><strong>get_losses_for</strong></a>(self, inputs)</dt><dd><tt>Deprecated,&nbsp;do&nbsp;NOT&nbsp;use!<br>
+&nbsp;<br>
+Retrieves&nbsp;losses&nbsp;relevant&nbsp;to&nbsp;a&nbsp;specific&nbsp;set&nbsp;of&nbsp;inputs.<br>
+&nbsp;<br>
+Arguments:<br>
+&nbsp;&nbsp;inputs:&nbsp;Input&nbsp;tensor&nbsp;or&nbsp;list/tuple&nbsp;of&nbsp;input&nbsp;tensors.<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;List&nbsp;of&nbsp;loss&nbsp;tensors&nbsp;of&nbsp;the&nbsp;layer&nbsp;that&nbsp;depend&nbsp;on&nbsp;`inputs`.</tt></dd></dl>
+
+<dl><dt><a name="AutoEncoder-get_output_at"><strong>get_output_at</strong></a>(self, node_index)</dt><dd><tt>Retrieves&nbsp;the&nbsp;output&nbsp;tensor(s)&nbsp;of&nbsp;a&nbsp;layer&nbsp;at&nbsp;a&nbsp;given&nbsp;node.<br>
+&nbsp;<br>
+Arguments:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;node_index:&nbsp;Integer,&nbsp;index&nbsp;of&nbsp;the&nbsp;node<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;from&nbsp;which&nbsp;to&nbsp;retrieve&nbsp;the&nbsp;attribute.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;E.g.&nbsp;`node_index=0`&nbsp;will&nbsp;correspond&nbsp;to&nbsp;the<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;first&nbsp;time&nbsp;the&nbsp;layer&nbsp;was&nbsp;called.<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;A&nbsp;tensor&nbsp;(or&nbsp;list&nbsp;of&nbsp;tensors&nbsp;if&nbsp;the&nbsp;layer&nbsp;has&nbsp;multiple&nbsp;outputs).<br>
+&nbsp;<br>
+Raises:<br>
+&nbsp;&nbsp;RuntimeError:&nbsp;If&nbsp;called&nbsp;in&nbsp;Eager&nbsp;mode.</tt></dd></dl>
+
+<dl><dt><a name="AutoEncoder-get_output_mask_at"><strong>get_output_mask_at</strong></a>(self, node_index)</dt><dd><tt>Retrieves&nbsp;the&nbsp;output&nbsp;mask&nbsp;tensor(s)&nbsp;of&nbsp;a&nbsp;layer&nbsp;at&nbsp;a&nbsp;given&nbsp;node.<br>
+&nbsp;<br>
+Arguments:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;node_index:&nbsp;Integer,&nbsp;index&nbsp;of&nbsp;the&nbsp;node<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;from&nbsp;which&nbsp;to&nbsp;retrieve&nbsp;the&nbsp;attribute.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;E.g.&nbsp;`node_index=0`&nbsp;will&nbsp;correspond&nbsp;to&nbsp;the<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;first&nbsp;time&nbsp;the&nbsp;layer&nbsp;was&nbsp;called.<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;A&nbsp;mask&nbsp;tensor<br>
+&nbsp;&nbsp;&nbsp;&nbsp;(or&nbsp;list&nbsp;of&nbsp;tensors&nbsp;if&nbsp;the&nbsp;layer&nbsp;has&nbsp;multiple&nbsp;outputs).</tt></dd></dl>
+
+<dl><dt><a name="AutoEncoder-get_output_shape_at"><strong>get_output_shape_at</strong></a>(self, node_index)</dt><dd><tt>Retrieves&nbsp;the&nbsp;output&nbsp;shape(s)&nbsp;of&nbsp;a&nbsp;layer&nbsp;at&nbsp;a&nbsp;given&nbsp;node.<br>
+&nbsp;<br>
+Arguments:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;node_index:&nbsp;Integer,&nbsp;index&nbsp;of&nbsp;the&nbsp;node<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;from&nbsp;which&nbsp;to&nbsp;retrieve&nbsp;the&nbsp;attribute.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;E.g.&nbsp;`node_index=0`&nbsp;will&nbsp;correspond&nbsp;to&nbsp;the<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;first&nbsp;time&nbsp;the&nbsp;layer&nbsp;was&nbsp;called.<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;A&nbsp;shape&nbsp;tuple<br>
+&nbsp;&nbsp;&nbsp;&nbsp;(or&nbsp;list&nbsp;of&nbsp;shape&nbsp;tuples&nbsp;if&nbsp;the&nbsp;layer&nbsp;has&nbsp;multiple&nbsp;outputs).<br>
+&nbsp;<br>
+Raises:<br>
+&nbsp;&nbsp;RuntimeError:&nbsp;If&nbsp;called&nbsp;in&nbsp;Eager&nbsp;mode.</tt></dd></dl>
+
+<dl><dt><a name="AutoEncoder-get_updates_for"><strong>get_updates_for</strong></a>(self, inputs)</dt><dd><tt>Deprecated,&nbsp;do&nbsp;NOT&nbsp;use!<br>
+&nbsp;<br>
+Retrieves&nbsp;updates&nbsp;relevant&nbsp;to&nbsp;a&nbsp;specific&nbsp;set&nbsp;of&nbsp;inputs.<br>
+&nbsp;<br>
+Arguments:<br>
+&nbsp;&nbsp;inputs:&nbsp;Input&nbsp;tensor&nbsp;or&nbsp;list/tuple&nbsp;of&nbsp;input&nbsp;tensors.<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;List&nbsp;of&nbsp;update&nbsp;ops&nbsp;of&nbsp;the&nbsp;layer&nbsp;that&nbsp;depend&nbsp;on&nbsp;`inputs`.</tt></dd></dl>
+
+<dl><dt><a name="AutoEncoder-set_weights"><strong>set_weights</strong></a>(self, weights)</dt><dd><tt>Sets&nbsp;the&nbsp;weights&nbsp;of&nbsp;the&nbsp;layer,&nbsp;from&nbsp;Numpy&nbsp;arrays.<br>
+&nbsp;<br>
+The&nbsp;weights&nbsp;of&nbsp;a&nbsp;layer&nbsp;represent&nbsp;the&nbsp;state&nbsp;of&nbsp;the&nbsp;layer.&nbsp;This&nbsp;function<br>
+sets&nbsp;the&nbsp;weight&nbsp;values&nbsp;from&nbsp;numpy&nbsp;arrays.&nbsp;The&nbsp;weight&nbsp;values&nbsp;should&nbsp;be<br>
+passed&nbsp;in&nbsp;the&nbsp;order&nbsp;they&nbsp;are&nbsp;created&nbsp;by&nbsp;the&nbsp;layer.&nbsp;Note&nbsp;that&nbsp;the&nbsp;layer's<br>
+weights&nbsp;must&nbsp;be&nbsp;instantiated&nbsp;before&nbsp;calling&nbsp;this&nbsp;function&nbsp;by&nbsp;calling<br>
+the&nbsp;layer.<br>
+&nbsp;<br>
+For&nbsp;example,&nbsp;a&nbsp;Dense&nbsp;layer&nbsp;returns&nbsp;a&nbsp;list&nbsp;of&nbsp;two&nbsp;values--&nbsp;per-output<br>
+weights&nbsp;and&nbsp;the&nbsp;bias&nbsp;value.&nbsp;These&nbsp;can&nbsp;be&nbsp;used&nbsp;to&nbsp;set&nbsp;the&nbsp;weights&nbsp;of&nbsp;another<br>
+Dense&nbsp;layer:<br>
+&nbsp;<br>
+&gt;&gt;&gt;&nbsp;a&nbsp;=&nbsp;tf.keras.layers.Dense(1,<br>
+...&nbsp;&nbsp;&nbsp;kernel_initializer=tf.constant_initializer(1.))<br>
+&gt;&gt;&gt;&nbsp;a_out&nbsp;=&nbsp;a(tf.convert_to_tensor([[1.,&nbsp;2.,&nbsp;3.]]))<br>
+&gt;&gt;&gt;&nbsp;a.<a href="#AutoEncoder-get_weights">get_weights</a>()<br>
+[array([[1.],<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[1.],<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[1.]],&nbsp;dtype=float32),&nbsp;array([0.],&nbsp;dtype=float32)]<br>
+&gt;&gt;&gt;&nbsp;b&nbsp;=&nbsp;tf.keras.layers.Dense(1,<br>
+...&nbsp;&nbsp;&nbsp;kernel_initializer=tf.constant_initializer(2.))<br>
+&gt;&gt;&gt;&nbsp;b_out&nbsp;=&nbsp;b(tf.convert_to_tensor([[10.,&nbsp;20.,&nbsp;30.]]))<br>
+&gt;&gt;&gt;&nbsp;b.<a href="#AutoEncoder-get_weights">get_weights</a>()<br>
+[array([[2.],<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[2.],<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[2.]],&nbsp;dtype=float32),&nbsp;array([0.],&nbsp;dtype=float32)]<br>
+&gt;&gt;&gt;&nbsp;b.<a href="#AutoEncoder-set_weights">set_weights</a>(a.<a href="#AutoEncoder-get_weights">get_weights</a>())<br>
+&gt;&gt;&gt;&nbsp;b.<a href="#AutoEncoder-get_weights">get_weights</a>()<br>
+[array([[1.],<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[1.],<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[1.]],&nbsp;dtype=float32),&nbsp;array([0.],&nbsp;dtype=float32)]<br>
+&nbsp;<br>
+Arguments:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;weights:&nbsp;a&nbsp;list&nbsp;of&nbsp;Numpy&nbsp;arrays.&nbsp;The&nbsp;number<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;of&nbsp;arrays&nbsp;and&nbsp;their&nbsp;shape&nbsp;must&nbsp;match<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;number&nbsp;of&nbsp;the&nbsp;dimensions&nbsp;of&nbsp;the&nbsp;weights<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;of&nbsp;the&nbsp;layer&nbsp;(i.e.&nbsp;it&nbsp;should&nbsp;match&nbsp;the<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;output&nbsp;of&nbsp;`get_weights`).<br>
+&nbsp;<br>
+Raises:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;ValueError:&nbsp;If&nbsp;the&nbsp;provided&nbsp;weights&nbsp;list&nbsp;does&nbsp;not&nbsp;match&nbsp;the<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;layer's&nbsp;specifications.</tt></dd></dl>
+
+<hr>
+Readonly properties inherited from <a href="tensorflow.python.keras.engine.base_layer.html#Layer">tensorflow.python.keras.engine.base_layer.Layer</a>:<br>
+<dl><dt><strong>compute_dtype</strong></dt>
+<dd><tt>The&nbsp;dtype&nbsp;of&nbsp;the&nbsp;layer's&nbsp;computations.<br>
+&nbsp;<br>
+This&nbsp;is&nbsp;equivalent&nbsp;to&nbsp;`Layer.dtype_policy.compute_dtype`.&nbsp;Unless<br>
+mixed&nbsp;precision&nbsp;is&nbsp;used,&nbsp;this&nbsp;is&nbsp;the&nbsp;same&nbsp;as&nbsp;`Layer.dtype`,&nbsp;the&nbsp;dtype&nbsp;of<br>
+the&nbsp;weights.<br>
+&nbsp;<br>
+Layers&nbsp;automatically&nbsp;cast&nbsp;their&nbsp;inputs&nbsp;to&nbsp;the&nbsp;compute&nbsp;dtype,&nbsp;which&nbsp;causes<br>
+computations&nbsp;and&nbsp;the&nbsp;output&nbsp;to&nbsp;be&nbsp;in&nbsp;the&nbsp;compute&nbsp;dtype&nbsp;as&nbsp;well.&nbsp;This&nbsp;is&nbsp;done<br>
+by&nbsp;the&nbsp;base&nbsp;Layer&nbsp;class&nbsp;in&nbsp;`Layer.__call__`,&nbsp;so&nbsp;you&nbsp;do&nbsp;not&nbsp;have&nbsp;to&nbsp;insert<br>
+these&nbsp;casts&nbsp;if&nbsp;implementing&nbsp;your&nbsp;own&nbsp;layer.<br>
+&nbsp;<br>
+Layers&nbsp;often&nbsp;perform&nbsp;certain&nbsp;internal&nbsp;computations&nbsp;in&nbsp;higher&nbsp;precision&nbsp;when<br>
+`compute_dtype`&nbsp;is&nbsp;float16&nbsp;or&nbsp;bfloat16&nbsp;for&nbsp;numeric&nbsp;stability.&nbsp;The&nbsp;output<br>
+will&nbsp;still&nbsp;typically&nbsp;be&nbsp;float16&nbsp;or&nbsp;bfloat16&nbsp;in&nbsp;such&nbsp;cases.<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;The&nbsp;layer's&nbsp;compute&nbsp;dtype.</tt></dd>
+</dl>
+<dl><dt><strong>dtype</strong></dt>
+<dd><tt>The&nbsp;dtype&nbsp;of&nbsp;the&nbsp;layer&nbsp;weights.<br>
+&nbsp;<br>
+This&nbsp;is&nbsp;equivalent&nbsp;to&nbsp;`Layer.dtype_policy.variable_dtype`.&nbsp;Unless<br>
+mixed&nbsp;precision&nbsp;is&nbsp;used,&nbsp;this&nbsp;is&nbsp;the&nbsp;same&nbsp;as&nbsp;`Layer.compute_dtype`,&nbsp;the<br>
+dtype&nbsp;of&nbsp;the&nbsp;layer's&nbsp;computations.</tt></dd>
+</dl>
+<dl><dt><strong>dtype_policy</strong></dt>
+<dd><tt>The&nbsp;dtype&nbsp;policy&nbsp;associated&nbsp;with&nbsp;this&nbsp;layer.<br>
+&nbsp;<br>
+This&nbsp;is&nbsp;an&nbsp;instance&nbsp;of&nbsp;a&nbsp;`tf.keras.mixed_precision.Policy`.</tt></dd>
+</dl>
+<dl><dt><strong>dynamic</strong></dt>
+<dd><tt>Whether&nbsp;the&nbsp;layer&nbsp;is&nbsp;dynamic&nbsp;(eager-only);&nbsp;set&nbsp;in&nbsp;the&nbsp;constructor.</tt></dd>
+</dl>
+<dl><dt><strong>inbound_nodes</strong></dt>
+<dd><tt>Deprecated,&nbsp;do&nbsp;NOT&nbsp;use!&nbsp;Only&nbsp;for&nbsp;compatibility&nbsp;with&nbsp;external&nbsp;Keras.</tt></dd>
+</dl>
+<dl><dt><strong>input</strong></dt>
+<dd><tt>Retrieves&nbsp;the&nbsp;input&nbsp;tensor(s)&nbsp;of&nbsp;a&nbsp;layer.<br>
+&nbsp;<br>
+Only&nbsp;applicable&nbsp;if&nbsp;the&nbsp;layer&nbsp;has&nbsp;exactly&nbsp;one&nbsp;input,<br>
+i.e.&nbsp;if&nbsp;it&nbsp;is&nbsp;connected&nbsp;to&nbsp;one&nbsp;incoming&nbsp;layer.<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Input&nbsp;tensor&nbsp;or&nbsp;list&nbsp;of&nbsp;input&nbsp;tensors.<br>
+&nbsp;<br>
+Raises:<br>
+&nbsp;&nbsp;RuntimeError:&nbsp;If&nbsp;called&nbsp;in&nbsp;Eager&nbsp;mode.<br>
+&nbsp;&nbsp;AttributeError:&nbsp;If&nbsp;no&nbsp;inbound&nbsp;nodes&nbsp;are&nbsp;found.</tt></dd>
+</dl>
+<dl><dt><strong>input_mask</strong></dt>
+<dd><tt>Retrieves&nbsp;the&nbsp;input&nbsp;mask&nbsp;tensor(s)&nbsp;of&nbsp;a&nbsp;layer.<br>
+&nbsp;<br>
+Only&nbsp;applicable&nbsp;if&nbsp;the&nbsp;layer&nbsp;has&nbsp;exactly&nbsp;one&nbsp;inbound&nbsp;node,<br>
+i.e.&nbsp;if&nbsp;it&nbsp;is&nbsp;connected&nbsp;to&nbsp;one&nbsp;incoming&nbsp;layer.<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Input&nbsp;mask&nbsp;tensor&nbsp;(potentially&nbsp;None)&nbsp;or&nbsp;list&nbsp;of&nbsp;input<br>
+&nbsp;&nbsp;&nbsp;&nbsp;mask&nbsp;tensors.<br>
+&nbsp;<br>
+Raises:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;AttributeError:&nbsp;if&nbsp;the&nbsp;layer&nbsp;is&nbsp;connected&nbsp;to<br>
+&nbsp;&nbsp;&nbsp;&nbsp;more&nbsp;than&nbsp;one&nbsp;incoming&nbsp;layers.</tt></dd>
+</dl>
+<dl><dt><strong>input_shape</strong></dt>
+<dd><tt>Retrieves&nbsp;the&nbsp;input&nbsp;shape(s)&nbsp;of&nbsp;a&nbsp;layer.<br>
+&nbsp;<br>
+Only&nbsp;applicable&nbsp;if&nbsp;the&nbsp;layer&nbsp;has&nbsp;exactly&nbsp;one&nbsp;input,<br>
+i.e.&nbsp;if&nbsp;it&nbsp;is&nbsp;connected&nbsp;to&nbsp;one&nbsp;incoming&nbsp;layer,&nbsp;or&nbsp;if&nbsp;all&nbsp;inputs<br>
+have&nbsp;the&nbsp;same&nbsp;shape.<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Input&nbsp;shape,&nbsp;as&nbsp;an&nbsp;integer&nbsp;shape&nbsp;tuple<br>
+&nbsp;&nbsp;&nbsp;&nbsp;(or&nbsp;list&nbsp;of&nbsp;shape&nbsp;tuples,&nbsp;one&nbsp;tuple&nbsp;per&nbsp;input&nbsp;tensor).<br>
+&nbsp;<br>
+Raises:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;AttributeError:&nbsp;if&nbsp;the&nbsp;layer&nbsp;has&nbsp;no&nbsp;defined&nbsp;input_shape.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;RuntimeError:&nbsp;if&nbsp;called&nbsp;in&nbsp;Eager&nbsp;mode.</tt></dd>
+</dl>
+<dl><dt><strong>losses</strong></dt>
+<dd><tt>List&nbsp;of&nbsp;losses&nbsp;added&nbsp;using&nbsp;the&nbsp;`add_loss()`&nbsp;API.<br>
+&nbsp;<br>
+Variable&nbsp;regularization&nbsp;tensors&nbsp;are&nbsp;created&nbsp;when&nbsp;this&nbsp;property&nbsp;is&nbsp;accessed,<br>
+so&nbsp;it&nbsp;is&nbsp;eager&nbsp;safe:&nbsp;accessing&nbsp;`losses`&nbsp;under&nbsp;a&nbsp;`tf.GradientTape`&nbsp;will<br>
+propagate&nbsp;gradients&nbsp;back&nbsp;to&nbsp;the&nbsp;corresponding&nbsp;variables.<br>
+&nbsp;<br>
+Examples:<br>
+&nbsp;<br>
+&gt;&gt;&gt;&nbsp;class&nbsp;MyLayer(tf.keras.layers.Layer):<br>
+...&nbsp;&nbsp;&nbsp;def&nbsp;call(self,&nbsp;inputs):<br>
+...&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.add_loss(tf.abs(tf.reduce_mean(inputs)))<br>
+...&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;inputs<br>
+&gt;&gt;&gt;&nbsp;l&nbsp;=&nbsp;MyLayer()<br>
+&gt;&gt;&gt;&nbsp;l(np.ones((10,&nbsp;1)))<br>
+&gt;&gt;&gt;&nbsp;l.losses<br>
+[1.0]<br>
+&nbsp;<br>
+&gt;&gt;&gt;&nbsp;inputs&nbsp;=&nbsp;tf.keras.Input(shape=(10,))<br>
+&gt;&gt;&gt;&nbsp;x&nbsp;=&nbsp;tf.keras.layers.Dense(10)(inputs)<br>
+&gt;&gt;&gt;&nbsp;outputs&nbsp;=&nbsp;tf.keras.layers.Dense(1)(x)<br>
+&gt;&gt;&gt;&nbsp;model&nbsp;=&nbsp;tf.keras.Model(inputs,&nbsp;outputs)<br>
+&gt;&gt;&gt;&nbsp;#&nbsp;Activity&nbsp;regularization.<br>
+&gt;&gt;&gt;&nbsp;len(model.losses)<br>
+0<br>
+&gt;&gt;&gt;&nbsp;model.add_loss(tf.abs(tf.reduce_mean(x)))<br>
+&gt;&gt;&gt;&nbsp;len(model.losses)<br>
+1<br>
+&nbsp;<br>
+&gt;&gt;&gt;&nbsp;inputs&nbsp;=&nbsp;tf.keras.Input(shape=(10,))<br>
+&gt;&gt;&gt;&nbsp;d&nbsp;=&nbsp;tf.keras.layers.Dense(10,&nbsp;kernel_initializer='ones')<br>
+&gt;&gt;&gt;&nbsp;x&nbsp;=&nbsp;d(inputs)<br>
+&gt;&gt;&gt;&nbsp;outputs&nbsp;=&nbsp;tf.keras.layers.Dense(1)(x)<br>
+&gt;&gt;&gt;&nbsp;model&nbsp;=&nbsp;tf.keras.Model(inputs,&nbsp;outputs)<br>
+&gt;&gt;&gt;&nbsp;#&nbsp;Weight&nbsp;regularization.<br>
+&gt;&gt;&gt;&nbsp;model.add_loss(lambda:&nbsp;tf.reduce_mean(d.kernel))<br>
+&gt;&gt;&gt;&nbsp;model.losses<br>
+[&lt;tf.Tensor:&nbsp;shape=(),&nbsp;dtype=float32,&nbsp;numpy=1.0&gt;]<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;A&nbsp;list&nbsp;of&nbsp;tensors.</tt></dd>
+</dl>
+<dl><dt><strong>name</strong></dt>
+<dd><tt>Name&nbsp;of&nbsp;the&nbsp;layer&nbsp;(string),&nbsp;set&nbsp;in&nbsp;the&nbsp;constructor.</tt></dd>
+</dl>
+<dl><dt><strong>non_trainable_variables</strong></dt>
+</dl>
+<dl><dt><strong>outbound_nodes</strong></dt>
+<dd><tt>Deprecated,&nbsp;do&nbsp;NOT&nbsp;use!&nbsp;Only&nbsp;for&nbsp;compatibility&nbsp;with&nbsp;external&nbsp;Keras.</tt></dd>
+</dl>
+<dl><dt><strong>output</strong></dt>
+<dd><tt>Retrieves&nbsp;the&nbsp;output&nbsp;tensor(s)&nbsp;of&nbsp;a&nbsp;layer.<br>
+&nbsp;<br>
+Only&nbsp;applicable&nbsp;if&nbsp;the&nbsp;layer&nbsp;has&nbsp;exactly&nbsp;one&nbsp;output,<br>
+i.e.&nbsp;if&nbsp;it&nbsp;is&nbsp;connected&nbsp;to&nbsp;one&nbsp;incoming&nbsp;layer.<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;Output&nbsp;tensor&nbsp;or&nbsp;list&nbsp;of&nbsp;output&nbsp;tensors.<br>
+&nbsp;<br>
+Raises:<br>
+&nbsp;&nbsp;AttributeError:&nbsp;if&nbsp;the&nbsp;layer&nbsp;is&nbsp;connected&nbsp;to&nbsp;more&nbsp;than&nbsp;one&nbsp;incoming<br>
+&nbsp;&nbsp;&nbsp;&nbsp;layers.<br>
+&nbsp;&nbsp;RuntimeError:&nbsp;if&nbsp;called&nbsp;in&nbsp;Eager&nbsp;mode.</tt></dd>
+</dl>
+<dl><dt><strong>output_mask</strong></dt>
+<dd><tt>Retrieves&nbsp;the&nbsp;output&nbsp;mask&nbsp;tensor(s)&nbsp;of&nbsp;a&nbsp;layer.<br>
+&nbsp;<br>
+Only&nbsp;applicable&nbsp;if&nbsp;the&nbsp;layer&nbsp;has&nbsp;exactly&nbsp;one&nbsp;inbound&nbsp;node,<br>
+i.e.&nbsp;if&nbsp;it&nbsp;is&nbsp;connected&nbsp;to&nbsp;one&nbsp;incoming&nbsp;layer.<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Output&nbsp;mask&nbsp;tensor&nbsp;(potentially&nbsp;None)&nbsp;or&nbsp;list&nbsp;of&nbsp;output<br>
+&nbsp;&nbsp;&nbsp;&nbsp;mask&nbsp;tensors.<br>
+&nbsp;<br>
+Raises:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;AttributeError:&nbsp;if&nbsp;the&nbsp;layer&nbsp;is&nbsp;connected&nbsp;to<br>
+&nbsp;&nbsp;&nbsp;&nbsp;more&nbsp;than&nbsp;one&nbsp;incoming&nbsp;layers.</tt></dd>
+</dl>
+<dl><dt><strong>output_shape</strong></dt>
+<dd><tt>Retrieves&nbsp;the&nbsp;output&nbsp;shape(s)&nbsp;of&nbsp;a&nbsp;layer.<br>
+&nbsp;<br>
+Only&nbsp;applicable&nbsp;if&nbsp;the&nbsp;layer&nbsp;has&nbsp;one&nbsp;output,<br>
+or&nbsp;if&nbsp;all&nbsp;outputs&nbsp;have&nbsp;the&nbsp;same&nbsp;shape.<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Output&nbsp;shape,&nbsp;as&nbsp;an&nbsp;integer&nbsp;shape&nbsp;tuple<br>
+&nbsp;&nbsp;&nbsp;&nbsp;(or&nbsp;list&nbsp;of&nbsp;shape&nbsp;tuples,&nbsp;one&nbsp;tuple&nbsp;per&nbsp;output&nbsp;tensor).<br>
+&nbsp;<br>
+Raises:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;AttributeError:&nbsp;if&nbsp;the&nbsp;layer&nbsp;has&nbsp;no&nbsp;defined&nbsp;output&nbsp;shape.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;RuntimeError:&nbsp;if&nbsp;called&nbsp;in&nbsp;Eager&nbsp;mode.</tt></dd>
+</dl>
+<dl><dt><strong>trainable_variables</strong></dt>
+<dd><tt>Sequence&nbsp;of&nbsp;trainable&nbsp;variables&nbsp;owned&nbsp;by&nbsp;this&nbsp;module&nbsp;and&nbsp;its&nbsp;submodules.<br>
+&nbsp;<br>
+Note:&nbsp;this&nbsp;method&nbsp;uses&nbsp;reflection&nbsp;to&nbsp;find&nbsp;variables&nbsp;on&nbsp;the&nbsp;current&nbsp;instance<br>
+and&nbsp;submodules.&nbsp;For&nbsp;performance&nbsp;reasons&nbsp;you&nbsp;may&nbsp;wish&nbsp;to&nbsp;cache&nbsp;the&nbsp;result<br>
+of&nbsp;calling&nbsp;this&nbsp;method&nbsp;if&nbsp;you&nbsp;don't&nbsp;expect&nbsp;the&nbsp;return&nbsp;value&nbsp;to&nbsp;change.<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;A&nbsp;sequence&nbsp;of&nbsp;variables&nbsp;for&nbsp;the&nbsp;current&nbsp;module&nbsp;(sorted&nbsp;by&nbsp;attribute<br>
+&nbsp;&nbsp;name)&nbsp;followed&nbsp;by&nbsp;variables&nbsp;from&nbsp;all&nbsp;submodules&nbsp;recursively&nbsp;(breadth<br>
+&nbsp;&nbsp;first).</tt></dd>
+</dl>
+<dl><dt><strong>updates</strong></dt>
+</dl>
+<dl><dt><strong>variable_dtype</strong></dt>
+<dd><tt>Alias&nbsp;of&nbsp;`Layer.dtype`,&nbsp;the&nbsp;dtype&nbsp;of&nbsp;the&nbsp;weights.</tt></dd>
+</dl>
+<dl><dt><strong>variables</strong></dt>
+<dd><tt>Returns&nbsp;the&nbsp;list&nbsp;of&nbsp;all&nbsp;layer&nbsp;variables/weights.<br>
+&nbsp;<br>
+Alias&nbsp;of&nbsp;`self.<strong>weights</strong>`.<br>
+&nbsp;<br>
+Note:&nbsp;This&nbsp;will&nbsp;not&nbsp;track&nbsp;the&nbsp;weights&nbsp;of&nbsp;nested&nbsp;`tf.Modules`&nbsp;that&nbsp;are&nbsp;not<br>
+themselves&nbsp;Keras&nbsp;layers.<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;A&nbsp;list&nbsp;of&nbsp;variables.</tt></dd>
+</dl>
+<hr>
+Data descriptors inherited from <a href="tensorflow.python.keras.engine.base_layer.html#Layer">tensorflow.python.keras.engine.base_layer.Layer</a>:<br>
+<dl><dt><strong>activity_regularizer</strong></dt>
+<dd><tt>Optional&nbsp;regularizer&nbsp;function&nbsp;for&nbsp;the&nbsp;output&nbsp;of&nbsp;this&nbsp;layer.</tt></dd>
+</dl>
+<dl><dt><strong>input_spec</strong></dt>
+<dd><tt>`InputSpec`&nbsp;instance(s)&nbsp;describing&nbsp;the&nbsp;input&nbsp;format&nbsp;for&nbsp;this&nbsp;layer.<br>
+&nbsp;<br>
+When&nbsp;you&nbsp;create&nbsp;a&nbsp;layer&nbsp;subclass,&nbsp;you&nbsp;can&nbsp;set&nbsp;`self.<strong>input_spec</strong>`&nbsp;to&nbsp;enable<br>
+the&nbsp;layer&nbsp;to&nbsp;run&nbsp;input&nbsp;compatibility&nbsp;checks&nbsp;when&nbsp;it&nbsp;is&nbsp;called.<br>
+Consider&nbsp;a&nbsp;`Conv2D`&nbsp;layer:&nbsp;it&nbsp;can&nbsp;only&nbsp;be&nbsp;called&nbsp;on&nbsp;a&nbsp;single&nbsp;input&nbsp;tensor<br>
+of&nbsp;rank&nbsp;4.&nbsp;As&nbsp;such,&nbsp;you&nbsp;can&nbsp;set,&nbsp;in&nbsp;`__init__()`:<br>
+&nbsp;<br>
+```python<br>
+self.<strong>input_spec</strong>&nbsp;=&nbsp;tf.keras.layers.InputSpec(ndim=4)<br>
+```<br>
+&nbsp;<br>
+Now,&nbsp;if&nbsp;you&nbsp;try&nbsp;to&nbsp;call&nbsp;the&nbsp;layer&nbsp;on&nbsp;an&nbsp;input&nbsp;that&nbsp;isn't&nbsp;rank&nbsp;4<br>
+(for&nbsp;instance,&nbsp;an&nbsp;input&nbsp;of&nbsp;shape&nbsp;`(2,)`,&nbsp;it&nbsp;will&nbsp;raise&nbsp;a&nbsp;nicely-formatted<br>
+error:<br>
+&nbsp;<br>
+```<br>
+ValueError:&nbsp;Input&nbsp;0&nbsp;of&nbsp;layer&nbsp;conv2d&nbsp;is&nbsp;incompatible&nbsp;with&nbsp;the&nbsp;layer:<br>
+expected&nbsp;ndim=4,&nbsp;found&nbsp;ndim=1.&nbsp;Full&nbsp;shape&nbsp;received:&nbsp;[2]<br>
+```<br>
+&nbsp;<br>
+Input&nbsp;checks&nbsp;that&nbsp;can&nbsp;be&nbsp;specified&nbsp;via&nbsp;`input_spec`&nbsp;include:<br>
+-&nbsp;Structure&nbsp;(e.g.&nbsp;a&nbsp;single&nbsp;input,&nbsp;a&nbsp;list&nbsp;of&nbsp;2&nbsp;inputs,&nbsp;etc)<br>
+-&nbsp;Shape<br>
+-&nbsp;Rank&nbsp;(ndim)<br>
+-&nbsp;Dtype<br>
+&nbsp;<br>
+For&nbsp;more&nbsp;information,&nbsp;see&nbsp;`tf.keras.layers.InputSpec`.<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;A&nbsp;`tf.keras.layers.InputSpec`&nbsp;instance,&nbsp;or&nbsp;nested&nbsp;structure&nbsp;thereof.</tt></dd>
+</dl>
+<dl><dt><strong>stateful</strong></dt>
+</dl>
+<dl><dt><strong>supports_masking</strong></dt>
+<dd><tt>Whether&nbsp;this&nbsp;layer&nbsp;supports&nbsp;computing&nbsp;a&nbsp;mask&nbsp;using&nbsp;`compute_mask`.</tt></dd>
+</dl>
+<dl><dt><strong>trainable</strong></dt>
+</dl>
+<hr>
+Class methods inherited from <a href="tensorflow.python.module.module.html#Module">tensorflow.python.module.module.Module</a>:<br>
+<dl><dt><a name="AutoEncoder-with_name_scope"><strong>with_name_scope</strong></a>(method)<font color="#909090"><font face="helvetica, arial"> from <a href="builtins.html#type">builtins.type</a></font></font></dt><dd><tt>Decorator&nbsp;to&nbsp;automatically&nbsp;enter&nbsp;the&nbsp;module&nbsp;name&nbsp;scope.<br>
+&nbsp;<br>
+&gt;&gt;&gt;&nbsp;class&nbsp;MyModule(tf.Module):<br>
+...&nbsp;&nbsp;&nbsp;@tf.Module.with_name_scope<br>
+...&nbsp;&nbsp;&nbsp;def&nbsp;<a href="#AutoEncoder-__call__">__call__</a>(self,&nbsp;x):<br>
+...&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;not&nbsp;hasattr(self,&nbsp;'w'):<br>
+...&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.<strong>w</strong>&nbsp;=&nbsp;tf.Variable(tf.random.normal([x.shape[1],&nbsp;3]))<br>
+...&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;tf.matmul(x,&nbsp;self.<strong>w</strong>)<br>
+&nbsp;<br>
+Using&nbsp;the&nbsp;above&nbsp;module&nbsp;would&nbsp;produce&nbsp;`tf.Variable`s&nbsp;and&nbsp;`tf.Tensor`s&nbsp;whose<br>
+names&nbsp;included&nbsp;the&nbsp;module&nbsp;name:<br>
+&nbsp;<br>
+&gt;&gt;&gt;&nbsp;mod&nbsp;=&nbsp;MyModule()<br>
+&gt;&gt;&gt;&nbsp;mod(tf.ones([1,&nbsp;2]))<br>
+&lt;tf.Tensor:&nbsp;shape=(1,&nbsp;3),&nbsp;dtype=float32,&nbsp;numpy=...,&nbsp;dtype=float32)&gt;<br>
+&gt;&gt;&gt;&nbsp;mod.w<br>
+&lt;tf.Variable&nbsp;'my_module/Variable:0'&nbsp;shape=(2,&nbsp;3)&nbsp;dtype=float32,<br>
+numpy=...,&nbsp;dtype=float32)&gt;<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;method:&nbsp;The&nbsp;method&nbsp;to&nbsp;wrap.<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;The&nbsp;original&nbsp;method&nbsp;wrapped&nbsp;such&nbsp;that&nbsp;it&nbsp;enters&nbsp;the&nbsp;module's&nbsp;name&nbsp;scope.</tt></dd></dl>
+
+<hr>
+Readonly properties inherited from <a href="tensorflow.python.module.module.html#Module">tensorflow.python.module.module.Module</a>:<br>
+<dl><dt><strong>name_scope</strong></dt>
+<dd><tt>Returns&nbsp;a&nbsp;`tf.name_scope`&nbsp;instance&nbsp;for&nbsp;this&nbsp;class.</tt></dd>
+</dl>
+<dl><dt><strong>submodules</strong></dt>
+<dd><tt>Sequence&nbsp;of&nbsp;all&nbsp;sub-modules.<br>
+&nbsp;<br>
+Submodules&nbsp;are&nbsp;modules&nbsp;which&nbsp;are&nbsp;properties&nbsp;of&nbsp;this&nbsp;module,&nbsp;or&nbsp;found&nbsp;as<br>
+properties&nbsp;of&nbsp;modules&nbsp;which&nbsp;are&nbsp;properties&nbsp;of&nbsp;this&nbsp;module&nbsp;(and&nbsp;so&nbsp;on).<br>
+&nbsp;<br>
+&gt;&gt;&gt;&nbsp;a&nbsp;=&nbsp;tf.Module()<br>
+&gt;&gt;&gt;&nbsp;b&nbsp;=&nbsp;tf.Module()<br>
+&gt;&gt;&gt;&nbsp;c&nbsp;=&nbsp;tf.Module()<br>
+&gt;&gt;&gt;&nbsp;a.b&nbsp;=&nbsp;b<br>
+&gt;&gt;&gt;&nbsp;b.c&nbsp;=&nbsp;c<br>
+&gt;&gt;&gt;&nbsp;list(a.submodules)&nbsp;==&nbsp;[b,&nbsp;c]<br>
+True<br>
+&gt;&gt;&gt;&nbsp;list(b.submodules)&nbsp;==&nbsp;[c]<br>
+True<br>
+&gt;&gt;&gt;&nbsp;list(c.submodules)&nbsp;==&nbsp;[]<br>
+True<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;A&nbsp;sequence&nbsp;of&nbsp;all&nbsp;submodules.</tt></dd>
+</dl>
+<hr>
+Data descriptors inherited from <a href="tensorflow.python.training.tracking.base.html#Trackable">tensorflow.python.training.tracking.base.Trackable</a>:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+</td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#55aa55">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Data</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#55aa55"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><strong>batch_size</strong> = 64</td></tr></table>
+</body></html>
