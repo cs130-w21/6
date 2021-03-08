@@ -11,3 +11,7 @@ Download and install the latest Android app (Android Version 10+): [MyStory.apk]
 ***How to use:***
 
 Check our [Wiki page](https://github.com/cs130-w21/6/wiki/MyStory-User-Manual) for the User Manual!
+
+***Video Demo***
+
+https://youtu.be/_tmL3CcDzbE
