@@ -14,4 +14,6 @@ Check our [Wiki page](https://github.com/cs130-w21/6/wiki/MyStory-User-Manual) f
 
 ***Video Demo***
 
-https://youtu.be/_tmL3CcDzbE
+Video Demo without voice over: https://youtu.be/_tmL3CcDzbE
+
+Project Overview: https://youtu.be/t8oVvCM4-5Q
