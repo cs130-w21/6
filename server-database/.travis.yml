@@ -12,3 +12,14 @@ install:
   - pip install Pillow
   - pip install requests
 script: pytest
+deploy:
+  provider: releases
+  file: $TRAVIS_BUILD_DIR/MyStory/app/build/outputs/apk/debug/*.apk
+  skip_cleanup: true
+  name: dev-build-$TRAVIS_TAG
+  body: Automatic build of $TRAVIS_BRANCH ($TRAVIS_COMMIT) built by Travis CI on $(date +'%F %T %Z').
+  prerelease: true
+  overwrite: true
+  target_commitish: $TRAVIS_COMMIT
+  on:
+    tags: true

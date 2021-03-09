@@ -3,6 +3,7 @@ import pytest
 import random
 from client import Client
 import numpy as np
+import time
 
 @pytest.fixture
 def client():
@@ -151,6 +152,7 @@ def test_confirm_delete(client):
     }
     # this should return success
     msg = pytest.client.send_message(data3)
+    #time.sleep(2)
     assert set(msg.keys()) == set(['op','data'])
     assert msg['op'] == 'delete'
     # the only story should be the second story
@@ -169,6 +171,7 @@ def test_confirm_delete(client):
     }
     # this should return success
     msg = pytest.client.send_message(data4)
+    #time.sleep(2)
     assert set(msg.keys()) == set(['op','data'])
     assert msg['op'] == 'delete'
     # the story should be empty
@@ -239,7 +242,7 @@ def test_load(client):
     data3 = {
         'op' : 'delete',
         'row_id' : [row_id1],
-        'uid' : 'unique_user_test3'
+        'uid' : 'unique_user_test4'
     }
     # this should return success
     msg = pytest.client.send_message(data3)
@@ -248,7 +251,7 @@ def test_load(client):
     data4 = {
         'op' : 'delete',
         'row_id' : [row_id2],
-        'uid' : 'unique_user_test3'
+        'uid' : 'unique_user_test4'
     }
     # this should return success
     msg = pytest.client.send_message(data4)
